@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ <!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+	
+	<field name="bankCode">
+		<field-validator type="requiredstring">
+			<message> Bank Code Is Required.</message>
+		</field-validator>
+	</field>
+	
+	<field name="channel">
+		<field-validator type="requiredstring">
+			<message> Channel Is Required.</message>
+		</field-validator>
+	</field>
+	
+	<field name="debitLimit">
+		<field-validator type="requiredstring">
+			<message> Debit Limit Is Required.</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">debitLimit</param>
+			<param name="expression"><![CDATA[[0-9.,]+$]]></param>
+			<message>Debit Limit is invalid</message>
+		</field-validator>
+	</field>
+	
+	<field name="creditLimit">
+		<field-validator type="requiredstring">
+			<message> Credit Limit Is Required.</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">creditLimit</param>
+			<param name="expression"><![CDATA[[0-9.,]+$]]></param>
+			<message>Credit Limit is invalid</message>
+		</field-validator>
+	</field>
+</validators>

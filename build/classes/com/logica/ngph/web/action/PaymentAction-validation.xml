@@ -1,0 +1,948 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+
+
+
+
+<field name="msgChnlType">
+
+	<field-validator type="requiredstring">
+	<param name="fieldName">msgChnlType</param>
+	<message>Channel Type is required</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="expression"><![CDATA[^[a-zA-Z0-9-/?:().,+{}’\\s]*$]]></param>
+	<message>Channel Type is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">msgChnlType</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">10</param>
+	  <param name="trim">true</param>
+	 <message>Channel Type should be between ${minLength} and ${maxLength} Chars</message>
+	</field-validator>
+</field>
+
+<field name="dstMsgType">
+
+	<field-validator type="requiredstring">
+	<param name="fieldName">dstMsgType</param>
+	<message>Destination Type is required</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="expression"><![CDATA[^[a-zA-Z0-9-/?:().,+{}’\\s]*$]]></param>
+	<message>Destination Type is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">dstMsgType</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">10</param>
+	  <param name="trim">true</param>
+	 <message>Channel Type Length Should be between ${minLength} and ${maxLength}</message>
+	</field-validator>
+</field>
+
+<field name="dstMsgSubType">
+
+	<field-validator type="requiredstring">
+	<param name="fieldName">dstMsgSubType</param>
+	<message>Sub Type is required</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="expression"><![CDATA[^[a-zA-Z0-9-/?:().,+{}’\\s]*$]]></param>
+	<message>Sub Type is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">dstMsgSubType</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">10</param>
+	  <param name="trim">true</param>
+	 <message> Sub Type Length Should be between ${minLength} and ${maxLength}</message>
+	</field-validator>
+</field>
+	
+	<field name="txnReference">
+
+	<field-validator type="requiredstring">
+	<param name="fieldName">txnReference</param>
+	<message>Transaction Reference is required.</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="expression"><![CDATA[^[a-zA-Z0-9-/?:().,+{}’\\s]*$]]></param>
+	<message>Transaction Reference is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">txnReference</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">16</param>
+	  <param name="trim">true</param>
+	 <message>Transaction Reference Length Should be between ${minLength} and ${maxLength}</message>
+	</field-validator>
+</field>
+
+<field name="svcLevelCode">
+
+	<field-validator type="regex">
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Service Level Code is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">svcLevelCode</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">4</param>
+	  <param name="trim">true</param>
+	  <message>Service Level Code Length should be between ${minLength} and ${maxLength}</message>
+	</field-validator>
+</field>
+
+<field name="msgCurrency">
+
+	<field-validator type="requiredstring">
+	
+	<message>Currency is required</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="expression"><![CDATA[^[a-zA-Z]+$]]></param>
+	<message>Currency is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">msgCurrency</param>
+	 <param name="minLength">3</param>
+	 <param name="maxLength">3</param>
+	  <param name="trim">true</param>
+	 <message>Currency Length should be between ${minLength} and ${maxLength} Chars</message>
+	</field-validator>
+</field>
+
+
+	<field name="sndrPymtPriority">
+	<field-validator type="requiredstring">
+	<message>Sender Priority is required.</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="fieldName">sndrPymtPriority</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Sender Priority is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">sndrPymtPriority</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">4</param>
+	  <param name="trim">true</param>
+	<message>Sender Priority length should be between minimum ${minLength} and maximum ${maxLength}</message>
+	</field-validator>
+	</field>
+	
+<field name="msgAmount">
+
+	
+	<field-validator type="regex">
+	<param name="fieldName">msgAmount</param>
+	<param name="expression"><![CDATA[[0-9.,]+$]]></param>
+	<message>Amount is Not Valid</message>
+	</field-validator>
+
+</field>
+
+<field name="regulatoryReportAmount">
+
+	
+	<field-validator type="regex">
+	<param name="fieldName">regulatoryReportAmount</param>
+	<param name="expression"><![CDATA[[0-9.,]+$]]></param>
+	<message>Regulatory Reporting Amount is Not Valid</message>
+	</field-validator>
+
+</field>
+
+
+	<field name="valueDate">
+
+	<field-validator type="requiredstring">
+	<message>Value Date is required</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="expression"><![CDATA[[0-9-]+$]]></param>
+	<message>Value Date is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">orderingCustomer</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">6</param>
+	  <param name="trim">true</param>
+	<message>Value Date Length Should be between ${minLength} and ${maxLength}</message>
+	</field-validator>
+	</field>
+	
+	<field name="orderingCustomerName">
+
+	<field-validator type="requiredstring">
+	<message>Ordering Party is required.</message>
+	</field-validator>
+	
+	<field-validator type="stringlength">
+	 <param name="fieldName">orderingCustomerName</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">150</param>
+	  <param name="trim">true</param>
+	<message>Ordering Party Length should be between ${minLength} and ${maxLength}</message>
+	</field-validator>
+	</field>
+	
+	<!--  <field name="orderingCustAccount">
+
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="expression"><![CDATA[^[/a-zA-Z0-9]+$]]></param>
+	<message> ${fieldName} is Not Valid</message>
+	</field-validator>-->
+	<field name="instructedCurrency">
+	<field-validator type="requiredstring">
+	<message>Instructed Currency is required</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="expression"><![CDATA[^[a-zA-Z]+$]]></param>
+	<message>Instructed Currency is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">instructedCurrency</param>
+	 <param name="minLength">3</param>
+	 <param name="maxLength">3</param>
+	  <param name="trim">true</param>
+	 <message>Instructed Currency Length should be ${minLength}</message>
+	</field-validator>
+	</field>
+
+	<field name="instructedAmount">
+	
+	<field-validator type="regex">
+	<param name="fieldName">instructedAmount</param>
+	<param name="expression"><![CDATA[[0-9.,]+$]]></param>
+	<message>Instructed Amount is Not Valid</message>
+	</field-validator>
+	
+	</field>
+	
+	<field name="orderingCustAccount">
+	<field-validator type="requiredstring">
+	<message>Ordering Customer Account is required</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">orderingCustAccount</param>
+	 <param name="minLength">8</param>
+	 <param name="maxLength">150</param>
+	  <param name="trim">true</param>
+	<message>Ordering Customer Account Length should be between ${minLength} and ${maxLength}</message>
+	</field-validator>
+	</field>
+	
+	<field name="ultimateDebtorName">
+	<field-validator type="requiredstring">
+	<message>Ultimate Party is required.</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">ultimateDebtorName</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">150</param>
+	  <param name="trim">true</param>
+	<message>Ultimate Party Length Should be between ${minLength} and ${maxLength}</message>
+	</field-validator>
+	</field>
+	
+	<field name="receiverBank">
+		<field-validator type="requiredstring">
+	<message>Receiver Bank Code is Required</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="fieldName">receiverBank</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Receiver Bank Code is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">receiverBank</param>
+	 <param name="minLength">0</param>
+	 <param name="maxLength">34</param>
+	  <param name="trim">true</param>
+	<message>Receiver Bank Code Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="beneficiaryCustomerName">
+
+	<field-validator type="requiredstring">
+	<message>Beneficiary Party is required</message>
+	</field-validator>
+	
+	<field-validator type="stringlength">
+	 <param name="fieldName">beneficiaryCustomerName</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">34</param>
+	  <param name="trim">true</param>
+	<message>Beneficiary Party Length should be between ${minLength} and ${maxLength}</message>
+	</field-validator>
+	</field>
+	
+	
+	
+	<field name="ultimateCreditorName">
+
+	
+	<field-validator type="stringlength">
+	 <param name="fieldName">ultimateCreditorName</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">34</param>
+	  <param name="trim">true</param>
+	<message>Ultimate Creditor Length Should be between ${minLength} and ${maxLength}</message>
+	</field-validator>
+	</field>
+	
+	<field name="chargeBearer">
+
+	<field-validator type="requiredstring">
+	
+	<message>Charges Bearer is required</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="expression"><![CDATA[^[a-zA-Z]+$]]></param>
+	<message>Charges Bearer is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">chargeBearer</param>
+	 <param name="minLength">3</param>
+	 <param name="maxLength">3</param>
+	  <param name="trim">true</param>
+	 <message>Charges Bearer minimum and maximum length is ${minLength}</message>
+	</field-validator>
+	</field>
+	
+	<field name="accountWithInstitution">
+	<field-validator type="requiredstring">
+	<message>Account With Institution is required</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="fieldName">accountWithInstitution</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Account With Institution is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">accountWithInstitution</param>
+	 <param name="minLength">0</param>
+	 <param name="maxLength">34</param>
+	  <param name="trim">true</param>
+	<message>Account With Institution Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="beneficiaryCustAcct">
+	<field-validator type="requiredstring">
+	<message>Beneficiary Account is required.</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="fieldName">accountWithInstitution</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Beneficiary Account is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">accountWithInstitution</param>
+	 <param name="minLength">0</param>
+	 <param name="maxLength">35</param>
+	  <param name="trim">true</param>
+	<message>Beneficiary Account Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="msgBranch">
+	
+	<field-validator type="regex">
+	<param name="fieldName">msgBranch</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Message Branches is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">msgBranch</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">15</param>
+	  <param name="trim">true</param>
+	<message>Message Branches Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<!--  <field name="chargeAmount">
+
+	
+	<field-validator type="regex">
+	<param name="fieldName">chargeAmount</param>
+	<param name="expression"><![CDATA[[0-9.,]+$]]></param>
+	<message> ${fieldName} is Not Valid</message>
+	</field-validator>
+	
+	</field>-->
+  
+ 
+
+	<field name="custTxnReference">
+
+	
+	<field-validator type="regex">
+	<param name="fieldName">chargeAmount</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Customer Transaction Reference is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">custTxnReference</param>
+	 <param name="minLength">0</param>
+	 <param name="maxLength">35</param>
+	  <param name="trim">true</param>
+	<message>Customer Transaction Reference Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="sndrTxnId">
+
+	
+	<field-validator type="regex">
+	<param name="fieldName">senderTransactionReference</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Sender Transaction Reference is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">sndrTxnId</param>
+	 <param name="minLength">0</param>
+	 <param name="maxLength">35</param>
+	  <param name="trim">true</param>
+	<message>Sender Transaction Reference Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+
+	<field name="clrgSysReference">
+
+	
+	<field-validator type="regex">
+	<param name="fieldName">ClearingSystemReference</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Clearing System Reference is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">clrgSysReference</param>
+	 <param name="minLength">0</param>
+	 <param name="maxLength">35</param>
+	  <param name="trim">true</param>
+	<message>Clearing System Reference Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	
+	
+	<field name="instructionsForCrdtrAgtText">
+
+	
+	<field-validator type="stringlength">
+	 <param name="fieldName">instructionsForCrdtrAgtText</param>
+	 <param name="minLength">0</param>
+	 <param name="maxLength">150</param>
+	  <param name="trim">true</param>
+	<message>Instructions for Creditor Agent Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="instructionsForNextAgtCode">
+
+	<field-validator type="regex">
+	<param name="fieldName">instructionsForNextAgtCode</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Instructions Code for Agent is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">instructionsForNextAgtCode</param>
+	 <param name="minLength">0</param>
+	 <param name="maxLength">4</param>
+	  <param name="trim">true</param>
+	<message> Instructions Code for Agent Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="instructionsForNextAgtText">
+
+	
+	<field-validator type="stringlength">
+	 <param name="fieldName">instructionsForNextAgtText</param>
+	 <param name="minLength">0</param>
+	 <param name="maxLength">150</param>
+	  <param name="trim">true</param>
+	<message>Instructions for Next Agent Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="msgPurposeCode">
+
+	<field-validator type="regex">
+	<param name="fieldName">msgPurposeCode</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Purpose Code is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">msgPurposeCode</param>
+	 <param name="minLength">3</param>
+	 <param name="maxLength">4</param>
+	  <param name="trim">true</param>
+	<message>Purpose Code Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="regulatoryBankCode">
+
+	<field-validator type="regex">
+	<param name="fieldName">regulatoryBankCode</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Regulatory Bank code is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">regulatoryBankCode</param>
+	 <param name="minLength">0</param>
+	 <param name="maxLength">35</param>
+	  <param name="trim">true</param>
+	<message>Regulatory Bank code Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="regulatoryInformation">
+
+	<field-validator type="regex">
+	<param name="fieldName">regulatoryInformation</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Regulatory Information is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">regulatoryInformation</param>
+	 <param name="minLength">0</param>
+	 <param name="maxLength">150</param>
+	  <param name="trim">true</param>
+	<message>Regulatory Information Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	<field name="initiatorRemitReference">
+
+	<field-validator type="regex">
+	<param name="fieldName">initiatorRemitReference</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Remittance Identification is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">initiatorRemitReference</param>
+	 <param name="minLength">0</param>
+	 <param name="maxLength">35</param>
+	  <param name="trim">true</param>
+	<message>Remittance Identification Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+
+
+	
+	<field name="relReference">
+
+	<field-validator type="regex">
+	<param name="fieldName">relReference</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9-/?:().,’+{}\\s]*$]]></param>
+	<message>Related Reference is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">relReference</param>
+	 <param name="minLength">0</param>
+	 <param name="maxLength">16</param>
+	  <param name="trim">true</param>
+	<message>Related Reference Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="svcLevelProperitary">
+
+	<field-validator type="regex">
+	<param name="fieldName">svcLevelProperitary</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Service Level Information is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">svcLevelProperitary</param>
+	 <param name="minLength">0</param>
+	 <param name="maxLength">11</param>
+	  <param name="trim">true</param>
+	<message>Service Level Information Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	
+	<field name="xchangeRate">
+
+	<field-validator type="regex">
+	<param name="fieldName">xchangeRate</param>
+	<param name="expression"><![CDATA[[0-9.,]+$]]></param>
+	<message>Exchange Rate is Not Valid number</message>
+	</field-validator>
+	
+	</field>
+	
+	<field name="prevInstructingBank">
+
+	<field-validator type="regex">
+	<param name="fieldName">prevInstructingBank</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Previous Instructing Bank is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">prevInstructingBank</param>
+	 <param name="minLength">0</param>
+	 <param name="maxLength">35</param>
+	  <param name="trim">true</param>
+	<message>Previous Instructing Bank Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="prevInstructingAgentAcct">
+
+	<field-validator type="regex">
+	<param name="fieldName">prevInstructingAgentAcct</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Previous Instructing Bank Account is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">prevInstructingAgentAcct</param>
+	 <param name="minLength">8</param>
+	 <param name="maxLength">11</param>
+	  <param name="trim">true</param>
+	<message>Previous Instructing Bank Account Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	
+	
+	<!--  	<field name="orderingInstitution">
+
+	<field-validator type="regex">
+	<param name="fieldName">orderingInstitution</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message> ${fieldName} is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">orderingInstitution</param>
+	 <param name="minLength">0</param>
+	 <param name="maxLength">34</param>
+	  <param name="trim">true</param>
+	<message> ${fieldName} length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="OrderingInstitutionAcct">
+	<field-validator type="regex">
+	<param name="fieldName">OrderingInstitutionAcct</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message> ${fieldName} is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">OrderingInstitutionAcct</param>
+	 <param name="minLength">0</param>
+	 <param name="maxLength">11</param>
+	  <param name="trim">true</param>
+	<message> ${fieldName} length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>-->
+	
+	
+	
+	<field name="accountWithInstitutionAcct">
+
+	<field-validator type="regex">
+	<param name="fieldName">accountWithInstitutionAcct</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Account With Institution Account is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">accountWithInstitutionAcct</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">11</param>
+	  <param name="trim">true</param>
+	<message>Account With Institution Account Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="instructionsForCrdtrAgtCode">
+
+	<field-validator type="regex">
+	<param name="fieldName">instructionsForCrdtrAgtCode</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Instruction Code for Creditor Agent is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">instructionsForCrdtrAgtCode</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">8</param>
+	  <param name="trim">true</param>
+	<message>Instruction Code for Creditor Agent Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="sndrSttlmntPriority">
+
+	<field-validator type="regex">
+	<param name="fieldName">sndrSttlmntPriority</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Settlement Priority is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">sndrSttlmntPriority</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">4</param>
+	  <param name="trim">true</param>
+	<message> Settlement Priority Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="catgPurposeCode">
+
+	<field-validator type="regex">
+	<param name="fieldName">catgPurposeCode</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Category Purpose Code is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">catgPurposeCode</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">4</param>
+	  <param name="trim">true</param>
+	<message>Category Purpose Code Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+
+	
+	
+	
+	<field name="regulatoryReportCurrency">
+
+	<field-validator type="regex">
+	<param name="expression"><![CDATA[^[a-zA-Z]+$]]></param>
+	<message>Regulatory Reporting Currency is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">regulatoryReportCurrency</param>
+	 <param name="minLength">3</param>
+	 <param name="maxLength">3</param>
+	  <param name="trim">true</param>
+	 <message>Regulatory Reporting Currency should be between ${minLength} and ${maxLength} Chars</message>
+	</field-validator>
+	</field>
+	
+	<field name="initiatorRemitAdviceMethod">
+
+	<field-validator type="regex">
+	<param name="fieldName">initiatorRemitAdviceMethod</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Remittance Advice Information is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">initiatorRemitAdviceMethod</param>
+	 <param name="minLength">0</param>
+	 <param name="maxLength">4</param>
+	  <param name="trim">true</param>
+	<message>Remittance Advice Information Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="remitReceivingPartyName">
+
+	<field-validator type="regex">
+	<param name="fieldName">remitReceivingPartyName</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Remittance Receiver Name} is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">remitReceivingPartyName</param>
+	 <param name="minLength">0</param>
+	 <param name="maxLength">150</param>
+	  <param name="trim">true</param>
+	<message>Remittance Receiver Name Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="remitReceivingPartyAddress">
+
+	<field-validator type="regex">
+	<param name="fieldName">remitReceivingPartyAddress</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Remittance Receiver Address is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">remitReceivingPartyAddress</param>
+	 <param name="minLength">0</param>
+	 <param name="maxLength">400</param>
+	  <param name="trim">true</param>
+	<message>Remittance Receiver Address Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	
+	<field name="msgReturnReference">
+
+	<field-validator type="regex">
+	<param name="fieldName">msgReturnReference</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Message Return Reference is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">msgReturnReference</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">35</param>
+	  <param name="trim">true</param>
+	<message>Message Return Reference Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<!--  <field name="srcMsgSubType">
+
+	<field-validator type="regex">
+	<param name="fieldName">srcMsgSubType</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message> ${fieldName} is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">srcMsgSubType</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">15</param>
+	  <param name="trim">true</param>
+	<message> ${fieldName} length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>-->
+	
+	
+	
+	<field name="clrgChannel">
+
+	<field-validator type="regex">
+	<param name="fieldName">ClearingChannel</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Clearing Channel is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">clrgChannel</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">4</param>
+	  <param name="trim">true</param>
+	<message>Clearing Channel Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	
+	<!-- <field name="orderingType">
+
+	<field-validator type="regex">
+	<param name="fieldName">orderingType</param>
+	<param name="expression"><![CDATA[^[a-zA-Z]+$]]></param>
+	<message> ${fieldName} is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">orderingType</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">1</param>
+	  <param name="trim">true</param>
+	<message> ${fieldName} length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="beneficiaryType">
+
+	<field-validator type="regex">
+	<param name="fieldName">beneficiaryType</param>
+	<param name="expression"><![CDATA[^[a-zA-Z]+$]]></param>
+	<message> ${fieldName} is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">beneficiaryType</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">1</param>
+	  <param name="trim">true</param>
+	<message> ${fieldName} length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field> -->
+	
+	<field name="initiatingPartyCtry">
+	<field-validator type="regex">
+	<param name="fieldName">initiatingPartyCtry</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Initiating Party Residence is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">initiatingPartyCtry</param>
+	 <param name="minLength">2</param>
+	 <param name="maxLength">2</param>
+	  <param name="trim">true</param>
+	<message>Initiating Party Residence Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	
+	<field name="orderingCustomerCtry">
+	<field-validator type="regex">
+	<param name="fieldName">orderingCustomerCtry</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Ordering Customer Country is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">orderingCustomerCtry</param>
+	 <param name="minLength">2</param>
+	 <param name="maxLength">2</param>
+	  <param name="trim">true</param>
+	<message>Ordering Customer Country Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="beneficiaryCustomerCtry">
+	<field-validator type="regex">
+	<param name="fieldName">beneficiaryCustomerCtry</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Beneficiary Customer Country is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">beneficiaryCustomerCtry</param>
+	 <param name="minLength">2</param>
+	 <param name="maxLength">2</param>
+	  <param name="trim">true</param>
+	<message>Beneficiary Customer Country Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="ultimateCreditorCtry">
+	<field-validator type="regex">
+	<param name="fieldName">ultimateCreditorCtry</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Ultimate Creditor Residence is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">ultimateCreditorCtry</param>
+	 <param name="minLength">2</param>
+	 <param name="maxLength">2</param>
+	  <param name="trim">true</param>
+	<message>Ultimate Creditor Residence Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+	<field name="ultimateDebtorCtry">
+	<field-validator type="regex">
+	<param name="fieldName">ultimateDebtorCtry</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Ultimate Party Debtor Residence is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">ultimateDebtorCtry</param>
+	 <param name="minLength">2</param>
+	 <param name="maxLength">2</param>
+	  <param name="trim">true</param>
+	<message>Ultimate Party Debtor Residence Length should be between minimum ${minLength} and maximum ${maxLength} </message>
+	</field-validator>
+	</field>
+	
+</validators>

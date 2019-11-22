@@ -1,0 +1,96 @@
+package com.logica.ngph.serviceImpl;
+
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import com.logica.ngph.common.NGPHException;
+import com.logica.ngph.dao.SodEodTaskDao;
+import com.logica.ngph.dtos.SodEodTaskTDto;
+import com.logica.ngph.service.SodEodTaskService;
+
+public class SodEodTaskServiceImpl implements SodEodTaskService{
+	static Logger logger = Logger.getLogger(SodEodTaskServiceImpl.class);
+	SodEodTaskDao sodEodTaskDao;
+	public SodEodTaskDao getSodEodTaskDao() {
+		return sodEodTaskDao;
+	}
+	public void setSodEodTaskDao(SodEodTaskDao sodEodTaskDao) {
+		this.sodEodTaskDao = sodEodTaskDao;
+	}
+	
+	public Map<String,Object> getLocalBranch(String userId) throws SQLException{
+		return sodEodTaskDao.getLocalBranch(userId);
+	}
+	/*
+	public void saveSodEodT(SodEodTaskTDto sodEodDto) {
+		sodEodTaskDao.saveSodEodT(sodEodDto);
+		
+	}*/
+	
+	public void setNextBusinessDay(SodEodTaskTDto sodEodDto) {
+		sodEodTaskDao.setNextBusinessDate(sodEodDto);
+		
+	}
+	
+	public void releaseWarehouse() {
+		
+		
+	}
+	
+	public void validatePaymentNonfinalityStatus(String branchCode,SodEodTaskTDto sodEodDto) throws NGPHException {
+		sodEodTaskDao.validatePaymentNonfinalityStatus(branchCode,sodEodDto);
+		
+	}
+	
+	public void moveFinalStatusToHistoryTable(String branchCode,SodEodTaskTDto sodEodDto) {
+		sodEodTaskDao.moveFinalStatusToHistoryTable(branchCode,sodEodDto);
+		
+	}
+	
+	public void openCloseInboundOutboundFeeds(SodEodTaskTDto sodEodDto,int status) {
+		sodEodTaskDao.openCloseInboundOutboundFeeds(sodEodDto,status);
+		
+	}
+	
+	public void deleteHistoryDataBeyond(String branchCode,SodEodTaskTDto sodEodDto) {
+		sodEodTaskDao.deleteHistoryDataBeyond(branchCode,sodEodDto);
+		
+	}
+	
+	public void updateSodEodT(String errorMessage, String taskId) {
+		sodEodTaskDao.updateSodEodT(errorMessage, taskId);
+		
+	}
+	
+	public void updateSodEodTComp(String taskId) {
+		sodEodTaskDao.updateSodEodTComp(taskId);
+		
+	}
+	
+	public void updateBusinessDayM(String branchCode,String businessDayStatus) {
+		sodEodTaskDao.updateBusinessDayM(branchCode, businessDayStatus);
+		
+	}
+	
+	public List<Integer> getSodEodStatus(List<String> taskIdList) {
+		return sodEodTaskDao.getSodEodStatus(taskIdList);
+		
+	}
+	public void updateTaLimits()throws Exception
+	{
+		sodEodTaskDao.updateTaLimits();
+	}
+	
+	public List<String> getbranches()throws Exception
+	{
+		return sodEodTaskDao.getbranches();
+	}
+	public Timestamp getCurBusDayforBranch(String branchCode)throws Exception
+	{
+		return sodEodTaskDao.getCurBusDayforBranch(branchCode);
+	}
+}

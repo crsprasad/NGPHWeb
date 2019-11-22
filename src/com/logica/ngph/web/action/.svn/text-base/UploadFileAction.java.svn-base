@@ -1,0 +1,1043 @@
+package com.logica.ngph.web.action;
+
+
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+
+import java.util.HashMap;
+
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.apache.struts2.interceptor.SessionAware;
+import org.apache.struts2.interceptor.validation.SkipValidation;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import com.logica.ngph.common.NGPHException;
+import com.logica.ngph.common.dtos.Addresses;
+import com.logica.ngph.common.dtos.Parties;
+import com.logica.ngph.dtos.FileUploadFieldDetail;
+import com.logica.ngph.dtos.IMPS_ReconsiletDto;
+
+import com.logica.ngph.service.FileUploadService;
+import com.logica.ngph.web.utils.ApplicationContextProvider;
+import com.opensymphony.xwork2.ActionSupport;
+
+
+public class UploadFileAction extends ActionSupport implements SessionAware{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6691675849110168301L;
+	static Logger logger = Logger.getLogger(UploadFileAction.class);
+	private File fileDataUpload;
+	private String fileDataUploadContentType;
+	public String getFileDataUploadContentType() {
+		return fileDataUploadContentType;
+	}
+	public void setFileDataUploadContentType(String fileDataUploadContentType) {
+		this.fileDataUploadContentType = fileDataUploadContentType;
+	}
+	public String getFileDataUploadFileName() {
+		return fileDataUploadFileName;
+	}
+	public void setFileDataUploadFileName(String fileDataUploadFileName) {
+		this.fileDataUploadFileName = fileDataUploadFileName;
+	}
+
+	private String fileDataUploadFileName;
+	
+	private String fileType;
+	private List<String> fileUploadDropDownList;
+	private Map<String, Object> session ;
+	
+	public String getFileType() {
+		return fileType;
+	}
+	public void setFileType(String fileType) {
+		this.fileType = fileType;
+	}
+	//private FileUploadService  fileUploadService;
+	/*public void setFileUploadService(FileUploadService fileUploadService) {
+		this.fileUploadService = fileUploadService;
+	}*/
+
+	Map<String, FileUploadFieldDetail> filedMap = new LinkedHashMap<String,FileUploadFieldDetail>();
+	Map<String,Integer> localIndexMap = new HashMap<String, Integer>();
+	List<Addresses> addressList = new ArrayList<Addresses>();
+	List<IMPS_ReconsiletDto> impsReconsiletList = new ArrayList<IMPS_ReconsiletDto>();
+	
+	List<Parties> partiesList = new ArrayList<Parties>();
+	public File getFileDataUpload() {
+		
+		return fileDataUpload;
+	}
+
+
+	public void setFileDataUpload(File fileDataUpload) {
+		this.fileDataUpload = fileDataUpload;
+	}
+
+
+	
+	@SkipValidation
+	public String loadUpload(){
+		String[] dropDownStrings = getText("label.fileuploaddropdown").split(":");
+		List<String> dropDownList = new ArrayList<String>();
+		for(String dropDown: dropDownStrings){
+			dropDownList.add(dropDown);
+		}
+		setFileUploadDropDownList(dropDownList);		
+		return "fileUpload";
+	}
+	/**
+	* This method is used to read the uploaded files and saving into DB
+	* @return String forward
+	 * @throws Exception 
+	*/
+	
+	public String performUpload(){
+		String returns = "fileSubmit";
+		
+		System.out.println("file Path:- "+fileDataUpload);
+		if(fileDataUpload!=null /*&& StringUtils.isNotBlank(fileType) && !fileType.isEmpty()*/){
+		
+		    // used to raed the file
+	    try {
+	    	StringBuilder sb = new StringBuilder();
+	    	FileInputStream fstream = new FileInputStream(fileDataUpload);
+			DataInputStream in = new DataInputStream(fstream);
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			String strLine;
+			while ((strLine = br.readLine()) != null)   
+			{
+				  sb.append(strLine +"\r\n");
+			}
+			in.close();
+			br.close();
+			System.out.println("FileDataUploadContentType : - "+getFileDataUploadContentType());
+			System.out.println("File Name : - "+getFileDataUploadFileName());
+		
+			//Process file Contents
+			
+				String status = doProcess(getFileDataUploadFileName(), sb.toString());
+				if(status!=null && !status.equalsIgnoreCase("F"))
+				return "fileSubmit";
+				else{
+					addFieldError("fileDataUpload", "Invalid File");
+					return "input";
+				}
+			
+			
+			} catch (FileNotFoundException fileNotFoundException) {
+		    	AuditServiceUtil.logFileNotFoundException(fileNotFoundException, logger);
+		    } catch (IOException ioException) {
+		    	AuditServiceUtil.logIOException(ioException, logger);
+		    }
+		    addActionError("Unable To Process The File .");
+		   returns = "input";
+		}
+		else{
+			
+			
+			addFieldError("fileData", "Nothing Found To Upload");
+			returns="input";
+			
+		}
+	    	 return "input";
+		
+		
+	}
+	
+	 public String doProcess(String fileName, String fileData)  
+	{
+		String Status = null;
+		 FileUploadService  fileUploadService= 	(FileUploadService) ApplicationContextProvider.getBean("fileUploadService");
+		 try
+		 {
+			 Status = fileUploadService.doProcess(fileData, fileName);
+		 }
+		 catch (Exception e)
+		 {
+			 logger.error("Exception Occured while file Upload", e);
+			 Status = "F";
+			
+		 }
+		 
+		 try
+		 {
+			 fileUploadService.logFileStatus(fileName.substring(0, fileName.indexOf(".")), Status);
+		 }
+		 catch (Exception e) {
+			 logger.error("Exception Occured while file Upload in FileUpload_T ", e);
+			 Status = "F";
+		}
+		 return Status;
+	}
+	
+	/**
+	* This method is used to set the second row from text file into Dto based on the local config 
+	* @param String[] columnArray
+	* @return void
+	*//*
+	private void setRowSecondTime(String[] columnArray) throws NGPHException{
+		 Parties parties = new Parties();
+		 Addresses addresses = new Addresses();
+		 IMPS_ReconsiletDto imps_Reconsilet = new IMPS_ReconsiletDto();
+		System.out.println("columnArray[0] :- "+columnArray[0]+" columnArray[0] :- "+columnArray[1] );
+		 try{
+			if(localIndexMap.containsKey(FileUploadUtil.PARTY_BIC)){
+				 //PARTY_BIC
+				   parties.setBankIdentifierCode("BCV8990");
+			}
+			   
+			   if( localIndexMap.get(FileUploadUtil.PARTY_CLRSYSMMBID_MMBID) != null){
+				 //PARTY_CLRSYSMMBID_MMBID
+					parties.setClearingSystemMemberId(columnArray[localIndexMap.get(FileUploadUtil.PARTY_CLRSYSMMBID_MMBID)]); 
+					
+			    }
+			   
+			   if( localIndexMap.get(FileUploadUtil.PARTY_CLRSYSMMBID_C_CD)!= null){
+				 //PARTY_CLRSYSMMBID_C_CD
+					parties.setClearingSystemMemberCode(columnArray[localIndexMap.get(FileUploadUtil.PARTY_CLRSYSMMBID_C_CD)]);
+					
+			    }
+			   if( localIndexMap.get(FileUploadUtil.PARTY_CLRSYSMMBID_C_PRTRY)!= null){
+				   //PARTY_CLRSYSMMBID_C_PRTRY
+					parties.setClearingSystemMemberExternalCode(columnArray[localIndexMap.get(FileUploadUtil.PARTY_CLRSYSMMBID_C_PRTRY)]);	
+					
+			    }
+			   if(localIndexMap.containsKey(FileUploadUtil.PARTY_ADDRREF)){
+				 //PARTY_ADDRREF
+					parties.setAddressRef("ADD5698");   
+			   }
+					
+			  
+			   if( localIndexMap.get(FileUploadUtil.PARTY_NM)!= null){
+				 //PARTY_NM
+					parties.setAgentName(columnArray[localIndexMap.get(FileUploadUtil.PARTY_NM)]);  
+				
+			    }
+			   if( localIndexMap.get(FileUploadUtil.PARTY_OTHR_ID)!= null){
+				   //PARTY_OTHR_ID
+					parties.setPartyIdendificationId(columnArray[localIndexMap.get(FileUploadUtil.PARTY_OTHR_ID)]); 
+					
+			    }
+			   if( localIndexMap.get(FileUploadUtil.PARTY_OTHR_SCHMENM_CD)!= null){
+				   //PARTY_OTHR_SCHMENM_CD
+					parties.setExternalPartyIdendificationId(columnArray[localIndexMap.get(FileUploadUtil.PARTY_OTHR_SCHMENM_CD)]);	
+					
+			    }
+			   if( localIndexMap.get(FileUploadUtil.PARTY_OTHR_SCHMENM_PRTRY)!= null){
+				   //PARTY_OTHR_SCHMENM_PRTRY
+					parties.setIdendificationSchme(columnArray[localIndexMap.get(FileUploadUtil.PARTY_OTHR_SCHMENM_PRTRY)]); 
+					
+			    }
+			   if( localIndexMap.get(FileUploadUtil.PARTY_OTHR_ISSR)!= null){
+				   //PARTY_OTHR_ISSR
+					parties.setPartyissr(columnArray[localIndexMap.get(FileUploadUtil.PARTY_OTHR_ISSR)]);  
+					
+			    }
+			   if( localIndexMap.get(FileUploadUtil.PARTY_BRANCH)!= null){
+				 //PARTY_BRANCH
+					parties.setBranch(Integer.parseInt(columnArray[localIndexMap.get(FileUploadUtil.PARTY_BRANCH)]));
+					
+			    }
+			   if( localIndexMap.get(FileUploadUtil.PARTY_PARENT_ID_IND)!= null){
+
+					//PARTY_PARENT_ID_IND
+					parties.setParentIdIndicator(columnArray[localIndexMap.get(FileUploadUtil.PARTY_PARENT_ID_IND)]); 
+					
+			    }
+			   if( localIndexMap.get(FileUploadUtil.PARTY_REFERENCE)!= null){
+				   //PARTY_REFERENCE
+					parties.setBankReference(columnArray[localIndexMap.get(FileUploadUtil.PARTY_REFERENCE)]);  
+					
+			   }
+			   
+			   if( localIndexMap.get(FileUploadUtil.PARTY_ISCORRESPONDENT)!= null){
+					 //PARTY_ISCORRESPONDENT
+						parties.setIsCorrespondent(Integer.parseInt(columnArray[localIndexMap.get(FileUploadUtil.PARTY_ISCORRESPONDENT)]));  
+						
+				    }
+			  
+			   
+			   // for addresses table
+			   if( localIndexMap.get(FileUploadUtil.ADDR_ADDRESS_FOR)!= null){
+				   addresses.setAddressFor(columnArray[localIndexMap.get(FileUploadUtil.ADDR_ADDRESS_FOR)].trim());
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.ADDR_EMAIL1)!= null){
+				   addresses.setEmailOne(columnArray[localIndexMap.get(FileUploadUtil.ADDR_EMAIL1)]);
+				   
+				    }
+			   if( localIndexMap.get(FileUploadUtil.ADDR_EMAIL2)!= null){
+				   addresses.setEmailTwo(columnArray[localIndexMap.get(FileUploadUtil.ADDR_EMAIL2)]);
+				  
+				    }
+			   
+			   if( localIndexMap.get(FileUploadUtil.ADDR_EMAIL3)!= null){
+				   addresses.setEmailThree(columnArray[localIndexMap.get(FileUploadUtil.ADDR_EMAIL3)]);
+				   
+				    }
+			   if( localIndexMap.get(FileUploadUtil.ADDR_FAX)!= null){
+				   addresses.setFax(columnArray[localIndexMap.get(FileUploadUtil.ADDR_FAX)]);
+				 
+				    }
+			   if( localIndexMap.get(FileUploadUtil.ADDR_OWN_BRANCH)!= null){
+				   addresses.setBranchReference(columnArray[localIndexMap.get(FileUploadUtil.ADDR_OWN_BRANCH)]);
+				  
+				    }
+				 
+				 if(  localIndexMap.containsKey(FileUploadUtil.ADDR_REF)){
+					  addresses.setAddressRef("ADD5698");
+				 }
+			
+				 
+			   if( localIndexMap.get(FileUploadUtil.ADDR_PHONE1)!= null){
+				   addresses.setPhoneOne(columnArray[localIndexMap.get(FileUploadUtil.ADDR_PHONE1)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.ADDR_PHONE2)!= null){
+				   addresses.setPhoneTwo(columnArray[localIndexMap.get(FileUploadUtil.ADDR_PHONE2)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.ADDR_PHONE3)!= null){
+				   addresses.setPhoneThree(columnArray[localIndexMap.get(FileUploadUtil.ADDR_PHONE3)]);
+				  
+				    }
+			  
+			   if( localIndexMap.get(FileUploadUtil.ADDR_PSTLADR_ADRTP)!= null){
+				   addresses.setPostalAddressNature(columnArray[localIndexMap.get(FileUploadUtil.ADDR_PSTLADR_ADRTP)].trim());
+				   
+				    }
+			   if( localIndexMap.get(FileUploadUtil.ADDR_PSTLADR_DEPT)!= null){
+				   addresses.setDepartment(columnArray[localIndexMap.get(FileUploadUtil.ADDR_PSTLADR_DEPT)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.ADDR_PSTLADR_SUBDEPT)!= null){
+				   addresses.setSubDepartment(columnArray[localIndexMap.get(FileUploadUtil.ADDR_PSTLADR_SUBDEPT)]);
+				   
+				    }
+			   if( localIndexMap.get(FileUploadUtil.ADDR_PSTLADR_STRTNM)!= null){
+				   addresses.setStreetName(columnArray[localIndexMap.get(FileUploadUtil.ADDR_PSTLADR_STRTNM)]);
+				   
+				    }
+			   if( localIndexMap.get(FileUploadUtil.ADDR_PSTLADR_BLDGNB)!= null){
+				   addresses.setBuildingDetail(columnArray[localIndexMap.get(FileUploadUtil.ADDR_PSTLADR_BLDGNB)]);
+				   
+				    }
+			   if( localIndexMap.get(FileUploadUtil.ADDR_PSTLADR_PSTCD)!= null){
+				   addresses.setPostalCode(columnArray[localIndexMap.get(FileUploadUtil.ADDR_PSTLADR_PSTCD)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.ADDR_PSTLADR_TWNNM)!= null){
+				   addresses.setTownName(columnArray[localIndexMap.get(FileUploadUtil.ADDR_PSTLADR_TWNNM)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.ADDR_PSTLADR_CTRYSUBDVSN)!= null){
+				   addresses.setCitySubDivision(columnArray[localIndexMap.get(FileUploadUtil.ADDR_PSTLADR_CTRYSUBDVSN)]);
+				   
+				    }
+			   if( localIndexMap.get(FileUploadUtil.ADDR_PSTLADR_CTRY)!= null){
+				   addresses.setCityName(columnArray[localIndexMap.get(FileUploadUtil.ADDR_PSTLADR_CTRY)]);
+				   
+				    }
+			   if( localIndexMap.get(FileUploadUtil.ADDR_PSTLADR_ADRLINE)!= null){
+				   addresses.setPostalServiceAddress(columnArray[localIndexMap.get(FileUploadUtil.ADDR_PSTLADR_ADRLINE)]);
+				  
+				    }
+			 //for IMPS_reconsilet
+			   if( localIndexMap.get(FileUploadUtil.IMPS_PARTICIPANT_ID)!= null){
+				   imps_Reconsilet.setImps_PARTICIPANT_ID(columnArray[localIndexMap.get(FileUploadUtil.IMPS_PARTICIPANT_ID)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_TRANSACTION_TYPE)!= null){
+				   imps_Reconsilet.setImps_TRANSACTION_TYPE(columnArray[localIndexMap.get(FileUploadUtil.IMPS_TRANSACTION_TYPE)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_FROM_ACCOUNT_TYPE)!= null){
+				   imps_Reconsilet.setImps_FROM_ACCOUNT_TYPE(columnArray[localIndexMap.get(FileUploadUtil.IMPS_FROM_ACCOUNT_TYPE)]);
+				  
+				    }
+			   
+			   if( localIndexMap.get(FileUploadUtil.IMPS_TO_ACCOUNT_TYPE)!= null){
+				   imps_Reconsilet.setImps_TO_ACCOUNT_TYPE(columnArray[localIndexMap.get(FileUploadUtil.IMPS_TO_ACCOUNT_TYPE)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_TRANSACTION_SERIAL)!= null){
+				   imps_Reconsilet.setImps_TRANSACTION_SERIAL(columnArray[localIndexMap.get(FileUploadUtil.IMPS_TRANSACTION_SERIAL)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_PAN_NUMBER)!= null){
+				   imps_Reconsilet.setImps_PAN_NUMBER(columnArray[localIndexMap.get(FileUploadUtil.IMPS_PAN_NUMBER)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_MEMBER_NUMBER)!= null){
+				   imps_Reconsilet.setImps_MEMBER_NUMBER(columnArray[localIndexMap.get(FileUploadUtil.IMPS_MEMBER_NUMBER)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_APPROVAL_NUMBER)!= null){
+				   imps_Reconsilet.setImps_APPROVAL_NUMBER(columnArray[localIndexMap.get(FileUploadUtil.IMPS_APPROVAL_NUMBER)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_SYSTEM_TRACE_AUDIT)!= null){
+				   imps_Reconsilet.setImps_SYSTEM_TRACE_AUDIT(columnArray[localIndexMap.get(FileUploadUtil.IMPS_SYSTEM_TRACE_AUDIT)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_TRANSACTION_DATE)!= null){
+				   imps_Reconsilet.setImps_TRANSACTION_DATE(columnArray[localIndexMap.get(FileUploadUtil.IMPS_TRANSACTION_DATE)]);
+				  
+				    }
+			  
+			   if( localIndexMap.get(FileUploadUtil.IMPS_TRANSACTION_TIME)!= null){
+				   imps_Reconsilet.setImps_TRANSACTION_TIME(columnArray[localIndexMap.get(FileUploadUtil.IMPS_TRANSACTION_TIME)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_MERCHANT_CATEGORY_CODE)!= null){
+				   imps_Reconsilet.setImps_MERCHANT_CATEGORY_CODE(columnArray[localIndexMap.get(FileUploadUtil.IMPS_MERCHANT_CATEGORY_CODE)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_SETTLEMENT_DATE)!= null){
+				   imps_Reconsilet.setImps_SETTLEMENT_DATE(columnArray[localIndexMap.get(FileUploadUtil.IMPS_SETTLEMENT_DATE)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_CARD_ACCEPTOR_ID)!= null){
+				   imps_Reconsilet.setImps_CARD_ACCEPTOR_ID(columnArray[localIndexMap.get(FileUploadUtil.IMPS_CARD_ACCEPTOR_ID)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_CARD_ACCEPTOR_TRMNL_ID)!= null){
+				   imps_Reconsilet.setImps_CARD_ACCEPTOR_TERMINAL_ID(columnArray[localIndexMap.get(FileUploadUtil.IMPS_CARD_ACCEPTOR_TRMNL_ID)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_CARD_ACCEPTOR_TRMNL_LOC)!= null){
+				   imps_Reconsilet.setImps_CARD_ACCEPTOR_TERMINAL_LOC(columnArray[localIndexMap.get(FileUploadUtil.IMPS_CARD_ACCEPTOR_TRMNL_LOC)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_AQUIRER_ID)!= null){
+				   imps_Reconsilet.setImps_AQUIRER_ID(columnArray[localIndexMap.get(FileUploadUtil.IMPS_AQUIRER_ID)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_NETWORK_ID)!= null){
+				   imps_Reconsilet.setImps_NETWORK_ID(columnArray[localIndexMap.get(FileUploadUtil.IMPS_NETWORK_ID)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_ACCOUNT_1_NUMBER)!= null){
+				   imps_Reconsilet.setImps_ACCOUNT_1_NUMBER(columnArray[localIndexMap.get(FileUploadUtil.IMPS_ACCOUNT_1_NUMBER)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_ACCOUNT_1_BRANCH_ID)!= null){
+				   imps_Reconsilet.setImps_ACCOUNT_1_BRANCH_ID(columnArray[localIndexMap.get(FileUploadUtil.IMPS_ACCOUNT_1_BRANCH_ID)]);
+				  
+				    }
+			   
+			   if( localIndexMap.get(FileUploadUtil.IMPS_ACCOUNT_2_NUMBER)!= null){
+				   imps_Reconsilet.setImps_ACCOUNT_2_NUMBER(columnArray[localIndexMap.get(FileUploadUtil.IMPS_ACCOUNT_2_NUMBER)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_ACCOUNT_2_BRANCH_ID)!= null){
+				   imps_Reconsilet.setImps_ACCOUNT_2_BRANCH_ID(columnArray[localIndexMap.get(FileUploadUtil.IMPS_ACCOUNT_2_BRANCH_ID)]);
+				   
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_TRANSACTION_CURRENCY)!= null){
+				   imps_Reconsilet.setImps_TRANSACTION_CURRENCY(columnArray[localIndexMap.get(FileUploadUtil.IMPS_TRANSACTION_CURRENCY)]);
+				   
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_TRANSACTION_AMOUNT)!= null){
+				   imps_Reconsilet.setImps_TRANSACTION_AMOUNT(columnArray[localIndexMap.get(FileUploadUtil.IMPS_TRANSACTION_AMOUNT)]);
+				   
+				    }
+			    if( localIndexMap.get(FileUploadUtil.IMPS_ACTUAL_TRANSACTION_AMT)!= null){
+				   imps_Reconsilet.setImps_ACTUAL_TRANSACTION_AMT(columnArray[localIndexMap.get(FileUploadUtil.IMPS_ACTUAL_TRANSACTION_AMT)]);
+				   
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_TRANSACTION_ACTIVITY_FEE)!= null){
+				   imps_Reconsilet.setImps_TRANSACTION_ACTIVITY_FEE(columnArray[localIndexMap.get(FileUploadUtil.IMPS_TRANSACTION_ACTIVITY_FEE)]);
+				   
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_ISSUER_1_STMNT_CUR)!= null){
+				   imps_Reconsilet.setImps_ISSUER_1_SETTLEMENT_CUR(columnArray[localIndexMap.get(FileUploadUtil.IMPS_ISSUER_1_STMNT_CUR)]);
+				   
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_ISSUER_1_STMNT_AMT)!= null){
+				   imps_Reconsilet.setImps_ISSUER_1_SETTLEMENT_AMOUNT(columnArray[localIndexMap.get(FileUploadUtil.IMPS_ISSUER_1_STMNT_AMT)]);
+				   
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_ISSUER_1_STMNT_FEE)!= null){
+				   imps_Reconsilet.setImps_ISSUER_1_SETTLEMENT_FEE(columnArray[localIndexMap.get(FileUploadUtil.IMPS_ISSUER_1_STMNT_FEE)]);
+				   
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_ISSUER_1_STL_PRCS_FEE)!= null){
+				   imps_Reconsilet.setImps_ISSUER_1_STL_PROCESSING_FEE(columnArray[localIndexMap.get(FileUploadUtil.IMPS_ISSUER_1_STL_PRCS_FEE)]);
+				   
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_CRDHLDR_1_BILL_CUR)!= null){
+				   imps_Reconsilet.setImps_CARDHOLDER_1_BILL_CURRENCY(columnArray[localIndexMap.get(FileUploadUtil.IMPS_CRDHLDR_1_BILL_CUR)]);
+				   
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_CRDHLDR_1_BIL_AMT)!= null){
+				   imps_Reconsilet.setImps_CARDHOLDER_1_BILLING_AMOUNT(columnArray[localIndexMap.get(FileUploadUtil.IMPS_CRDHLDR_1_BIL_AMT)]);
+				   
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_CRDHLDR_1_BIL_ACTV_FEE)!= null){
+				   imps_Reconsilet.setImps_CARDHOLDER_1_BILL_ACTV_FEE(columnArray[localIndexMap.get(FileUploadUtil.IMPS_CRDHLDR_1_BIL_ACTV_FEE)]);
+				   
+				    }
+			   //__________
+			   if( localIndexMap.get(FileUploadUtil.IMPS_CRDHLDR_1_BIL_PROC_FEE)!= null){
+				   imps_Reconsilet.setImps_CARDHOLDER_1_BILL_PROC_FEE(columnArray[localIndexMap.get(FileUploadUtil.IMPS_CRDHLDR_1_BIL_PROC_FEE)]);
+				   
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_CRDHLDR_1_BIL_SVC_FEE)!= null){
+				   imps_Reconsilet.setImps_CARDHOLDER_1_BILL_SVC_FEE(columnArray[localIndexMap.get(FileUploadUtil.IMPS_CRDHLDR_1_BIL_SVC_FEE)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_CRDHLDR_1_CONV_RATE)!= null){
+				   imps_Reconsilet.setImps_CRDHLDR_1_CONV_RATE(columnArray[localIndexMap.get(FileUploadUtil.IMPS_CRDHLDR_1_CONV_RATE)]);
+				  
+				    }
+			   if( localIndexMap.get(FileUploadUtil.IMPS_STLMNT_CRDHLDR_1_CONV_RATE)!= null){
+				   imps_Reconsilet.setImps_STLMNT_CRDHLDR_1_CONV_RATE(columnArray[localIndexMap.get(FileUploadUtil.IMPS_STLMNT_CRDHLDR_1_CONV_RATE)]);
+				  
+				    }
+			 
+			   
+			   
+			   addressList.add(addresses);
+			   partiesList.add(parties);
+			   impsReconsiletList.add(imps_Reconsilet);
+		 }catch(ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException){
+			 AuditServiceUtil.logArrayIndexOutOfBoundException(arrayIndexOutOfBoundsException, logger);
+		 }
+		 
+	}
+	*//**
+	* This method is used to set the data from text file into Dto based on the xml configutation 
+	* @param Map<String 
+	* @param FileUploadFieldDetail> configMap 
+	* @param String[] columnArray
+	* @return void
+	*//*
+	private void setDynamicArray(Map<String ,FileUploadFieldDetail> configMap ,String[] columnArray) throws NGPHException{
+		 Parties parties = new Parties();
+		 Addresses addresses = new Addresses();
+		 IMPS_ReconsiletDto imps_Reconsilet = new IMPS_ReconsiletDto();
+		 
+		try{
+			 for (Map.Entry<String ,FileUploadFieldDetail> entry : configMap.entrySet()) {
+				   
+				   
+				    FileUploadFieldDetail fieldFileUploadFieldDetail = entry.getValue();
+				    
+				    String columnName = fieldFileUploadFieldDetail.getColumnName();
+				   int fieldNumber =  fieldFileUploadFieldDetail.getFiledNumber();
+				   if( columnName.equals(FileUploadUtil.PARTY_BIC)){
+					 //PARTY_BIC
+					   parties.setBankIdentifierCode("BCV899");
+					   localIndexMap.put(FileUploadUtil.PARTY_BIC, fieldNumber);
+					 
+				    }
+				   if( columnName.equals(FileUploadUtil.PARTY_CLRSYSMMBID_MMBID)){
+					 //PARTY_CLRSYSMMBID_MMBID
+						parties.setClearingSystemMemberId(columnArray[fieldNumber]); 
+						localIndexMap.put(FileUploadUtil.PARTY_CLRSYSMMBID_MMBID, fieldNumber);
+				    }
+				   
+				   if( columnName.equals(FileUploadUtil.PARTY_CLRSYSMMBID_C_CD)){
+					 //PARTY_CLRSYSMMBID_C_CD
+						parties.setClearingSystemMemberCode(columnArray[fieldNumber]);
+						localIndexMap.put(FileUploadUtil.PARTY_CLRSYSMMBID_C_CD, fieldNumber);
+				    }
+				   if( columnName.equals(FileUploadUtil.PARTY_CLRSYSMMBID_C_PRTRY)){
+					   //PARTY_CLRSYSMMBID_C_PRTRY
+						parties.setClearingSystemMemberExternalCode(columnArray[fieldNumber]);	
+						localIndexMap.put(FileUploadUtil.PARTY_CLRSYSMMBID_C_PRTRY, fieldNumber);
+				    }
+				   if( columnName.equals(FileUploadUtil.PARTY_ADDRREF) 
+						   && fieldFileUploadFieldDetail.getTableName().equals(FileUploadUtil.PARTIES_TABLE_NAME)){
+					   //PARTY_ADDRREF
+						parties.setAddressRef("ADD5678"); 
+						localIndexMap.put(FileUploadUtil.PARTY_ADDRREF, fieldNumber);
+				    }
+				   if( columnName.equals(FileUploadUtil.PARTY_NM)){
+					 //PARTY_NM
+						parties.setAgentName(columnArray[fieldFileUploadFieldDetail.getFiledNumber()]);  
+						localIndexMap.put(FileUploadUtil.PARTY_NM, fieldNumber);
+				    }
+				   if( columnName.equals(FileUploadUtil.PARTY_OTHR_ID)){
+					   //PARTY_OTHR_ID
+						parties.setPartyIdendificationId(columnArray[fieldNumber]); 
+						localIndexMap.put(FileUploadUtil.PARTY_OTHR_ID, fieldNumber);
+				    }
+				   if( columnName.equals(FileUploadUtil.PARTY_OTHR_SCHMENM_CD)){
+					   //PARTY_OTHR_SCHMENM_CD
+						parties.setExternalPartyIdendificationId(columnArray[fieldNumber]);	
+						localIndexMap.put(FileUploadUtil.PARTY_OTHR_SCHMENM_CD, fieldNumber);
+				    }
+				   if( columnName.equals(FileUploadUtil.PARTY_OTHR_SCHMENM_PRTRY)){
+					   //PARTY_OTHR_SCHMENM_PRTRY
+						parties.setIdendificationSchme(columnArray[fieldNumber]); 
+						localIndexMap.put(FileUploadUtil.PARTY_OTHR_SCHMENM_PRTRY, fieldNumber);
+				    }
+				   if( columnName.equals(FileUploadUtil.PARTY_OTHR_ISSR)){
+					   //PARTY_OTHR_ISSR
+						parties.setPartyissr(columnArray[fieldNumber]);  
+						localIndexMap.put(FileUploadUtil.PARTY_OTHR_ISSR, fieldNumber);
+				    }
+				   if( columnName.equals(FileUploadUtil.PARTY_BRANCH)){
+					 //PARTY_BRANCH
+						parties.setBranch(Integer.parseInt(columnArray[fieldNumber]));
+						localIndexMap.put(FileUploadUtil.PARTY_BRANCH, fieldNumber);
+				    }
+				   if( columnName.equals(FileUploadUtil.PARTY_PARENT_ID_IND)){
+
+						//PARTY_PARENT_ID_IND
+						parties.setParentIdIndicator(columnArray[fieldNumber]); 
+						localIndexMap.put(FileUploadUtil.PARTY_PARENT_ID_IND, fieldNumber);
+				    }
+				   if( columnName.equals(FileUploadUtil.PARTY_REFERENCE)){
+					   //PARTY_REFERENCE
+						parties.setBankReference(columnArray[fieldNumber]);  
+						localIndexMap.put(FileUploadUtil.PARTY_REFERENCE, fieldNumber);
+				   }
+				   
+				   if( columnName.equals(FileUploadUtil.PARTY_ISCORRESPONDENT)){
+						 //PARTY_ISCORRESPONDENT
+							parties.setIsCorrespondent(Integer.parseInt(columnArray[fieldNumber]));  
+							localIndexMap.put(FileUploadUtil.PARTY_ISCORRESPONDENT, fieldNumber);
+					    }
+				  
+				   
+				   // for addresses table
+				   if( columnName.equals(FileUploadUtil.ADDR_ADDRESS_FOR)){
+					   addresses.setAddressFor(columnArray[fieldNumber].trim());
+					   localIndexMap.put(FileUploadUtil.ADDR_ADDRESS_FOR, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.ADDR_EMAIL1)){
+					   addresses.setEmailOne(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.ADDR_EMAIL1, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.ADDR_EMAIL2)){
+					   addresses.setEmailTwo(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.ADDR_EMAIL2, fieldNumber);
+					    }
+				   
+				   if( columnName.equals(FileUploadUtil.ADDR_EMAIL3)){
+					   addresses.setEmailThree(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.ADDR_EMAIL3, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.ADDR_FAX)){
+					   addresses.setFax(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.ADDR_FAX, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.ADDR_OWN_BRANCH)){
+					   addresses.setBranchReference(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.ADDR_OWN_BRANCH, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.ADDR_REF)){
+					   addresses.setAddressRef("ADD567");
+					   localIndexMap.put(FileUploadUtil.ADDR_REF, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.ADDR_PHONE1)){
+					   addresses.setPhoneOne(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.ADDR_PHONE1, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.ADDR_PHONE2)){
+					   addresses.setPhoneTwo(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.ADDR_PHONE2, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.ADDR_PHONE3)){
+					   addresses.setPhoneThree(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.ADDR_PHONE3, fieldNumber);
+					    }
+				  
+				   if( columnName.equals(FileUploadUtil.ADDR_PSTLADR_ADRTP)){
+					   addresses.setPostalAddressNature(columnArray[fieldNumber].trim());
+					   localIndexMap.put(FileUploadUtil.ADDR_PSTLADR_ADRTP, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.ADDR_PSTLADR_DEPT)){
+					   addresses.setDepartment(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.ADDR_PSTLADR_DEPT, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.ADDR_PSTLADR_SUBDEPT)){
+					   addresses.setSubDepartment(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.ADDR_PSTLADR_SUBDEPT, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.ADDR_PSTLADR_STRTNM)){
+					   addresses.setStreetName(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.ADDR_PSTLADR_STRTNM, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.ADDR_PSTLADR_BLDGNB)){
+					   addresses.setBuildingDetail(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.ADDR_PSTLADR_BLDGNB, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.ADDR_PSTLADR_PSTCD)){
+					   addresses.setPostalCode(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.ADDR_PSTLADR_PSTCD, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.ADDR_PSTLADR_TWNNM)){
+					   addresses.setTownName(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.ADDR_PSTLADR_TWNNM, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.ADDR_PSTLADR_CTRYSUBDVSN)){
+					   addresses.setCitySubDivision(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.ADDR_PSTLADR_CTRYSUBDVSN, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.ADDR_PSTLADR_CTRY)){
+					   addresses.setCityName(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.ADDR_PSTLADR_CTRY, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.ADDR_PSTLADR_ADRLINE)){
+					   addresses.setPostalServiceAddress(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.ADDR_PSTLADR_ADRLINE, fieldNumber);
+					    }
+				  
+				   
+				   
+				   //for IMPS_reconsilet
+				   if( columnName.equals(FileUploadUtil.IMPS_PARTICIPANT_ID)){
+					   System.out.println("fieldNumber : - "+fieldNumber+"columnArray[fieldNumber] : - "+columnArray[fieldNumber]);
+					   imps_Reconsilet.setImps_PARTICIPANT_ID(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_PARTICIPANT_ID, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_TRANSACTION_TYPE)){
+					   imps_Reconsilet.setImps_TRANSACTION_TYPE(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_TRANSACTION_TYPE, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_FROM_ACCOUNT_TYPE)){
+					   imps_Reconsilet.setImps_FROM_ACCOUNT_TYPE(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_FROM_ACCOUNT_TYPE, fieldNumber);
+					    }
+				   
+				   if( columnName.equals(FileUploadUtil.IMPS_TO_ACCOUNT_TYPE)){
+					   imps_Reconsilet.setImps_TO_ACCOUNT_TYPE(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_TO_ACCOUNT_TYPE, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_TRANSACTION_SERIAL)){
+					   System.out.println("columnArray.length :- "+columnArray.length);
+					   imps_Reconsilet.setImps_TRANSACTION_SERIAL(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_TRANSACTION_SERIAL, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_PAN_NUMBER)){
+					   imps_Reconsilet.setImps_PAN_NUMBER(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_PAN_NUMBER, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_MEMBER_NUMBER)){
+					   imps_Reconsilet.setImps_MEMBER_NUMBER(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_MEMBER_NUMBER, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_APPROVAL_NUMBER)){
+					   imps_Reconsilet.setImps_APPROVAL_NUMBER(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_APPROVAL_NUMBER, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_SYSTEM_TRACE_AUDIT)){
+					   imps_Reconsilet.setImps_SYSTEM_TRACE_AUDIT(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_SYSTEM_TRACE_AUDIT, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_TRANSACTION_DATE)){
+					   imps_Reconsilet.setImps_TRANSACTION_DATE(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_TRANSACTION_DATE, fieldNumber);
+					    }
+				  
+				   if( columnName.equals(FileUploadUtil.IMPS_TRANSACTION_TIME)){
+					   imps_Reconsilet.setImps_TRANSACTION_TIME(columnArray[fieldNumber].trim());
+					   localIndexMap.put(FileUploadUtil.IMPS_TRANSACTION_TIME, fieldNumber);
+					    }
+				   
+				   if( columnName.equals(FileUploadUtil.IMPS_MERCHANT_CATEGORY_CODE)){
+					   imps_Reconsilet.setImps_MERCHANT_CATEGORY_CODE(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_MERCHANT_CATEGORY_CODE, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_SETTLEMENT_DATE)){
+					   imps_Reconsilet.setImps_SETTLEMENT_DATE(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_SETTLEMENT_DATE, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_CARD_ACCEPTOR_ID)){
+					   imps_Reconsilet.setImps_CARD_ACCEPTOR_ID(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_CARD_ACCEPTOR_ID, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_CARD_ACCEPTOR_TRMNL_ID)){
+					   imps_Reconsilet.setImps_CARD_ACCEPTOR_TERMINAL_ID(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_CARD_ACCEPTOR_TRMNL_ID, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_CARD_ACCEPTOR_TRMNL_LOC)){
+					   imps_Reconsilet.setImps_CARD_ACCEPTOR_TERMINAL_LOC(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_CARD_ACCEPTOR_TRMNL_LOC, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_AQUIRER_ID)){
+					   imps_Reconsilet.setImps_AQUIRER_ID(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_AQUIRER_ID, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_NETWORK_ID)){
+					   imps_Reconsilet.setImps_NETWORK_ID(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_NETWORK_ID, fieldNumber);
+					    }
+				     if( columnName.equals(FileUploadUtil.IMPS_ACCOUNT_1_NUMBER)){
+					   imps_Reconsilet.setImps_ACCOUNT_1_NUMBER(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_ACCOUNT_1_NUMBER, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_ACCOUNT_1_BRANCH_ID)){
+					   imps_Reconsilet.setImps_ACCOUNT_1_BRANCH_ID(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_ACCOUNT_1_BRANCH_ID, fieldNumber);
+					    }
+				    if( columnName.equals(FileUploadUtil.IMPS_ACCOUNT_2_NUMBER)){
+					   imps_Reconsilet.setImps_ACCOUNT_2_NUMBER(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_ACCOUNT_2_NUMBER, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_ACCOUNT_2_BRANCH_ID)){
+					   imps_Reconsilet.setImps_ACCOUNT_2_BRANCH_ID(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_ACCOUNT_2_BRANCH_ID, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_TRANSACTION_CURRENCY)){
+					   imps_Reconsilet.setImps_TRANSACTION_CURRENCY(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_TRANSACTION_CURRENCY, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_TRANSACTION_AMOUNT)){
+					   imps_Reconsilet.setImps_TRANSACTION_AMOUNT(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_TRANSACTION_AMOUNT, fieldNumber);
+					    }
+				    if( columnName.equals(FileUploadUtil.IMPS_ACTUAL_TRANSACTION_AMT)){
+					   imps_Reconsilet.setImps_ACTUAL_TRANSACTION_AMT(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_ACTUAL_TRANSACTION_AMT, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_TRANSACTION_ACTIVITY_FEE)){
+					   imps_Reconsilet.setImps_TRANSACTION_ACTIVITY_FEE(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_TRANSACTION_ACTIVITY_FEE, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_ISSUER_1_STMNT_CUR)){
+					   imps_Reconsilet.setImps_ISSUER_1_SETTLEMENT_CUR(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_ISSUER_1_STMNT_CUR, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_ISSUER_1_STMNT_AMT)){
+					   System.out.println("columnArray[fieldNumber] : - "+columnArray[fieldNumber] + "fieldNumber : - "+fieldNumber );
+					   imps_Reconsilet.setImps_ISSUER_1_SETTLEMENT_AMOUNT(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_ISSUER_1_STMNT_AMT, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_ISSUER_1_STMNT_FEE)){
+					   imps_Reconsilet.setImps_ISSUER_1_SETTLEMENT_FEE(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_ISSUER_1_STMNT_FEE, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_ISSUER_1_STL_PRCS_FEE)){
+					   imps_Reconsilet.setImps_ISSUER_1_STL_PROCESSING_FEE(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_ISSUER_1_STL_PRCS_FEE, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_CRDHLDR_1_BILL_CUR)){
+					   imps_Reconsilet.setImps_CARDHOLDER_1_BILL_CURRENCY(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_CRDHLDR_1_BILL_CUR, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_CRDHLDR_1_BIL_AMT)){
+					   imps_Reconsilet.setImps_CARDHOLDER_1_BILLING_AMOUNT(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_CRDHLDR_1_BIL_AMT, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_CRDHLDR_1_BIL_ACTV_FEE)){
+					   imps_Reconsilet.setImps_CARDHOLDER_1_BILL_ACTV_FEE(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_CRDHLDR_1_BIL_ACTV_FEE, fieldNumber);
+					    }
+				   //__________
+				   if( columnName.equals(FileUploadUtil.IMPS_CRDHLDR_1_BIL_PROC_FEE)){
+					   imps_Reconsilet.setImps_CARDHOLDER_1_BILL_PROC_FEE(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_CRDHLDR_1_BIL_PROC_FEE, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_CRDHLDR_1_BIL_SVC_FEE)){
+					   imps_Reconsilet.setImps_CARDHOLDER_1_BILL_SVC_FEE(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_CRDHLDR_1_BIL_SVC_FEE, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_CRDHLDR_1_CONV_RATE)){
+					   imps_Reconsilet.setImps_CRDHLDR_1_CONV_RATE(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_CRDHLDR_1_CONV_RATE, fieldNumber);
+					    }
+				   if( columnName.equals(FileUploadUtil.IMPS_STLMNT_CRDHLDR_1_CONV_RATE)){
+					   imps_Reconsilet.setImps_STLMNT_CRDHLDR_1_CONV_RATE(columnArray[fieldNumber]);
+					   localIndexMap.put(FileUploadUtil.IMPS_STLMNT_CRDHLDR_1_CONV_RATE, fieldNumber);
+					    }
+				 
+				   
+				}
+				
+				addressList.add(addresses);
+				partiesList.add(parties);
+				impsReconsiletList.add(imps_Reconsilet);
+		}catch (ArrayIndexOutOfBoundsException arrayIndexOutOfBoundsException) {
+			AuditServiceUtil.logArrayIndexOutOfBoundException(arrayIndexOutOfBoundsException, logger);
+		}
+	
+		
+	}
+	
+	
+	*//**
+	* This method is used to read the xml configuration file
+	* @return void
+	*//*
+	private void loadConfigurationFile(){
+	
+	
+		try {
+			String tableName ="";
+			if(getFileType().equals("REMITTER_IMPS")){
+				 tableName ="TA_IMPS_RECONSILET";
+	    	 }else if(getFileType().equals("BENEFICIER_IMPS")){
+	    		 tableName ="TA_IMPS_RECONSILET";
+	    	 }else if(getFileType().equals("PARTIES")) {
+	    		 tableName ="TA_PARTIES";
+	    	 }
+	    	 else if(getFileType().equals("Addresses")) {
+	    		 tableName ="TA_ADDRESSES";
+	    	 }
+			String filePath ="configFile/fileUploadConfig.xml";
+			Element tableElement = null;
+			File file = new File(filePath);
+			  DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+			  DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
+			  
+			  Document document = documentBuilder.parse(file);
+			  
+			  NodeList tablesList = document.getElementsByTagName("TABLE");
+			  for (int counter = 0; counter < tablesList.getLength(); counter++) {
+				  Node tableNode = tablesList.item(counter);
+				  NamedNodeMap  fileAttributesMap = 	tableNode.getAttributes();
+				  Attr fileAttr = (Attr)fileAttributesMap.item(0);  
+				  if(fileAttr.getName().trim().equals("tableName") && fileAttr.getValue().trim().equals(tableName)){
+					  tableElement =(Element) tableNode;
+					  break;
+				  }
+			  }
+			  
+			  NodeList formatList = tableElement.getElementsByTagName("FORMAT");
+			  Node formatNode = formatList.item(0);
+			  delimiterCheck =formatNode.getAttributes().getNamedItem("DELIM").getNodeValue();
+			  System.out.println("Delemeter is :- "+delimiterCheck);
+			  
+			  NodeList fieldsList = tableElement.getElementsByTagName("FIELDS");
+			  for (int fields = 0; fields < fieldsList.getLength(); fields++) {
+			 
+			 	
+			    Node fieldsNode = fieldsList.item(fields);
+			    
+			    Element fieldElement =(Element) fieldsNode;
+			    NodeList fieldNodeList =    fieldElement.getElementsByTagName("FIELD");
+			
+			 for (int field = 0; field < fieldNodeList.getLength(); field++){
+					FileUploadFieldDetail fieldDetail = new FileUploadFieldDetail();
+				 Node fieldNode = fieldNodeList.item(field);
+				
+			NamedNodeMap  fieldNodeMap = 	fieldNode.getAttributes();
+			
+			 for(int i = 0 ; i<fieldNodeMap.getLength() ; i++) {
+			        Attr fieldAttr = (Attr)fieldNodeMap.item(i);     
+			      
+			     if(fieldAttr.getName().equals("table")){
+			    	 fieldDetail.setTableName(fieldAttr.getValue().trim());
+			     }
+			     if(fieldAttr.getName().equals("column")){
+			    	 fieldDetail.setColumnName(fieldAttr.getValue().trim());
+			     }
+			     if(fieldAttr.getName().equals("check")){
+			    	 fieldDetail.setCheck(fieldAttr.getValue().trim());
+			     }
+			     if(fieldAttr.getName().equals("num")){
+			    	 fieldDetail.setFiledNumber(Integer.parseInt(fieldAttr.getValue().trim()));
+			     }
+			     if(fieldAttr.getName().equals("length")){
+			    	 fieldDetail.setFieldLength(Integer.parseInt(fieldAttr.getValue().trim()));
+			     }
+			 }
+			 filedMap.put(fieldNode.getTextContent().trim(), fieldDetail);
+			 }
+			  
+		  }
+			  
+			  NodeList externalFieldsList = tableElement.getElementsByTagName("EXTFIELDS");	  
+			  for (int extFields = 0; extFields < externalFieldsList.getLength(); extFields++) {
+				  Node externalFieldsNode = externalFieldsList.item(extFields); 
+				  Element externalFieldElement =(Element) externalFieldsNode;
+				 NodeList  externalFieldNodeList=  externalFieldElement.getElementsByTagName("FIELD");
+				  for (int extField = 0; extField < externalFieldNodeList.getLength(); extField++) {
+					  FileUploadFieldDetail extFieldDetail = new FileUploadFieldDetail();
+					  Node exNode=   externalFieldNodeList.item(extField);
+					
+					NamedNodeMap exNodeMap= exNode.getAttributes();
+					 for(int exNodeMapCount = 0 ; exNodeMapCount<exNodeMap.getLength() ; exNodeMapCount++) {
+					Attr exNodeMapAttribute = (Attr) exNodeMap.item(exNodeMapCount);
+					
+					if(exNodeMapAttribute.getName().equals("num")){
+						extFieldDetail.setFiledNumber(Integer.parseInt(exNodeMapAttribute.getValue().trim()));
+					}
+					if(exNodeMapAttribute.getName().equals("ALGORITHM")){
+						extFieldDetail.setAlgorithm(exNodeMapAttribute.getValue().trim());
+					}
+				
+					 }
+						Element exElement = (Element)exNode;
+						NodeList externalFieldTableList = 	exElement.getElementsByTagName("TABLE");
+						
+						 for (int exFieldTable = 0; exFieldTable < externalFieldTableList.getLength(); exFieldTable++) {
+						Node exTableNode = 	 externalFieldTableList.item(exFieldTable);
+					
+						NamedNodeMap namedNodeMap= exTableNode.getAttributes();
+						 for(int namedNodeMapCount = 0 ; namedNodeMapCount<namedNodeMap.getLength() ; namedNodeMapCount++) {
+						Attr namedNodeMapAttr= (Attr) namedNodeMap.item(namedNodeMapCount);
+						if(namedNodeMapAttr.getName().equals("column")){
+							extFieldDetail.setColumnName(namedNodeMapAttr.getValue().trim());
+						}
+						if(namedNodeMapAttr.getName().equals("name")){
+							extFieldDetail.setTableName(namedNodeMapAttr.getValue().trim());
+						}
+						 }
+						 
+						 }
+					filedMap.put(exNode.getTextContent().trim(), extFieldDetail);	
+				  }
+			  }
+
+		}catch(ParserConfigurationException parserConfigurationException) {
+		AuditServiceUtil.logParserCofigurationException(parserConfigurationException, logger);
+		}catch(SAXException saxException) {
+			AuditServiceUtil.logSaxException(saxException, logger);
+		}catch(IOException ioException) {
+			AuditServiceUtil.logIOException(ioException, logger);
+		}
+	 
+
+	}
+*/	
+	public List<String> getFileUploadDropDownList() {
+		return fileUploadDropDownList;
+	}
+	public void setFileUploadDropDownList(List<String> fileUploadDropDownList) {
+		this.fileUploadDropDownList = fileUploadDropDownList;
+		this.session.put("fileUploadDropDownList", fileUploadDropDownList);
+	}
+	public Map<String, Object> getSession() {
+		return session;
+	}
+	public void setSession(Map<String, Object> session) {
+		this.session = session;
+	}
+	
+	
+
+/*public void validate()
+{
+}*/
+	
+}

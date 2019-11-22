@@ -1,0 +1,88 @@
+package com.logica.ngph.service;
+
+import java.sql.Date;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+
+import com.logica.ngph.Entity.DiscrepanciesReport;
+import com.logica.ngph.Entity.RRNDiscrepancy;
+import com.logica.ngph.common.ConstantUtil;
+import com.logica.ngph.common.NGPHException;
+import com.logica.ngph.dao.EnquiryDao;
+
+public class EnquiryService {
+	static Logger logger = Logger.getLogger(SearchService.class);
+	EnquiryDao enquiryDao;
+	
+	
+	
+	public EnquiryDao getEnquiryDao() {
+		return enquiryDao;
+	}
+
+
+
+	public void setEnquiryDao(EnquiryDao enquiryDao) {
+		this.enquiryDao = enquiryDao;
+	}
+
+
+
+	public List<String> getEnquiryList(String dropDownName)throws NGPHException{
+		List<String> dropDwnList = new ArrayList<String>();
+		
+		try{
+			if(ConstantUtil.ENQUIRY_MSG_TYPE.equals(dropDownName)){
+				dropDwnList =  enquiryDao.getEnquiryMessageTypes();
+				System.out.println("calling msg type");
+				
+			}
+			if(ConstantUtil.EnquirySubMsgType.equals(dropDownName)){
+				dropDwnList =  enquiryDao.getEnquirySubMessageTypes();
+				
+			}
+			if(ConstantUtil.EnquiryChannel.equals(dropDownName)){
+				dropDwnList =  enquiryDao.getEnquiryChannel();
+				
+			}
+			if(ConstantUtil.ENQUIRY_CURRENCY.equals(dropDownName)){
+				dropDwnList =  enquiryDao.getEnquiryCurrency();
+				
+			}
+			
+			
+		}catch(SQLException sqlException){
+			logger.debug(sqlException);
+			throw new NGPHException(ConstantUtil.DATA_ACCESS_PROBLEM);
+		}
+		
+		System.out.println("list size in service Enquiry ANd this is ENQUIRY SERVICE"+dropDwnList.size());
+		return dropDwnList;
+	}
+	
+	
+	public String getRawMessage(String msgRef) throws SQLException
+	{
+		return enquiryDao.getRawMessage(msgRef);
+	}
+	
+	public DiscrepanciesReport getDiscrepanciesReport(String date)
+	{
+		return enquiryDao.getDiscrepanciesReport(date);
+	}
+	
+	public List<RRNDiscrepancy> getRRPOutwardList(String direction,String date)
+	{
+		return enquiryDao.getRRPOutwardList(direction,date);
+	}
+
+	public String generateDiscrepanciesReport(Date date)
+	{
+		return enquiryDao.generateDiscrepanciesReport(date);
+	}
+	
+
+}

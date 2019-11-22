@@ -1,0 +1,254 @@
+package com.logica.ngph.web.action;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.Validate;
+import org.apache.log4j.Logger;
+import org.apache.struts2.interceptor.SessionAware;
+import org.apache.struts2.interceptor.validation.SkipValidation;
+import org.springframework.context.ApplicationContextException;
+
+import com.logica.ngph.dtos.MaintainBranchesDTO;
+import com.logica.ngph.dtos.PartyDTO;
+import com.logica.ngph.service.LetterOfCreditService;
+import com.logica.ngph.service.PendingAuthorizationService;
+import com.logica.ngph.web.utils.ApplicationContextProvider;
+import com.logica.ngph.web.utils.SerializeManager;
+import com.logica.ngph.web.utils.WebConstants;
+import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.ModelDriven;
+
+public class IFSCMaintainAction extends ActionSupport implements ModelDriven<PartyDTO>,SessionAware {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private static Logger logger = Logger.getLogger(LcOpenAction.class);
+	private Map<String, Object> session;
+	private List searchList;
+	private String code;
+	private String txnRef;
+	private String saveAction;
+	private String checkForSubmit;
+	private boolean validUserToApprove;
+	private String hiddenTxnRef;
+	public String getHiddenTxnRef() {
+		return hiddenTxnRef;
+	}
+	public void setHiddenTxnRef(String hiddenTxnRef) {
+		this.hiddenTxnRef = hiddenTxnRef;
+	}
+	public String getTxnRef() {
+		return txnRef;
+	}
+	public void setTxnRef(String txnRef) {
+		this.txnRef = txnRef;
+	}
+	public String getSaveAction() {
+		return saveAction;
+	}
+	public void setSaveAction(String saveAction) {
+		this.saveAction = saveAction;
+	}
+	public String getCheckForSubmit() {
+		return checkForSubmit;
+	}
+	public void setCheckForSubmit(String checkForSubmit) {
+		this.checkForSubmit = checkForSubmit;
+	}
+	public boolean isValidUserToApprove() {
+		return validUserToApprove;
+	}
+	public void setValidUserToApprove(boolean validUserToApprove) {
+		this.validUserToApprove = validUserToApprove;
+	}
+
+	PartyDTO partyDTO = new PartyDTO(); 
+	public PartyDTO getModel() {
+		
+		return partyDTO;
+	}
+	public List getSearchList() {
+		return searchList;
+	}
+	public void setSearchList(List searchList) {
+		this.searchList = searchList;
+		
+	}
+	public Map<String, Object> getSession() {
+		return session;
+	}
+
+	public void setSession(Map<String, Object> session) {
+		this.session = session;
+	}
+	
+	public String getCode() {
+		return code;
+	}
+	public void setCode(String code) {
+		this.code = code;
+	}
+	@SkipValidation
+	public String getIFSCMaintain()
+	{
+		partyDTO.setActionPerform("ADD");
+		return SUCCESS;
+	}
+	@SkipValidation
+	public String searchIFSCAction()
+	{
+		try{
+		LetterOfCreditService letterOfCreditService =  (LetterOfCreditService)  ApplicationContextProvider.getBean("letterOfCreditService");
+		setSearchList(letterOfCreditService.getListOfIFSC(getCode()));
+		return SUCCESS;
+		
+	}catch (NullPointerException  nullPointerException) {
+		AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+	}
+	catch (ApplicationContextException applicationContextException) {
+		AuditServiceUtil.logApplicationException(applicationContextException, logger);
+	}
+	catch (ClassCastException classCastException) {
+		AuditServiceUtil.logClassCastException(classCastException, logger)	;
+	}
+	catch (Exception exception) {
+		AuditServiceUtil.logException(exception,logger);
+	}
+
+	addActionError("Unable to perform the operation. Please try again");
+	return "input";
+	}
+	
+	public String sendForApproval()
+	{
+		try{
+			String txnKey="";
+			PendingAuthorizationService pendingAuthorizationService = (PendingAuthorizationService)ApplicationContextProvider.getBean("pendingAuthorizationService");
+			String userId = (String)session.get(WebConstants.CONSTANT_USER_NAME);
+			if(StringUtils.isNotBlank(partyDTO.getIfsc()) && StringUtils.isNotBlank(partyDTO.getIfsc()) && StringUtils.isNotBlank(partyDTO.getPartyName()) && StringUtils.isNotBlank(partyDTO.getPartyName())){
+			txnKey = pendingAuthorizationService.getTranRef(new SerializeManager<PartyDTO>().serializeObject((String)session.get(WebConstants.CONSTANT_USER_NAME), partyDTO),"Maintain IFSC",userId);
+			return SUCCESS;
+			}
+			else{
+				addFieldError("ifsc", "IFSC and Party Name is Required");
+				return INPUT;
+			}
+			
+		
+	}catch (NullPointerException  nullPointerException) {
+		AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+	}
+	catch (ApplicationContextException applicationContextException) {
+		AuditServiceUtil.logApplicationException(applicationContextException, logger);
+	}
+	catch (ClassCastException classCastException) {
+		AuditServiceUtil.logClassCastException(classCastException, logger)	;
+	}
+	catch (Exception exception) {
+		AuditServiceUtil.logException(exception,logger);
+	}
+
+	addActionError("Unable to perform the operation. Please try again");
+	return "input";
+	}
+	@SkipValidation
+	public String getIFSCDateSentForApproval()
+	{
+		try{
+			PendingAuthorizationService pendingAuthorizationService = (PendingAuthorizationService)ApplicationContextProvider.getBean("pendingAuthorizationService");
+		
+			setCheckForSubmit("Display_Approve_Reject");
+			String userId = pendingAuthorizationService.getCreatedUser(getTxnRef());
+			String userRole = pendingAuthorizationService.getUserType((String)session.get(WebConstants.CONSTANT_USER_NAME));
+			if((((String)session.get(WebConstants.CONSTANT_USER_NAME)).equals(userId) || userRole.equals("T"))){
+				setValidUserToApprove(false);
+			} else {
+				setValidUserToApprove(true);
+			}
+			String tempScreenString =pendingAuthorizationService.getScreenReturn(getTxnRef());
+			PartyDTO temp= (PartyDTO) new SerializeManager<PartyDTO>().getSerializedObject(tempScreenString);
+			partyDTO.setActionPerform(temp.getActionPerform());
+			partyDTO.setIfsc(temp.getIfsc());
+			partyDTO.setPartyName(temp.getPartyName());
+			partyDTO.setPartyAddress(temp.getPartyAddress());
+			partyDTO.setPartyCode(temp.getPartyCode());
+			partyDTO.setPartyBankName(temp.getPartyBankName());
+			setHiddenTxnRef(getTxnRef());
+			return SUCCESS;
+		}catch (NullPointerException  nullPointerException) {
+			AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+		}
+		catch (ApplicationContextException applicationContextException) {
+			AuditServiceUtil.logApplicationException(applicationContextException, logger);
+		}
+		catch (ClassCastException classCastException) {
+			AuditServiceUtil.logClassCastException(classCastException, logger)	;
+		}
+		catch (Exception exception) {
+			AuditServiceUtil.logException(exception,logger);
+		}
+
+		addActionError("Unable to perform the operation. Please try again");
+		return "input";
+		}
+	public String getIFSCApproval()
+	{
+		try{
+			PendingAuthorizationService pendingAuthorizationService = (PendingAuthorizationService)ApplicationContextProvider.getBean("pendingAuthorizationService");
+			
+			if(getSaveAction().equals("Reject"))
+			{
+				pendingAuthorizationService.changeStatus(getSaveAction(), getHiddenTxnRef());
+				return "rejected";
+			}
+			else
+			{
+				LetterOfCreditService letterOfCreditService =  (LetterOfCreditService)  ApplicationContextProvider.getBean("letterOfCreditService");
+				letterOfCreditService.saveIFSC(partyDTO);
+				pendingAuthorizationService.changeStatus(getSaveAction(), getHiddenTxnRef());
+				return SUCCESS;
+			}
+			
+				
+		}catch (NullPointerException  nullPointerException) {
+			AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+		}
+		catch (ApplicationContextException applicationContextException) {
+			AuditServiceUtil.logApplicationException(applicationContextException, logger);
+		}
+		catch (ClassCastException classCastException) {
+			AuditServiceUtil.logClassCastException(classCastException, logger)	;
+		}
+		catch (Exception exception) {
+			AuditServiceUtil.logException(exception,logger);
+		}
+
+		addActionError("Unable to perform the operation. Please try again");
+		return "input";
+	}
+	public void validate()
+{
+	LetterOfCreditService letterOfCreditService =  (LetterOfCreditService)  ApplicationContextProvider.getBean("letterOfCreditService");
+	boolean ifscCheck = letterOfCreditService.checkPartyIFSC(partyDTO.getIfsc());
+	
+	if(partyDTO.getActionPerform().equals("ADD"))
+	{
+		if(ifscCheck==false)
+		{
+			addFieldError("ifsc", "IFSC Allready Exist");
+		}
+		
+	}
+	else if(partyDTO.getActionPerform().equals("DELETE"))
+	{
+		if(ifscCheck==true)
+		{
+			addFieldError("ifsc", "IFSC Is Not Available");
+		}
+	}
+}
+}

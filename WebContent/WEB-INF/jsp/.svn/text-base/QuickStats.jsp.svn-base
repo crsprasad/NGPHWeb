@@ -1,0 +1,364 @@
+<%@page language="java"
+	import="java.util.*,java.io.*,com.logica.ngph.web.action.*"
+	contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@page import="com.opensymphony.xwork2.ActionContext"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+
+
+<%@taglib uri="/struts-tags" prefix="s"%>
+<%@ taglib prefix="sx" uri="/struts-dojo-tags"%>
+
+<html>
+
+<head>
+
+<s:head />
+
+<meta http-equiv="refresh" content="30" />
+<script type="text/javascript">
+	function ShowHide(divId) {
+		for ( var i = 1; i < 4; i++) {
+			if (divId == 'part' + i) {
+				if (document.getElementById(divId).style.visibility == 'hidden') {
+					document.getElementById(divId).style.visibility = 'visible';
+				} else {
+					document.getElementById(divId).style.visibility = 'hidden';
+				}
+
+			} else {
+				document.getElementById('part' + (i)).style.visibility = 'hidden';
+
+			}
+		}
+
+	}
+
+	function callDisableALlDiv() {
+		alert("hello");
+
+		document.getElementById("part1").disabled = document
+				.getElementById("part1").style.visibility = 'hidden';
+		document.getElementById('part2').style.display = 'hidden';
+		document.getElementById('part3').style.display = 'hidden';
+		document.getElementById('part4').style.display = 'hidden';
+		document.getElementById('part5').style.display = 'hidden';
+		document.getElementById('part6').style.display = 'hidden';
+		document.getElementById('part7').style.display = 'hidden';
+		document.getElementById('part8').style.display = 'hidden';
+		document.getElementById('part9').style.display = 'hidden';
+	}
+
+	function toggleAlert(idvalue) {
+		var alertDiv = document.getElementById(idvalue);
+		alertDiv.style.display = alertDiv.style.display == "block" ? "none"
+				: "block";
+		toggleDisabled(document.getElementById(idvalue));
+	}
+
+	function toggleDisabled(el) {
+		try {
+			el.disabled = el.style.visibility ? 'hidden' : 'show';
+		} catch (E) {
+		}
+	}
+</script>
+<div id="contentPane">
+<div id="contentPaneTop"></div>
+<div id="contentPaneFluid">
+<div id="contentPaneInternal"><span class="crumbs"><a
+	href="#">System</a>&nbsp;>&nbsp;Dashboard</span></div>
+<div id="content">
+<h1>Dashboard</h1>
+<s:url id="getStatsValuesquickStatsAction" var="dashBoardUrl" /> <s:form
+	name="quickStats" action="quickStatsAction" id="form" method="post" scroll="no">
+	<!-- <input type="button" value="Messages" onclick="ShowHide('part1')" />
+	<input type="button" value="Positions" onclick="ShowHide('part2')" />
+	<input type="button" value="Variations" onclick="ShowHide('part3')" />
+	<input type="button" value="System" onclick="ShowHide('part4')" />
+	<input type="button" value="pie chart" onclick="ShowHide('part5')" />
+	<input type="button" value="pie chart" onclick="ShowHide('part6')" />
+	<input type="button" value="pie chart" onclick="ShowHide('part7')" />
+	<input type="button" value="pie chart" onclick="ShowHide('part8')" />
+	<input type="button" value="pie chart" onclick="ShowHide('part9')" /> -->
+	<div id="info">
+	<div id="tabHolder">
+	<ul class="tabs">
+		<li><a href="<s:url action="getStatsValuesquickStatsAction"/>" ><b class="p1"></b><b
+			class="p2"></b><b class="p3"></b> <em>Messages</em> <b class="p3"></b><b
+			class="p5"></b><b class="p6"></b><b class="p7"></b><b class="p8"></b><b
+			class="p9"></b><b class="p10"></b><b class="p11"></b><b class="p12"></b><b
+			class="p13"></b><b class="p14"></b><b class="p15"></b><b class="p16"></b><b
+			class="p17"></b><b class="p18"></b><b class="p19"></b><b class="p20"></b><b
+			class="p21"></b><b class="p22"></b><b class="p23"></b><b class="p24"></b><b
+			class="p25"></b><b class="p26"></b> </a></li><!--
+		<li><a href="<s:url action="quickStatsActionPosition"/>" ></b><a href="#"><b class="p2"></b><b
+			class="p3"></b> <em>Positions<b class="shdw"></b></em> <b class="p3"></b><b
+			class="p5"></b><b class="p6"></b><b class="p7"></b><b class="p8"></b><b
+			class="p9"></b><b class="p10"></b><b class="p11"></b><b class="p12"></b><b
+			class="p13"></b><b class="p14"></b><b class="p15"></b><b class="p16"></b><b
+			class="p17"></b><b class="p18"></b><b class="p19"></b><b class="p20"></b><b
+			class="p21"></b><b class="p22"></b><b class="p23"></b><b class="p24"></b><b
+			class="p25"></b><b class="p26"></b> </a></li>
+		<li><a href="<s:url action="quickStatsActionVariation"/>" ></b><a href="#"><b class="p2"></b><b
+			class="p3"></b> <em>Variation<b class="shdw"></b></em> <b class="p3"></b><b
+			class="p5"></b><b class="p6"></b><b class="p7"></b><b class="p8"></b><b
+			class="p9"></b><b class="p10"></b><b class="p11"></b><b class="p12"></b><b
+			class="p13"></b><b class="p14"></b><b class="p15"></b><b class="p16"></b><b
+			class="p17"></b><b class="p18"></b><b class="p19"></b><b class="p20"></b><b
+			class="p21"></b><b class="p22"></b><b class="p23"></b><b class="p24"></b><b
+			class="p25"></b><b class="p26"></b> </a></li>
+		--><li><a href="<s:url action="quickStatsActionSystem"/>" ><b class="p1"></b><b
+			class="p2"></b><b class="p3"></b> <em>System<b class="shdw"></b></em>
+		<b class="p3"></b><b class="p5"></b><b class="p6"></b><b class="p7"></b><b
+			class="p8"></b><b class="p9"></b><b class="p10"></b><b class="p11"></b><b
+			class="p12"></b><b class="p13"></b><b class="p14"></b><b class="p15"></b><b
+			class="p16"></b><b class="p17"></b><b class="p18"></b><b class="p19"></b><b
+			class="p20"></b><b class="p21"></b><b class="p22"></b><b class="p23"></b><b
+			class="p24"></b><b class="p25"></b><b class="p26"></b> </a></li>
+	</ul>
+	<div id="chartDisplay">
+	<s:if test="%{displayNextScreen=='Message'}">
+	<div id="part1" style="padding: 4px; position: absolute;">
+ 
+	<table width="80%" height="40%" border="0" cellpadding="0" cellspacing="2" bgcolor="#D6D6D6">
+		<tr>
+			<td colspan="2">
+			<table width="100%" height="40%" border="0" cellpadding="0" cellspacing="0" class="greyBg">
+				<tr>
+					<td class="text"><jsp:include
+						page="../jsp/FusionChartsHTMLRenderer.jsp">
+
+						<jsp:param name="chartSWF" value="FusionCharts/Pie3D.swf" />
+						<jsp:param name="strURL" value="" />
+						<jsp:param name="strXML" value="<%=QuickStatsAction.InBoundChannelCounts%>" />
+						<jsp:param name="chartId" value="Sales" />
+						<jsp:param name="chartWidth" value="400" />
+						<jsp:param name="chartHeight" value="170" />
+						<jsp:param name="debugMode" value="false" />
+						<jsp:param name="registerWithJS" value="false" />
+
+					</jsp:include></td>
+					<td rowspan="2" class="text"><jsp:include
+						page="../jsp/FusionChartsHTMLRenderer.jsp" flush="true">
+
+						<jsp:param name="chartSWF" value="FusionCharts/MSColumn3D.swf" />
+						<jsp:param name="strURL" value="" />
+						<jsp:param name="strXML"
+							value="<%=QuickStatsAction.INboundOutboundChart%>" />
+						<jsp:param name="chartId" value="Sales" />
+						<jsp:param name="chartWidth" value="350" />
+						<jsp:param name="chartHeight" value="400" />
+						<jsp:param name="debugMode" value="false" />
+						<jsp:param name="registerWithJS" value="false" />
+
+					</jsp:include></td>
+					
+				</tr>
+				<tr>
+					<td class="text"><jsp:include
+						page="../jsp/FusionChartsHTMLRenderer.jsp" flush="true">
+
+						<jsp:param name="chartSWF" value="FusionCharts/Pie3D.swf" />
+								<jsp:param name="strURL" value="" /> 
+								<jsp:param name="strXML" value="<%=QuickStatsAction.OutBoundChannelCounts%>" />
+						<jsp:param name="chartId" value="Sales" />
+						<jsp:param name="chartWidth" value="400" />
+						<jsp:param name="chartHeight" value="170" />
+						<jsp:param name="debugMode" value="false" />
+						<jsp:param name="registerWithJS" value="false" />
+
+					</jsp:include></td>
+				</tr>
+				
+			</table>
+			</td>
+		</tr>
+	</table>
+	</div></s:if>
+	<!-- Div  for Position tab  -->
+	 <s:if test="%{displayNextScreen=='Position'}">
+	<div id="part2" style="padding: 4px; position: absolute;">
+	<table width="80%" height="40%" border="0" cellpadding="0" cellspacing="2" bgcolor="#D6D6D6">
+		<tr>
+			<td colspan="2">
+			<table width="100%" height="40%" border="0" cellpadding="0" cellspacing="0" class="greyBg">
+				<tr>
+					<td class="text"><jsp:include
+						page="../jsp/FusionChartsHTMLRenderer.jsp">
+
+						<jsp:param name="chartSWF" value="FusionCharts/FCF_Column3D.swf" />
+						<jsp:param name="strURL" value="" />
+						<jsp:param name="strXML"
+							value="<%=QuickStatsAction.channelBarGraph%>" />
+						<jsp:param name="chartId" value="Sales" />
+						<jsp:param name="chartWidth" value="350" />
+						<jsp:param name="chartHeight" value="400" />
+						<jsp:param name="debugMode" value="false" />
+						<jsp:param name="registerWithJS" value="false" />
+
+					</jsp:include></td>
+					<td rowspan="2" class="text"><jsp:include
+						page="../jsp/FusionChartsHTMLRenderer.jsp" flush="true">
+
+						<jsp:param name="chartSWF" value="FusionCharts/StackedColumn3D.swf" />
+						<jsp:param name="strURL" value="" />
+						<jsp:param name="strXML"
+							value="<%=QuickStatsAction.StackChartForPary%>" />
+						<jsp:param name="chartId" value="Sales" />
+						<jsp:param name="chartWidth" value="350" />
+						<jsp:param name="chartHeight" value="400" />
+						<jsp:param name="debugMode" value="false" />
+						<jsp:param name="registerWithJS" value="false" />
+
+					</jsp:include></td>
+					
+				</tr>
+				
+				
+			</table>
+			</td>
+		</tr>
+	</table>
+
+	</div></s:if>
+	<!-- Div  for Position tab  -->
+	 <s:if test="%{displayNextScreen=='Variation'}">
+	<div id="part3" style="padding: 4px; position: absolute;">
+	<table width="80%" border="0" cellpadding="0" cellspacing="2" bgcolor="#D6D6D6">
+		<tr>
+			<td colspan="2">
+			<table width="100%" height="40%" border="0" cellpadding="0" cellspacing="0" class="greyBg">
+
+				<tr>
+					<td class="text"><jsp:include
+						page="../jsp/FusionChartsHTMLRenderer.jsp" flush="true">
+
+						<jsp:param name="chartSWF" value="FusionCharts/ZoomLine.swf" />
+						<jsp:param name="strURL" value="" />
+						<jsp:param name="strXML"
+							value="<%=QuickStatsAction.XYLineChart%>" />
+						<jsp:param name="chartId" value="Sales" />
+						<jsp:param name="chartWidth" value="430" />
+						<jsp:param name="chartHeight" value="300" />
+						<jsp:param name="debugMode" value="false" />
+						<jsp:param name="registerWithJS" value="false" />
+
+					</jsp:include></td>
+				</tr>
+				
+			</table>
+			</td>
+		</tr>
+	</table>
+
+	</div>
+		</s:if>
+		
+		<!-- Div For System -->
+			 <s:if test="%{displayNextScreen=='System'}">
+	<div id="part3" style="padding: 4px; position: absolute;">
+	
+			<table width="80%" height="40%" border="1" cellpadding="2" cellspacing="2" bordercolor="#D6D6D6">
+				<tr>
+				<td bgcolor="#DBDBDB" ><b>EI Code</b></td>
+				<td bgcolor="#DBDBDB"><b>EI Name</b></td>
+				<td bgcolor="#DBDBDB"><b>Status</b></td>
+				<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+				<td bgcolor="#DBDBDB"><b>EI Code</b></td>
+				<td bgcolor="#DBDBDB"><b>EI Name</b></td>
+				<td bgcolor="#DBDBDB"><b>Status</b></td>
+				</tr>
+				<tr>
+		<%
+		
+		int count=1;
+			for(int i =1;i<=QuickStatsAction.searchList.size();i++){
+				if(count%2!=0){	
+				if(i%2!=0){
+					%>
+				<tr>	
+			<td ><b><% out.print(QuickStatsAction.searchList.get(i-1).getEICode());%></b></td>
+			<td ><%out.print(QuickStatsAction.searchList.get(i-1).getEIName()); %> </td>		
+			<td >	<%if(QuickStatsAction.searchList.get(i-1).getEIStatus().equals("0")) {
+					
+					%>
+					<img src="images/Failure.bmp" height="20" width="20">
+					<%} else if(QuickStatsAction.searchList.get(i-1).getEIStatus().equals("1")) {%>
+					<img src="images/Intermediate.bmp" height="20" width="20">
+					<%}else { %>
+					<img src="images/success.bmp" height="20" width="20">
+					<%}%></td>
+					<td>&nbsp;&nbsp;&nbsp;</td>
+			<% 
+			}else
+			{
+				%>
+					
+			<td><b><% out.print(QuickStatsAction.searchList.get(i-1).getEICode());%></b></td>
+			<td><%out.print(QuickStatsAction.searchList.get(i-1).getEIName()); %> </td>		
+			<td>	<%if(QuickStatsAction.searchList.get(i-1).getEIStatus().equals("0")) {
+					
+					%>
+					<img src="images/Failure.bmp" height="20" width="20">
+					<%} else if(QuickStatsAction.searchList.get(i-1).getEIStatus().equals("1")) {%>
+					<img src="images/Intermediate.bmp" height="20" width="20">
+					<%}else { %>
+					<img src="images/success.bmp" height="20" width="20">
+					<%}%></td></tr>
+				
+			<% count++;
+			}
+				}else{if(i%2!=0){
+					%>
+				<tr>	
+			<td bgcolor="#DCF5F7"><% out.print(QuickStatsAction.searchList.get(i-1).getEICode());%></td>
+			<td bgcolor="#DCF5F7"><%out.print(QuickStatsAction.searchList.get(i-1).getEIName()); %> </td>		
+			<td bgcolor="#DCF5F7">	<%if(QuickStatsAction.searchList.get(i-1).getEIStatus().equals("0")) {
+					
+					%>
+					<img src="images/Failure.bmp" height="20" width="20">
+					<%} else if(QuickStatsAction.searchList.get(i-1).getEIStatus().equals("1")) {%>
+					<img src="images/Intermediate.bmp" height="20" width="20">
+					<%}else { %>
+					<img src="images/success.bmp" height="20" width="20">
+					<%}%></td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			<% 
+			}else
+			{
+				%>
+					
+			<td bgcolor="#DCF5F7"><% out.print(QuickStatsAction.searchList.get(i-1).getEICode());%></td>
+			<td bgcolor="#DCF5F7"><%out.print(QuickStatsAction.searchList.get(i-1).getEIName()); %> </td>		
+			<td bgcolor="#DCF5F7">	<%if(QuickStatsAction.searchList.get(i-1).getEIStatus().equals("0")) {
+					
+					%>
+					<img src="images/Failure.bmp" height="20" width="20">
+					<%} else if(QuickStatsAction.searchList.get(i-1).getEIStatus().equals("1")) {%>
+					<img src="images/Intermediate.bmp" height="20" width="20">
+					<%}else { %>
+					<img src="images/success.bmp" height="20" width="20">
+					<%}%></td></tr>
+				
+			<% count++;
+			}
+				}	
+			}%>
+				
+				
+			
+		</table>	
+
+	</div>
+		</s:if>
+		
+	
+	</div>
+</s:form></div>
+</div>
+</div>
+
+<s:hidden id="inboundcurrency" name="inboundcurrency"></s:hidden>
+<s:hidden id="outboundcurrency" name="outboundcurrency"></s:hidden>
+<s:hidden id="channeldata" name="channeldata"></s:hidden>

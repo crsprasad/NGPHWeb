@@ -1,0 +1,774 @@
+package com.logica.ngph.web.action;
+
+import java.sql.SQLException;
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+
+import org.apache.struts2.interceptor.SessionAware;
+import org.apache.struts2.interceptor.validation.SkipValidation;
+
+
+import com.logica.ngph.Entity.SecUsers;
+import com.logica.ngph.common.ConstantUtil;
+import com.logica.ngph.common.NGPHException;
+import com.logica.ngph.common.PaymentStatusEnum;
+import com.logica.ngph.common.dtos.EventAudit;
+import com.logica.ngph.common.dtos.EventMaster;
+
+
+import com.logica.ngph.dtos.PaymentMessage;
+import com.logica.ngph.service.AuditService;
+import com.logica.ngph.service.AuthUIService;
+import com.logica.ngph.service.EnquiryService;
+import com.logica.ngph.service.PaymentMessageService;
+import com.logica.ngph.web.utils.ApplicationContextProvider;
+import com.logica.ngph.web.utils.WebConstants;
+
+
+import com.opensymphony.xwork2.ActionContext;
+import com.opensymphony.xwork2.ActionSupport;
+
+
+
+
+public class PaymentMessageStatusAction extends ActionSupport implements SessionAware{
+	/**
+	 * 
+	 */
+	
+	
+	private static final long serialVersionUID = 195945823768662676L;
+
+	static Logger logger = Logger.getLogger(PaymentMessageStatusAction.class);
+	
+	Map<String, PaymentMessageService> paymentMessageMap = new HashMap<String, PaymentMessageService>();
+	
+
+	//NgphCanonical ngphCanonical = null;
+	
+	private Map<String, Object> session;
+	
+	public Map<String, Object> getSession() {
+		return session;
+	}
+
+	private String paymentStatus;
+	private String msgDirec;
+	private String[] paymentCheckBox;
+	private String checkBox;
+	private String payMessage;
+	private String repairedDeleteComments;
+	private String deleteComments;
+	private String transactionReference;
+	private String popUpAction;
+	private PaymentMessageService paymentMessageService;
+	private String userAction;
+	public static String direction;
+	private String paymentMessageType;
+
+	private String msgDirction;
+
+	public String getMsgDirction() {
+		return msgDirction;
+	}
+	public void setMsgDirction(String msgDirction) {
+		this.msgDirction = msgDirction;
+	}
+	public String getPaymentMessageType() {
+		return paymentMessageType;
+	}
+	public void setPaymentMessageType(String paymentMessageType) {
+		this.paymentMessageType = paymentMessageType;
+	}
+
+	private String status;
+	private String msgType;
+	private String subMsgType;
+	private String channel;
+	private List<String> channelDropDown = new ArrayList<String>();
+	private List<String> subMsgTypeDropDown = new ArrayList<String>();
+	private List<String> msgTypeDropDown = new ArrayList<String>();
+	
+	public String getStatus() {
+		return status;
+	}
+	public void setStatus(String status) {
+		this.status = status;
+		this.session.put("status", status);
+	}
+	public String getUserAction() {
+		return userAction;
+	}
+	public void setUserAction(String userAction) {
+		this.userAction = userAction;
+	}
+	//private AuditService	auditService;
+	private AuthUIService authUIService;
+	
+	public void setAuthUIService(AuthUIService authUIService) {
+		this.authUIService = authUIService;
+	}
+	
+	/*public void setAuditService(AuditService auditService) {
+		this.auditService = auditService;
+	}*/
+	/*public void setPaymentMessageService(PaymentMessageService paymentMessageService) {
+		this.paymentMessageService = paymentMessageService;
+	}*/
+	/**
+	 * @return the popUpAction
+	 */
+	public String getPopUpAction() {
+		return popUpAction;
+	}
+	/**
+	 * @param popUpAction the popUpAction to set
+	 */
+	public void setPopUpAction(String popUpAction) {
+		this.popUpAction = popUpAction;
+	}
+	public String getTransactionReference() {
+		return transactionReference;
+	}
+	public void setTransactionReference(String transactionReference) {
+		this.transactionReference = transactionReference;
+	}
+	public String getDeleteComments() {
+		return deleteComments;
+	}
+	public void setDeleteComments(String deleteComments) {
+		this.deleteComments = deleteComments;
+	}
+	public String getRepairedDeleteComments() {
+		return repairedDeleteComments;
+	}
+	public void setRepairedDeleteComments(String repairedDeleteComments) {
+		this.repairedDeleteComments = repairedDeleteComments;
+	}
+	public String getPayMessage() {
+		return payMessage;
+	}
+	public void setPayMessage(String payMessage) {
+		this.payMessage = payMessage;
+	}
+
+	private String msgIndex;
+	private String gridButtonName;
+	//PaymentMessageService paymentMessageService;
+	  private List<Boolean>	 select= new ArrayList<Boolean>(); 
+	public List<Boolean> getSelect() {
+		return select;
+	}
+	public void setSelect(List<Boolean> select) {
+		this.select = select;
+	}
+	public String getGridButtonName() {
+		return gridButtonName;
+	}
+	public void setGridButtonName(String gridButtonName) {
+		this.gridButtonName = gridButtonName;
+		this.session.put("gridButtonName", gridButtonName);
+	}
+	public String getMsgIndex() {
+		return msgIndex;
+	}
+	public void setMsgIndex(String msgIndex) {
+		this.msgIndex = msgIndex;
+	}
+
+
+	@SuppressWarnings("rawtypes")
+	private List checkBoxList;
+
+	
+	@SuppressWarnings("rawtypes")
+	public List getCheckBoxList() {
+		return checkBoxList;
+	}
+	@SuppressWarnings("rawtypes")
+	public void setCheckBoxList(List checkBoxList) {
+		this.checkBoxList = checkBoxList;
+	}
+	public String getCheckBox() {
+		return checkBox;
+	}
+	public void setCheckBox(String checkBox) {
+		this.checkBox = checkBox;
+	}
+	public String[] getPaymentCheckBox() {
+		return paymentCheckBox;
+	}
+	public void setPaymentCheckBox(String[] paymentCheckBox) {
+		
+		this.paymentCheckBox = paymentCheckBox;
+		this.session.put("paymentCheckBox", paymentCheckBox);
+	}
+
+
+	private List<PaymentMessage> paymentMessageList ;
+	
+	public List<PaymentMessage> getPaymentMessageList() {
+		return paymentMessageList;
+	}
+	public void setPaymentMessageList(List<PaymentMessage> paymentMessageList) {
+		this.paymentMessageList = paymentMessageList;
+		this.session.put("paymentMessageList", paymentMessageList);
+	}
+	public String getPaymentStatus() {
+		return paymentStatus;
+	}
+	public void setPaymentStatus(String paymentStatus) {
+		this.paymentStatus = paymentStatus;
+		//this.session.put("paymentStatus", paymentStatus);
+	}
+	/**
+	* This method is used to redirect the page from payment entry to payment message status
+	* String paymentMessage forwarding to  payment message status screen
+	*/
+	@SkipValidation
+	public String loadPaymentMessage(){
+	
+		return "performPaymentMessage";
+	}
+	// not using now
+	public String changePaymentStatus(){
+		
+		String actionValue=getUserAction();
+		String[] messageArray = getPayMessage().split(",");
+	 System.out.println(ActionContext.getContext().getSession());
+	 AuditService	auditService = (AuditService)ApplicationContextProvider.getBean("auditService");
+		
+	//String UserID = (String)session.get(WebConstants.CONSTANT_USER_NAME);
+	
+	// System.out.println("USER ID : -" + UserID);
+		ArrayList<String > messageList = new ArrayList<String>();
+		int count = 0;
+		for ( int i = 0; i < select.size(); i++ ) {
+			if(select.get(i)==true)
+			{
+				count++;
+				break;
+			}
+		}
+		if(count == 0)
+		{
+			addFieldError("paymentDirection", " Nothing Found To Take The Action / Please Select One Record ");
+			return "failiure";
+		}
+		
+		
+	    for ( int i = 0; i < select.size(); i++ ) { 
+	    
+	    if ( select.get(i) != null && select.get(i) ) { 
+	    	messageList.add(messageArray[i].trim());
+	    	   
+	    }
+	    } 
+		try
+		{
+			paymentMessageService = (PaymentMessageService)ApplicationContextProvider.getBean("paymentMessageService");
+			String operationStatus = paymentMessageService.insertIntoDBPoller(messageList);
+			auditService.saveEventAuditData(getEventAuditDtoForSubmit());
+			if(operationStatus.equals("error"))
+			{
+				addFieldError("paymentDirection", "Unable To Process . Please Check Logs ");
+			}
+			
+			/*System.out.println("hi");
+	    authUIService= (AuthUIService)ApplicationContextProvider.getBean("authUIService");
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		System.out.println(authUIService);
+		
+		System.out.println("111");
+		
+		try
+		{
+			paymentMessageService = (PaymentMessageService)ApplicationContextProvider.getBean("paymentMessageService");
+			SecUsers userDetails= paymentMessageService.getUserDetails(UserID);
+		@SuppressWarnings("unchecked")
+		List<String> authRef= paymentMessageService.getAuthRef(userDetails.getUserBranch(), userDetails.getUserDept(), messageList);
+		for(int i=0 ;i<authRef.size();i++){
+			
+			if(actionValue.equals("Reject"))
+			{
+				authUIService.updateTable(UserID, authRef.get(i), "R");
+				
+			}else if(actionValue.equals("Approve")){
+				authUIService.updateTable(UserID, authRef.get(i), "A");
+			}
+		}*/
+		
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		return "failiure";
+	}
+	
+	private EventAudit getEventAuditDtoForSubmit(){
+		EventAudit eventAudit = getEventAuditDto();
+		eventAudit.setAuditEventId("NGPHGUIUSM0001");
+		String userId = (String)session.get(WebConstants.CONSTANT_USER_NAME);	
+		String[] extraInformation = {userId," Repocess "};		
+		eventAudit.setExtraInformation(extraInformation);
+		String eventDescription = "User {0} has Initiated {1}";
+		MessageFormat msgFormat = new MessageFormat(eventDescription);		
+		eventAudit.setAuditEventDesc(msgFormat.format(extraInformation));
+		
+		return eventAudit;		
+	}
+	
+	private EventAudit getEventAuditDto(){
+		EventAudit eventAudit = new EventAudit();
+		PaymentMessageService paymentMessageService = (PaymentMessageService)ApplicationContextProvider.getBean("paymentMessageService");		
+		eventAudit.setAuditSource("0");
+		String UserID = (String)session.get(WebConstants.CONSTANT_USER_NAME);
+		SecUsers userDetails= paymentMessageService.getUserDetails(UserID);
+			String msgBranch = userDetails.getUserBranch();
+			String msgDept = userDetails.getUserDept();
+		eventAudit.setAuditBranch(msgBranch);
+		
+		eventAudit.setAuditDept(msgDept);
+		eventAudit.setAuditSource(getClass().getName());
+		
+		
+		return eventAudit;
+		
+	}
+	
+	/**
+	* This method is used load the payment entry screen from repair button click on grid
+	* String repair forwarding to payment Entry screen
+	*/
+	@SkipValidation
+	public String paymentToRepair(){
+		
+	// String paymentStatus = 	getPaymentStatus();
+	String messageIndex = getMsgIndex();
+	//this.session.get(arg0)
+	
+	this.session.put("messageIndex", messageIndex);
+	this.session.put("paymentStatus", getPaymentStatus());
+	
+	return "repair";
+	
+	}
+	
+	@SkipValidation
+	public String paymentToRepairLc() {
+		try{
+		PaymentMessageService paymentMessageService = (PaymentMessageService)ApplicationContextProvider.getBean("paymentMessageService");
+		String screenID = paymentMessageService.getScreenIDFromSupport(getPaymentMessageType());
+		String returnType = null;
+		
+		if(screenID!=null && StringUtils.isNotBlank(screenID) && StringUtils.isNotEmpty(screenID))
+		{
+			returnType = getText(screenID);
+		}else
+		{
+			returnType= "repair";
+		}
+	
+		String messageIndex = getMsgIndex();
+		this.session.put("messageIndex", messageIndex);
+		this.session.put("paymentMessageType", getPaymentMessageType());
+		
+	
+		return returnType;
+		}
+		catch (Exception e) {
+			return INPUT;
+		}
+	
+	}
+	
+	/**
+	* This method is used load the payment entry screen in view Mode
+	* String view forwarding to payment Entry screen
+	*/
+	@SkipValidation
+	public String paymentView(){
+		
+	// String paymentStatus = 	getPaymentStatus();
+	String messageIndex = getMsgIndex();
+	//this.session.get(arg0)
+	
+	this.session.put("messageIndex", messageIndex);
+	this.session.put("paymentStatus", getPaymentStatus());
+	
+	return "view";
+	
+	}
+	/**
+	* This method is used to get the specific payment queue data 
+	* @return String performPaymentMessage forward to paymentMessageStatus jsp
+	*/
+	static int count=0;
+	@SkipValidation
+	public String getPaymentMessage(){
+		
+		
+		try{
+						
+			EnquiryService enquiryService = (EnquiryService)ApplicationContextProvider.getBean("enquiryService");
+			setChannelDropDown(enquiryService.getEnquiryList(ConstantUtil.EnquiryChannel));
+			//for Message Type drop down
+			setMsgTypeDropDown(enquiryService.getEnquiryList(ConstantUtil.ENQUIRY_MSG_TYPE));
+			//for sub message type drop down
+			setSubMsgTypeDropDown(enquiryService.getEnquiryList(ConstantUtil.EnquirySubMsgType));
+			
+			
+		// used to load the paymentMessageService context	
+			//ApplicationContext applicationContext =	AuditServiceUtil.getApplicationContext();
+			paymentMessageService = (PaymentMessageService)	ApplicationContextProvider.getBean("paymentMessageService");
+			//PaymentMessageService paymentMessageService = (PaymentMessageService)	applicationContext.getBean("paymentMessageService");
+		String paymentStatValDb = null;	
+		String tempStr = 	getPaymentStatus();
+		
+		if(tempStr != null && !tempStr.equals("")){
+			String[] tempArry = tempStr.split(";");
+			if(tempArry.length !=1){
+				String msgDirectionTemp = tempArry[1];
+				String paymentStatusTemp = tempArry[0];
+				String payStatus="";
+				if( paymentStatusTemp.charAt(paymentStatusTemp.length()-1)=='I')
+				{
+					
+						payStatus=paymentStatusTemp.substring(0, paymentStatusTemp.length()-2);
+					}
+					else
+						payStatus=paymentStatusTemp;
+					payStatus = payStatus.replaceAll("_", " ");
+				setButtonName(tempArry[0]);
+				setMsgDirec(msgDirectionTemp);
+				setPaymentStatus(paymentStatusTemp);
+				setStatus(payStatus);
+				this.session.put("msgDirec", msgDirectionTemp);
+				this.session.put("paymentStatusSession", paymentStatusTemp);
+				this.session.put("paymentStatusVal", paymentStatusTemp);
+			}
+		
+			
+		}else{
+			String paymentStateVal =(String) this.session.get("paymentStatusSession");
+			setPaymentStatus(paymentStateVal);
+			String msgDirection =(String) this.session.get("msgDirec");	
+			setMsgDirec(msgDirection);
+			setButtonName(paymentStateVal);
+			
+			this.session.put("paymentStatusVal", paymentStateVal);
+		}
+		
+		paymentStatValDb =	PaymentStatusEnum.findPaymentStatusEnumByName(getPaymentStatus());
+		
+	//String tempStr = 	getPaymentStatus();
+		String query="";
+		if(StringUtils.isNotEmpty(getChannel()) && StringUtils.isNotBlank(getChannel()) && !getChannel().equals(""))
+		{
+			if(getMsgDirec().equals("I"))
+			query=query+" channel='"+getChannel()+"' And ";
+			else
+				query=query+" dstChannelType='"+getChannel()+"' And ";
+		}
+		if(StringUtils.isNotBlank(getMsgType()) && StringUtils.isNotEmpty(getMsgType())&& !getMsgType().equals(""))
+		{
+			if(getMsgDirec().equals("I"))
+				query=query+" msgType='"+getMsgType()+"' And ";
+				else
+					query=query+" dstMsgType='"+getMsgType()+"' And ";
+		}
+		if(StringUtils.isNotBlank(getSubMsgType()) && StringUtils.isNotEmpty(getSubMsgType())&& !getSubMsgType().equals(""))
+		{
+			if(getMsgDirec().equals("I"))
+				query=query+" subMsgType='"+getSubMsgType()+"' And ";
+				else
+					query=query+" dstMsgSubType='"+getSubMsgType()+"' And ";
+		}
+	
+			// used to set the button name at runtime  displayed in grid
+		String UserID = (String)session.get(WebConstants.CONSTANT_USER_NAME);
+		SecUsers userDetails= paymentMessageService.getUserDetails(UserID);
+			String msgBranch = userDetails.getUserBranch();
+			String msgDept = userDetails.getUserDept();
+		// get the specific queue status data from DB
+		List<PaymentMessage> paymentMessages = 	paymentMessageService.getPaymentMessage(paymentStatValDb,msgBranch,msgDept,getMsgDirec(),query);
+		setPaymentMessageList(paymentMessages);
+		direction=getMsgDirec();
+		
+		if(getMsgDirec().equals("I")){
+			setMsgDirction("Inward Payment");
+		}else if(getMsgDirec().equals("O")){
+			setMsgDirction("Outward Payment");
+		}		
+		//this.session.put("paymentMessageList", paymentMessages);
+		}catch (NGPHException ngphException){
+			AuditServiceUtil.logNgphException(ngphException,logger);	
+		}
+		catch (Exception exception) {
+			AuditServiceUtil.logException(exception,logger);
+		}
+	
+	return "performPaymentMessage";
+	}
+	public String getMsgDirec() {
+		return msgDirec;
+	}
+	public void setMsgDirec(String msgDirec) {
+		this.msgDirec = msgDirec;
+	}
+	
+	/**
+	* This method is used to validate the transaction checkbox is selected or not
+	* @return void
+	*/
+	public void validate(){
+		
+		boolean checkBoxSelect = false;
+		for ( int i = 0; i < select.size(); i++ ) { 
+			    
+			    if ( select.get(i) != null && select.get(i) ) { 
+			    	checkBoxSelect = true;
+			    
+			    }
+			    if(checkBoxSelect == true){
+			    	break;
+			    }
+		 }
+		if(checkBoxSelect == false){
+			addFieldError("paymentStatus", "Please Select Atleast One Row . ");
+		}
+	}
+	/*private void getpaymentMessageService() {
+		
+	if(paymentMessageMap.get("PAYMENTMSGSERVICE") == null){
+		try{
+			ApplicationContext appcontext = new ClassPathXmlApplicationContext("WebApplicationContext.xml");
+			paymentMessageMap.put("PAYMENTMSGSERVICE", (PaymentMessageService) appcontext.getBean("paymentMessageService"));
+			//paymentMessageService = (PaymentMessageService)appcontext.getBean("paymentMessageService");
+		}catch (ApplicationContextException applicationContextException) {
+			
+		logger.debug(ConstantUtil.PAYMENT_ACTION+ applicationContextException);	
+		}
+		
+	}
+	}	*/
+	/**
+	* This method is used to change the transaction status as delete(manual repair)
+	* @return String paymentMessageStatus forward to paymentMessageStatus jsp
+	*/
+	public String deletePayment(){
+		
+	//ApplicationContext applicationContext =	AuditServiceUtil.getApplicationContext();
+	//PaymentMessageService paymentMessageService = (PaymentMessageService)	applicationContext.getBean("paymentMessageService");
+		 paymentMessageService = (PaymentMessageService)ApplicationContextProvider.getBean("paymentMessageService");
+		 AuditService	auditService = (AuditService)ApplicationContextProvider.getBean("auditService");
+		 
+		
+	//AuditService	auditService = (AuditService)applicationContext.getBean("AuditService");
+	String[] messageArray = getPayMessage().split(",");
+	String[] transactionArray = getTransactionReference().split(",");
+	
+	ArrayList<String > messageList = new ArrayList<String>();
+	//ArrayList<String > transactionList = new ArrayList<String>();
+	ArrayList<EventAudit > eventAuditList = new ArrayList<EventAudit>();
+	//List paymentMessageList = (List)this.session.get("paymentMessageList");
+	
+    for ( int i = 0; i < select.size(); i++ ) { 
+    
+    if ( select.get(i) != null && select.get(i) ) { 
+    //	Get the matching row from dataGrid: 
+    	
+   // PaymentMessage paymentMessage = (PaymentMessage)	paymentMessageList.get(i);
+    	messageList.add(messageArray[i]);
+    	//transactionList.add(transactionArray[i]);
+    	eventAuditList.add(getEventAuditDto(messageArray[i],transactionArray[i]));
+   
+    } 
+    } 
+    
+    	//AuditService auditService = AuditServiceUtil.getAuditService();
+    	String userId = (String)session.get(WebConstants.CONSTANT_USER_NAME);;
+  
+    	try {
+    		
+    	  	paymentMessageService.deletePayment(messageList,"20","2",userId,getDeleteComments());	
+    		auditService.saveEventMaster(getEventMaterDto());
+    		auditService.saveEventAuditBatch(eventAuditList);
+    		return "success";	
+    	} catch (Exception exception) {
+    		AuditServiceUtil.logException(exception,logger);
+    		return INPUT;	
+		}
+  
+	
+		
+	}
+	
+	public String authApprove(){
+		//ApplicationContext applicationContext =	AuditServiceUtil.getApplicationContext();
+		AuthUIService authUIService= (AuthUIService)ApplicationContextProvider.getBean("authUIService");
+		//AuthUIService authUIService= (AuthUIService)	applicationContext.getBean("authUIService");
+		getSelectedTransaction(); 
+		authUIService.updateTable("102", "32e785d5-0201-41a2-a250-5fb6ace57bbd000001", "A");
+		return "performPaymentMessage";	
+	}
+	private void getSelectedTransaction() {
+		String[] messageArray = getPayMessage().split(",");
+		ArrayList<String > messageList = new ArrayList<String>();
+		 for ( int i = 0; i < select.size(); i++ ) { 
+			    
+			    if ( select.get(i) != null && select.get(i) ) { 
+			    	messageList.add(messageArray[i].trim());
+			    } 
+			    
+			    }
+	}
+	public String authReject(){
+		//ApplicationContext applicationContext =	AuditServiceUtil.getApplicationContext();
+		//AuthUIService authUIService= (AuthUIService)	applicationContext.getBean("authUIService");
+		AuthUIService authUIService= (AuthUIService)ApplicationContextProvider.getBean("authUIService");
+		getSelectedTransaction(); 
+		authUIService.updateTable("102", "32e785d5-0201-41a2-a250-5fb6ace57bbd000001", "R");
+		return "performPaymentMessage";	
+	}
+	public String authComment(){
+		//ApplicationContext applicationContext =	AuditServiceUtil.getApplicationContext();
+		//AuthUIService authUIService= (AuthUIService)	applicationContext.getBean("authUIService");
+		AuthUIService authUIService= (AuthUIService)ApplicationContextProvider.getBean("authUIService");
+		getSelectedTransaction(); 
+		authUIService.updateTable("102", "32e785d5-0201-41a2-a250-5fb6ace57bbd000001", getDeleteComments());
+		return "performPaymentMessage";	
+	}
+	
+	/**
+	* This method is used to set the event details into EventMaster DTO
+	* @return EventMaster eventMaster
+	*/
+	private EventMaster getEventMaterDto(){
+		EventMaster eventMaster = new EventMaster();
+		eventMaster.setEventId("NGPHEV00878");
+		eventMaster.setEventDesc("Message with {0} is Deleted over the queue {1} by Users {2}");
+		eventMaster.setEventAlertable(0);
+		eventMaster.setEventSeverity("A");
+		return eventMaster;
+	}
+	
+	/**
+	* This method is used to set the Audit details into EventAudit DTO
+	* @param String messageReference
+	* @param String transactionReference
+	* @return EventAudit eventAudit
+	*/
+	private EventAudit getEventAuditDto(String messageReference,String transactionReference){
+		EventAudit eventAudit = new EventAudit();
+		
+		eventAudit.setAuditEventId("NGPHEV00878");
+		String userId = "0987AS";
+		String paymentStatus ="Awaiting Repair";
+		String[] extraInformation = {messageReference,paymentStatus,userId};
+		
+		eventAudit.setExtraInformation(extraInformation);
+		String eventDescription = "Message with {0} is Deleted over the queue {1} by Users {2}";
+		MessageFormat msgFormat = new MessageFormat(eventDescription);
+		
+		eventAudit.setAuditEventDesc(msgFormat.format(extraInformation));
+		eventAudit.setAuditSource("0");
+		String UserID = (String)session.get(WebConstants.CONSTANT_USER_NAME);
+		SecUsers userDetails= paymentMessageService.getUserDetails(UserID);
+			String msgBranch = userDetails.getUserBranch();
+			String msgDept = userDetails.getUserDept();
+		eventAudit.setAuditBranch(msgBranch);
+		
+		eventAudit.setAuditDept(msgDept);
+		eventAudit.setAuditMessageRef(messageReference);
+		eventAudit.setAuditTransactionRef(transactionReference);
+		
+		return eventAudit;
+		
+	}
+	
+	
+	public String getMsgType() {
+		return msgType;
+	}
+	public void setMsgType(String msgType) {
+		this.msgType = msgType;
+	}
+	public String getSubMsgType() {
+		return subMsgType;
+	}
+	public void setSubMsgType(String subMsgType) {
+		this.subMsgType = subMsgType;
+	}
+	public String getChannel() {
+		return channel;
+	}
+	public void setChannel(String channel) {
+		this.channel = channel;
+	}
+	public List<String> getChannelDropDown() {
+		return channelDropDown;
+	}
+	public void setChannelDropDown(List<String> channelDropDown) {
+		this.channelDropDown = channelDropDown;
+	}
+	public List<String> getSubMsgTypeDropDown() {
+		return subMsgTypeDropDown;
+	}
+	public void setSubMsgTypeDropDown(List<String> subMsgTypeDropDown) {
+		this.subMsgTypeDropDown = subMsgTypeDropDown;
+	}
+	public List<String> getMsgTypeDropDown() {
+		return msgTypeDropDown;
+	}
+	public void setMsgTypeDropDown(List<String> msgTypeDropDown) {
+		this.msgTypeDropDown = msgTypeDropDown;
+	}
+	public void setSession(Map<String, Object> session) {
+		
+		this.session = session;
+	}
+	
+	/**
+	* This method is used to get the Application Context
+	* @return PaymentService paymentService
+	*/
+	
+	/*private PaymentMessageService getPaymentMessageService() {
+		
+		try{
+			ApplicationContext appcontext = new ClassPathXmlApplicationContext("WebApplicationContext.xml");
+			paymentMessageService = (PaymentMessageService)	appcontext.getBean("paymentMessageService");
+		}catch (ApplicationContextException applicationContextException) {
+			
+		logger.debug(ConstantUtil.PAYMENT_ACTION+ applicationContextException);	
+		}
+		
+		return paymentMessageService;
+	}*/
+
+	/**
+	* This method is used to set the grid button value based on queue name
+	* @return void
+	*/
+	private void setButtonName(String paymentStatus){
+		if(paymentStatus.equals("AWAITING_REPAIR")){
+			setGridButtonName("Repair");
+		}
+		if(paymentStatus.equals("AWAITING_AUTHORISATION")){
+			setGridButtonName("View");
+		}
+	}
+}

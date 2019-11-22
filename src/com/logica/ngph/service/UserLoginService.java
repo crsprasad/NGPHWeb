@@ -1,0 +1,10 @@
+package com.logica.ngph.service;
+
+import com.logica.ngph.common.dtos.UserMaintenanceDTO;
+
+public interface UserLoginService {
+public boolean getValidateUser(String user,String userPassword);
+public boolean validateUserId(String userId);
+public UserMaintenanceDTO getLogInTimeDetails(String user);
+public boolean isValidUser(String userId);
+}

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+	
+	<field name="ifscCode">
+		<field-validator type="requiredstring">
+			<message>IFSC is required.</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">ifscCode</param>
+			<param name="expression"><![CDATA[([A-Z]{4}+[0]{1}+[0-9A-Z]{6})+$]]></param>
+			<message>IFSC is Not Valid.</message>
+		</field-validator>
+	</field>
+	
+	<field name="partyName">
+		<field-validator type="requiredstring">
+			<message> Bank Name is required.</message>
+		</field-validator>
+	</field>
+	
+	<field name="branchName">
+		<field-validator type="requiredstring">
+			<message> Branch Name is required.</message>
+		</field-validator>
+	</field>
+		
+	<field name="partyAddress">
+		<field-validator type="requiredstring">
+			<message> Address is required.</message>
+		</field-validator>
+	</field>
+	
+	<field name="stateName">
+		<field-validator type="requiredstring">
+			<message> StateName is required.</message>
+		</field-validator>
+	</field>
+	
+	<field name="districName">
+		<field-validator type="requiredstring">
+			<message>DistrictName is required.</message>
+		</field-validator>
+	</field>
+	
+	<field name="cityName">
+		<field-validator type="requiredstring">
+			<message> CityName is required.</message>
+		</field-validator>
+	</field>
+	
+	
+	
+</validators>

@@ -1,0 +1,337 @@
+/**
+ * 
+ */
+package com.logica.ngph.serviceImpl;
+
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.logica.ngph.Entity.MsgPolled;
+import com.logica.ngph.Entity.NgphCanonical;
+import com.logica.ngph.common.ConstantUtil;
+import com.logica.ngph.common.dtos.InfoCanonical;
+import com.logica.ngph.common.utils.NGPHUtil;
+import com.logica.ngph.dao.CreateBankGuaranteeCoverDao;
+import com.logica.ngph.dtos.BankGuaranteeCoverDto;
+import com.logica.ngph.service.BankGuaranteeCoverService;
+
+/**
+ * @author chakkar
+ *
+ */
+public class BankGuaranteeCoverServiceImpl implements BankGuaranteeCoverService {
+	
+	static Logger logger = Logger.getLogger(BankGuaranteeCoverServiceImpl.class);
+	CreateBankGuaranteeCoverDao createBankGuaranteeCoverDao;
+	
+	/**
+	 * @return the createBankGuaranteeCoverDao
+	 */
+	public CreateBankGuaranteeCoverDao getCreateBankGuaranteeCoverDao() {
+		return createBankGuaranteeCoverDao;
+	}
+
+	/**
+	 * @param createBankGuaranteeCoverDao the createBankGuaranteeCoverDao to set
+	 */
+	public void setCreateBankGuaranteeCoverDao(
+			CreateBankGuaranteeCoverDao createBankGuaranteeCoverDao) {
+		this.createBankGuaranteeCoverDao = createBankGuaranteeCoverDao;
+	}
+
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void createBankGuaranteeCover(BankGuaranteeCoverDto bankGuaranteeCoverDto, String userId)throws Exception {
+		
+		int bgStatus=0;
+		String bgNumber="";
+		if(bankGuaranteeCoverDto.getBgType().equalsIgnoreCase("PERFORMANCE")){
+			bgNumber = bankGuaranteeCoverDto.getBgNumber();
+			System.out.println("BG number is in ServiceImpl :: "+bgNumber);
+			bgStatus=getBgStatus("PERFORMANCE");
+		}else if(bankGuaranteeCoverDto.getBgType().equalsIgnoreCase("FINANCIAL")){
+			bgNumber = NGPHUtil.generateUUID();
+			bgStatus=getBgStatus("FINANCIAL");
+		}else if(bankGuaranteeCoverDto.getBgType().equalsIgnoreCase("OTHERS")){
+			bgNumber = NGPHUtil.generateUUID();
+			bgStatus=getBgStatus("OTHERS");
+		}
+		
+		String messageReference = NGPHUtil.generateUUID();
+		String bgDirection ="O";
+		
+		try {
+			NgphCanonical ngphCanonical = setDtoToCanonicalObject(bankGuaranteeCoverDto, messageReference, bgNumber, userId);
+			MsgPolled msgPolled = getEntityObject(messageReference);
+			createBankGuaranteeCoverDao.createBGCover(bankGuaranteeCoverDto, bgStatus, messageReference, bgNumber, bgDirection, ngphCanonical, msgPolled);
+			System.out.println("After Save in ServiceImpl");
+		} catch (Exception sqlException) {
+			logger.debug(sqlException);
+			throw new Exception(ConstantUtil.DATA_ACCESS_PROBLEM);
+		}
+
+	}
+	
+	private int getBgStatus(String key)
+	{
+		Map<String, String> bgStatusMap = new HashMap<String, String>();
+		bgStatusMap.put("CREATED", "1");
+		bgStatusMap.put("REQUESTED", "2");
+		bgStatusMap.put("CREATEDACK", "3");
+		bgStatusMap.put("AMENDED", "4");
+		bgStatusMap.put("AMENDED REGISTERED", "5");
+		bgStatusMap.put("REDUCED", "6");
+		bgStatusMap.put("REDUCED ACK", "7");
+		bgStatusMap.put("RELEASE REQUEST", "8");
+		bgStatusMap.put("RELEASED", "9");
+		//For BG Cover message Status
+		bgStatusMap.put("PERFORMANCE", "10");
+		bgStatusMap.put("FINANCIAL", "11");
+		bgStatusMap.put("OTHERS", "12");
+		
+		int bgStatus = Integer.parseInt(bgStatusMap.get(key));
+		return bgStatus;
+		
+	}
+	
+	public MsgPolled getEntityObject(String msgRef)
+	{
+		MsgPolled msgPolled = new MsgPolled();
+		msgPolled.setInTime(new Timestamp(Calendar.getInstance().getTime().getTime()));
+		msgPolled.setMsgRef(msgRef);
+		msgPolled.setPolledStatus("P");
+		return msgPolled;
+	}
+
+	
+	public NgphCanonical setDtoToCanonicalObject(BankGuaranteeCoverDto bankGuaranteeCoverDto, String messageReference, String bgNumber, String userId){
+		NgphCanonical ngphCanonical = new NgphCanonical();
+		ngphCanonical.setMsgRef(messageReference);
+		if (StringUtils.isBlank(bankGuaranteeCoverDto.getRepair())
+				&& StringUtils.isEmpty(bankGuaranteeCoverDto.getRepair())) {
+			ngphCanonical.setMsgHost("9999");
+
+		} else {
+			
+			ngphCanonical.setMsgHost(bankGuaranteeCoverDto.getMsgHost());
+		}
+		
+		ngphCanonical.setMsgChnlType("SFMS");
+		ngphCanonical.setSrcMsgType("760");
+		ngphCanonical.setSrcMsgSubType("COV");
+		ngphCanonical.setMsgStatus("1");
+		ngphCanonical.setMsgDirection("O");
+		ngphCanonical.setSndrPymtPriority("12");
+		ngphCanonical.setClrgChannel("SFMS");
+		ngphCanonical.setReceivedTime(getCurrentTime());
+		ngphCanonical.setLastModTime(getCurrentTime());
+		System.out.println("BG Number in setDTOToCanonicalObject is "+bankGuaranteeCoverDto.getBgNumber());
+		ngphCanonical.setLcNo(bankGuaranteeCoverDto.getBgNumber());
+		ngphCanonical.setTxnReference(bankGuaranteeCoverDto.getBgNumber());
+		ngphCanonical.setSndrTxnId(bankGuaranteeCoverDto.getBgNumber());
+		ngphCanonical.setClrgSysReference(bankGuaranteeCoverDto.getBgNumber());
+		ngphCanonical.setBgFormNumber(bankGuaranteeCoverDto.getBgFormNumber());
+		ngphCanonical.setBgType(bankGuaranteeCoverDto.getBgType());
+		ngphCanonical.setBgCurrency(bankGuaranteeCoverDto.getCurrency());
+		ngphCanonical.setMsgCurrency(bankGuaranteeCoverDto.getCurrency());
+		ngphCanonical.setBgAmount(bankGuaranteeCoverDto.getBgAmount());
+		ngphCanonical.setMsgAmount(bankGuaranteeCoverDto.getBgAmount());
+		ngphCanonical.setBgFromDate(convertStringToTimestamp(bankGuaranteeCoverDto.getBgFromDate()));
+		ngphCanonical.setBgToDate(convertStringToTimestamp(bankGuaranteeCoverDto.getBgToDate()));
+		ngphCanonical.setBgEffectiveDate(convertStringToTimestamp(bankGuaranteeCoverDto.getBgEffectiveDate()));
+		ngphCanonical.setBgLodgementEndDate(convertStringToTimestamp(bankGuaranteeCoverDto.getBgLodgementEndDate()));
+		ngphCanonical.setBgLodgementPalce(bankGuaranteeCoverDto.getBgLodgementPalce());
+		ngphCanonical.setIssuingBankCode(bankGuaranteeCoverDto.getIssuingBankCode());
+		ngphCanonical.setBgIssuingBankAddrDetails(bankGuaranteeCoverDto.getIssunigBankNameAndAddress());
+		ngphCanonical.setBgApplicentNameAndDetails(bankGuaranteeCoverDto.getBgApplicentNameAndDetails());
+		ngphCanonical.setBeneficiaryNameAndDetails(bankGuaranteeCoverDto.getBeneficiaryNameAndDetails());
+		ngphCanonical.setBeneficiaryBankCode(bankGuaranteeCoverDto.getBeneficiaryBankCode());
+		ngphCanonical.setBgBeneficiaryBankAddr(bankGuaranteeCoverDto.getBeneficiaryBankNameAndAddress());
+		ngphCanonical.setBgPurpose(bankGuaranteeCoverDto.getBgPurpose());
+		ngphCanonical.setDescriptionOfUnderlinedContract(bankGuaranteeCoverDto.getDescriptionOfUnderlinedContract());
+		ngphCanonical.seteStampDutyPaid(bankGuaranteeCoverDto.getStampDutyPaid());
+		ngphCanonical.seteStampCertificateNumber(bankGuaranteeCoverDto.getStampCertificateNumber());
+		ngphCanonical.seteStampDateAndTime(convertStringToTimestamp(bankGuaranteeCoverDto.getStampDateAndTime()));
+		ngphCanonical.setBgAmountPaid(bankGuaranteeCoverDto.getBgAmountPaid());
+		ngphCanonical.setBgStateCode(bankGuaranteeCoverDto.getBgStateCode());
+		ngphCanonical.setBgArticleNumber(bankGuaranteeCoverDto.getBgArticleNumber());
+		ngphCanonical.setBgPaymentDate(convertStringToTimestamp(bankGuaranteeCoverDto.getBgPaymentDate()));
+		ngphCanonical.setBgPaymentPlace(bankGuaranteeCoverDto.getBgPaymentPlace());
+		ngphCanonical.seteBgHeldDematForm(bankGuaranteeCoverDto.getBgHeldDematForm());
+		ngphCanonical.setCustodianServiceProvider(bankGuaranteeCoverDto.getCustodianServiceProvider());
+		ngphCanonical.setDematAccNumber(bankGuaranteeCoverDto.getDematAccNumber());
+		ngphCanonical.setReceiverBank(bankGuaranteeCoverDto.getBeneficiaryBankCode());
+		String[] branchDepartmentIfsc = createBankGuaranteeCoverDao.getDept(userId).split("~");
+		ngphCanonical.setLastModifiedUser(userId);
+		ngphCanonical.setMsgBranch(branchDepartmentIfsc[2]);
+		ngphCanonical.setMsgDept(branchDepartmentIfsc[1]);
+		ngphCanonical.setSenderBank(branchDepartmentIfsc[0]);
+		if(StringUtils.isBlank(bankGuaranteeCoverDto.getRepair()) && StringUtils.isEmpty(bankGuaranteeCoverDto.getRepair())){
+			ngphCanonical.setSeqNo("3");
+		}else{
+			ngphCanonical.setSeqNo(bankGuaranteeCoverDto.getSeqNo());
+			System.out.println("SeqNo is when repair CreateBankGuarantee is :: "+ngphCanonical.getSeqNo());
+		}
+	
+		String senderToReciever=bankGuaranteeCoverDto.getSenderToReciverInformation();
+		String senderToReceiverInformation="";
+		if(senderToReciever!=null && !senderToReciever.isEmpty()){
+			String [] strs = senderToReciever.split("\\/");
+			if(strs.length==3){
+				senderToReceiverInformation= strs[1];
+				ngphCanonical.setInstructionsForCrdtrAgtCode(senderToReceiverInformation);
+			}else{
+				senderToReceiverInformation=senderToReciever;
+				ngphCanonical.setInstructionsForCrdtrAgtText(senderToReceiverInformation);
+			}
+		}
+		
+		
+		return ngphCanonical;
+	}
+	
+	private Timestamp getCurrentTime(){
+		java.util.Date 	str_date = Calendar.getInstance().getTime();
+		java.sql.Timestamp timeStampDate = new Timestamp(str_date.getTime());
+		return timeStampDate;
+	}
+	
+	private java.sql.Timestamp convertStringToTimestamp(Date date) {
+		if(date != null){
+			try{
+				return new java.sql.Timestamp(date.getTime());
+			}catch(Exception ex){
+				ex.printStackTrace();
+				return null;
+			}
+		}else {
+			return null;
+		}
+	}
+	
+	public BankGuaranteeCoverDto getBankGuaranteeCover(String msgRef) {
+		
+		return createBankGuaranteeCoverDao.getBankGuaranteeCover(msgRef);
+	}
+	
+	public BankGuaranteeCoverDto getCreateAmendBGCover(String msgRef) {
+		
+		return createBankGuaranteeCoverDao.getCreateAmendBGCover(msgRef);
+	}
+
+	public void createAmendBankGuaranteeCover(BankGuaranteeCoverDto bankGuaranteeCoverDto, String userId)throws Exception {
+		String messageReference = NGPHUtil.generateUUID();
+		String bgDirection ="O";
+		
+		try {
+			String bgNumber = bankGuaranteeCoverDto.getBgNumber();
+			NgphCanonical ngphCanonical = setDtoToAmendCanonicalObject(bankGuaranteeCoverDto, messageReference, bgNumber, userId);
+			MsgPolled msgPolled = getEntityObject(messageReference);
+			createBankGuaranteeCoverDao.createAmendBGCover(bankGuaranteeCoverDto, messageReference, bgNumber, bgDirection, ngphCanonical, msgPolled);
+			
+		} catch (Exception sqlException) {
+			logger.debug(sqlException);
+			throw new Exception(ConstantUtil.DATA_ACCESS_PROBLEM);
+		}
+		
+	}
+	
+	
+	public NgphCanonical setDtoToAmendCanonicalObject(BankGuaranteeCoverDto bankGuaranteeCoverDto, String messageReference, String bgNumber, String userId){
+		NgphCanonical ngphCanonical = new NgphCanonical();
+		ngphCanonical.setMsgRef(messageReference);
+		if (StringUtils.isBlank(bankGuaranteeCoverDto.getRepair())
+				&& StringUtils.isEmpty(bankGuaranteeCoverDto.getRepair())) {
+			ngphCanonical.setMsgHost("9999");
+
+		} else {
+			
+			ngphCanonical.setMsgHost(bankGuaranteeCoverDto.getMsgHost());
+		}
+		ngphCanonical.setMsgChnlType("SFMS");
+		ngphCanonical.setSrcMsgType("767");
+		ngphCanonical.setSrcMsgSubType("COV");
+		ngphCanonical.setMsgStatus("1");
+		ngphCanonical.setMsgDirection("O");
+		ngphCanonical.setSndrPymtPriority("12");
+		ngphCanonical.setClrgChannel("SFMS");
+		ngphCanonical.setReceivedTime(getCurrentTime());
+		ngphCanonical.setLastModTime(getCurrentTime());
+		ngphCanonical.setLcNo(bankGuaranteeCoverDto.getBgNumber());
+		ngphCanonical.setTxnReference(bankGuaranteeCoverDto.getBgNumber());
+		ngphCanonical.setSndrTxnId(bankGuaranteeCoverDto.getBgNumber());
+		ngphCanonical.setClrgSysReference(bankGuaranteeCoverDto.getBgNumber());
+		ngphCanonical.setRelReference(bankGuaranteeCoverDto.getBgRelatedReference());
+		ngphCanonical.setLcPrevAdvRef(bankGuaranteeCoverDto.getBgFurtherIdentification());
+		ngphCanonical.setLcAmndmntDt(convertStringToTimestamp(bankGuaranteeCoverDto.getBgAmendmentDate()));
+		ngphCanonical.setLcAmndmntNo(bankGuaranteeCoverDto.getBgNoofAmendments());
+		ngphCanonical.setLcIssueDt(convertStringToTimestamp(bankGuaranteeCoverDto.getBgIssueDate()));
+		if(bankGuaranteeCoverDto.getBgAmedmentDetails().length()>8000)
+		{
+			ngphCanonical.setLcDocsReq1(bankGuaranteeCoverDto.getBgAmedmentDetails().substring(0, 4000));
+			ngphCanonical.setLcDocsReq2(bankGuaranteeCoverDto.getBgAmedmentDetails().substring(4001, 8000));
+			ngphCanonical.setLcAddnlCndt1(bankGuaranteeCoverDto.getBgAmedmentDetails().substring(8001, bankGuaranteeCoverDto.getBgAmedmentDetails().length()));
+		}
+		else if(bankGuaranteeCoverDto.getBgAmedmentDetails().length()>4000)
+		{
+			ngphCanonical.setLcDocsReq1(bankGuaranteeCoverDto.getBgAmedmentDetails().substring(0, 4000));
+			ngphCanonical.setLcDocsReq2(bankGuaranteeCoverDto.getBgAmedmentDetails().substring(4001, bankGuaranteeCoverDto.getBgAmedmentDetails().length()));
+		}
+		else
+		{
+			ngphCanonical.setLcDocsReq1(bankGuaranteeCoverDto.getBgAmedmentDetails());
+		}
+		ngphCanonical.setIssuingBankCode(bankGuaranteeCoverDto.getIssuingBankCode());
+		ngphCanonical.setBgIssuingBankAddrDetails(bankGuaranteeCoverDto.getIssunigBankNameAndAddress());
+		ngphCanonical.setBgApplicentNameAndDetails(bankGuaranteeCoverDto.getBgApplicentNameAndDetails());
+		ngphCanonical.setBeneficiaryNameAndDetails(bankGuaranteeCoverDto.getBeneficiaryNameAndDetails());
+		ngphCanonical.setBeneficiaryBankCode(bankGuaranteeCoverDto.getBeneficiaryBankCode());
+		ngphCanonical.setBgBeneficiaryBankAddr(bankGuaranteeCoverDto.getBeneficiaryBankNameAndAddress());
+		ngphCanonical.seteStampDutyPaid(bankGuaranteeCoverDto.getStampDutyPaid());
+		ngphCanonical.seteStampCertificateNumber(bankGuaranteeCoverDto.getStampCertificateNumber());
+		ngphCanonical.seteStampDateAndTime(convertStringToTimestamp(bankGuaranteeCoverDto.getStampDateAndTime()));
+		ngphCanonical.setBgAmountPaid(bankGuaranteeCoverDto.getBgAmountPaid());
+		ngphCanonical.setBgStateCode(bankGuaranteeCoverDto.getBgStateCode());
+		ngphCanonical.setBgArticleNumber(bankGuaranteeCoverDto.getBgArticleNumber());
+		ngphCanonical.setBgPaymentDate(convertStringToTimestamp(bankGuaranteeCoverDto.getBgPaymentDate()));
+		ngphCanonical.setBgPaymentPlace(bankGuaranteeCoverDto.getBgPaymentPlace());
+		ngphCanonical.seteBgHeldDematForm(bankGuaranteeCoverDto.getBgHeldDematForm());
+		ngphCanonical.setCustodianServiceProvider(bankGuaranteeCoverDto.getCustodianServiceProvider());
+		ngphCanonical.setDematAccNumber(bankGuaranteeCoverDto.getDematAccNumber());
+		ngphCanonical.setReceiverBank(bankGuaranteeCoverDto.getBeneficiaryBankCode());
+		String[] branchDepartmentIfsc = createBankGuaranteeCoverDao.getDept(userId).split("~");
+		ngphCanonical.setLastModifiedUser(userId);
+		ngphCanonical.setMsgBranch(branchDepartmentIfsc[2]);
+		ngphCanonical.setMsgDept(branchDepartmentIfsc[1]);
+		ngphCanonical.setSenderBank(branchDepartmentIfsc[0]);
+		if(StringUtils.isBlank(bankGuaranteeCoverDto.getRepair()) && StringUtils.isEmpty(bankGuaranteeCoverDto.getRepair())){
+			ngphCanonical.setSeqNo("3");
+		}else{
+			ngphCanonical.setSeqNo(bankGuaranteeCoverDto.getSeqNo());
+		}
+	
+		String senderToReciever=bankGuaranteeCoverDto.getSenderToReciverInformation();
+		String senderToReceiverInformation="";
+		if(senderToReciever!=null && !senderToReciever.isEmpty()){
+			String [] strs = senderToReciever.split("\\/");
+			if(strs.length==3){
+				senderToReceiverInformation= strs[1];
+				ngphCanonical.setInstructionsForCrdtrAgtCode(senderToReceiverInformation);
+			}else{
+				senderToReceiverInformation=senderToReciever;
+				ngphCanonical.setInstructionsForCrdtrAgtText(senderToReceiverInformation);
+			}
+		}
+		
+		
+		return ngphCanonical;
+	}
+
+}

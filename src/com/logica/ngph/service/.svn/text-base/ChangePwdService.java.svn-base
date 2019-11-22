@@ -1,0 +1,7 @@
+package com.logica.ngph.service;
+
+public interface ChangePwdService {
+	
+public Boolean isOldPwdMatches(String userID,String oldpwd);
+public String changePwd(String userID,String newPwd);
+}

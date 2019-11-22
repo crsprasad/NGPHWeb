@@ -1,0 +1,157 @@
+package com.logica.ngph.dtos;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.sql.Clob;
+import java.sql.Timestamp;
+
+public class BgMastDto  implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String msgRef;
+	private String bgNumber;
+	private int noOfMsg;
+	private String bgDirection;
+	private String bgIssueDate;
+	private String bgCreateType;
+	private String bgRuleCode;
+	private String bgRuleDesc;
+	private Clob bgDetails;
+	private String bgNarration;
+	private BigDecimal bgAmount;
+	private String bgStatus;
+	private int bgNoOfAmntmnt;
+	private Timestamp bgLastModifiedTime;
+	private String advisingBank;
+	private String details;
+	private String issuingBank;
+	private String msgStatus;
+	private String narrative;
+	
+	/**
+	 * @return the narrative
+	 */
+	public String getNarrative() {
+		return narrative;
+	}
+	/**
+	 * @param narrative the narrative to set
+	 */
+	public void setNarrative(String narrative) {
+		this.narrative = narrative;
+	}
+
+	public String getMsgStatus() {
+		return msgStatus;
+	}
+	public void setMsgStatus(String msgStatus) {
+		this.msgStatus = msgStatus;
+	}
+	public String getMsgRef() {
+		return msgRef;
+	}
+	public void setMsgRef(String msgRef) {
+		this.msgRef = msgRef;
+	}
+	public String getBgNumber() {
+		return bgNumber;
+	}
+	public void setBgNumber(String bgNumber) {
+		this.bgNumber = bgNumber;
+	}
+	public int getNoOfMsg() {
+		return noOfMsg;
+	}
+	public void setNoOfMsg(int noOfMsg) {
+		this.noOfMsg = noOfMsg;
+	}
+	public String getBgDirection() {
+		return bgDirection;
+	}
+	public void setBgDirection(String bgDirection) {
+		this.bgDirection = bgDirection;
+	}
+	public String getBgIssueDate() {
+		return bgIssueDate;
+	}
+	public void setBgIssueDate(String bgIssueDate) {
+		this.bgIssueDate = bgIssueDate;
+	}
+	public String getBgCreateType() {
+		return bgCreateType;
+	}
+	public void setBgCreateType(String bgCreateType) {
+		this.bgCreateType = bgCreateType;
+	}
+	public String getBgRuleCode() {
+		return bgRuleCode;
+	}
+	public void setBgRuleCode(String bgRuleCode) {
+		this.bgRuleCode = bgRuleCode;
+	}
+	public String getBgRuleDesc() {
+		return bgRuleDesc;
+	}
+	public void setBgRuleDesc(String bgRuleDesc) {
+		this.bgRuleDesc = bgRuleDesc;
+	}
+	public Clob getBgDetails() {
+		return bgDetails;
+	}
+	public void setBgDetails(Clob bgDetails) {
+		this.bgDetails = bgDetails;
+	}
+	public String getBgNarration() {
+		return bgNarration;
+	}
+	public void setBgNarration(String bgNarration) {
+		this.bgNarration = bgNarration;
+	}
+	public BigDecimal getBgAmount() {
+		return bgAmount;
+	}
+	public void setBgAmount(BigDecimal bgAmount) {
+		this.bgAmount = bgAmount;
+	}
+	public String getBgStatus() {
+		return bgStatus;
+	}
+	public void setBgStatus(String bgStatus) {
+		this.bgStatus = bgStatus;
+	}
+	public int getBgNoOfAmntmnt() {
+		return bgNoOfAmntmnt;
+	}
+	public void setBgNoOfAmntmnt(int bgNoOfAmntmnt) {
+		this.bgNoOfAmntmnt = bgNoOfAmntmnt;
+	}
+	public Timestamp getBgLastModifiedTime() {
+		return bgLastModifiedTime;
+	}
+	public void setBgLastModifiedTime(Timestamp bgLastModifiedTime) {
+		this.bgLastModifiedTime = bgLastModifiedTime;
+	}
+	public String getAdvisingBank() {
+		return advisingBank;
+	}
+	public void setAdvisingBank(String advisingBank) {
+		this.advisingBank = advisingBank;
+	}
+	public String getDetails() {
+		return details;
+	}
+	public void setDetails(String details) {
+		this.details = details;
+	}
+	public String getIssuingBank() {
+		return issuingBank;
+	}
+	public void setIssuingBank(String issuingBank) {
+		this.issuingBank = issuingBank;
+	}
+	
+
+}

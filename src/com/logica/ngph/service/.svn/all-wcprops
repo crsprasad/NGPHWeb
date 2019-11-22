@@ -1,0 +1,287 @@
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/NGPH/!svn/ver/4319/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service
+END
+ReturnIMPSTransactionService.java
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/ReturnIMPSTransactionService.java
+END
+LcOpenService.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/NGPH/!svn/ver/4269/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/LcOpenService.java
+END
+EnquirySearchService.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/EnquirySearchService.java
+END
+PaymentMessageService.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/NGPH/!svn/ver/4239/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/PaymentMessageService.java
+END
+AuthorizationMaitenanceService.java
+K 25
+svn:wc:ra_dav:version-url
+V 119
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/AuthorizationMaitenanceService.java
+END
+QuickStacksService.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/QuickStacksService.java
+END
+GenerateReportService.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/GenerateReportService.java
+END
+FeedsService.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/FeedsService.java
+END
+EnquiryService.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/EnquiryService.java
+END
+DBPollerService.java
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/DBPollerService.java
+END
+ReceiverService.java
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/ReceiverService.java
+END
+MaintainBranchesService.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/MaintainBranchesService.java
+END
+AuthorizationSchemaMaitenanceService.java
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/AuthorizationSchemaMaitenanceService.java
+END
+GenericManagerService.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/GenericManagerService.java
+END
+AdviceLCPaymentService.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/NGPH/!svn/ver/4245/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/AdviceLCPaymentService.java
+END
+ReleaseBankGuaranteeService.java
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/ReleaseBankGuaranteeService.java
+END
+MaintaningServiceOrchestrationService.java
+K 25
+svn:wc:ra_dav:version-url
+V 126
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/MaintaningServiceOrchestrationService.java
+END
+EventManagerService.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/EventManagerService.java
+END
+PaymentService.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/PaymentService.java
+END
+LetterOfCreditService.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/NGPH/!svn/ver/4319/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/LetterOfCreditService.java
+END
+LoadService.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/LoadService.java
+END
+UserMaintenanceService.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/UserMaintenanceService.java
+END
+AccountMaintenaceService.java
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/NGPH/!svn/ver/4130/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/AccountMaintenaceService.java
+END
+MMIDManagerService.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/MMIDManagerService.java
+END
+MMIDReportService.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/MMIDReportService.java
+END
+FileUploadService.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/FileUploadService.java
+END
+InformationService.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/NGPH/!svn/ver/4188/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/InformationService.java
+END
+AuthStpService.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/AuthStpService.java
+END
+ESBXMLCreator.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/ESBXMLCreator.java
+END
+PaymentSubmittedReportService.java
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/PaymentSubmittedReportService.java
+END
+QuickStatsService.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/QuickStatsService.java
+END
+CreateBankGuaranteeService.java
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/CreateBankGuaranteeService.java
+END
+IErrorMsgsService.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/IErrorMsgsService.java
+END
+GroupMaintenanceService.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/GroupMaintenanceService.java
+END
+AuthUIService.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/AuthUIService.java
+END
+ChangePwdService.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/ChangePwdService.java
+END
+SodEodTaskService.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/SodEodTaskService.java
+END
+GroupMainService.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/GroupMainService.java
+END
+RoleMaintenanceService.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/RoleMaintenanceService.java
+END
+BannerService.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/BannerService.java
+END
+PendingAuthorizationService.java
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/PendingAuthorizationService.java
+END
+SearchService.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/SearchService.java
+END
+AuditService.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/AuditService.java
+END
+UserLoginService.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/UserLoginService.java
+END
+EventAuditService.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/EventAuditService.java
+END
+MemberTransactionLimitService.java
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/MemberTransactionLimitService.java
+END
+LcReportsService.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/NGPH/!svn/ver/4125/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/service/LcReportsService.java
+END

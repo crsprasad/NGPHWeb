@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>      
+ 
+  <field name="streamID">
+
+	<field-validator type="requiredstring">
+	<message> stream ID is required.</message>
+	</field-validator>
+	</field>
+	
+	
+        
+         
+<field name="msgType">
+
+	<field-validator type="requiredstring">
+	<message> Message Type is required.</message>
+	</field-validator>
+	
+	
+</field>
+
+<field name="subMsgType">
+
+	<field-validator type="requiredstring">
+	<message> Sub Message Type is required.</message>
+	</field-validator>
+	
+	
+</field>
+<field name="direction">
+
+	<field-validator type="requiredstring">
+	<message> Direction is required.</message>
+	</field-validator>
+	
+	
+</field>
+<field name="sequenceOfString">
+
+	<field-validator type="requiredstring">
+	<message> Please Create A Sequence of Service ID.</message>
+	</field-validator>
+	
+	
+</field>
+</validators>

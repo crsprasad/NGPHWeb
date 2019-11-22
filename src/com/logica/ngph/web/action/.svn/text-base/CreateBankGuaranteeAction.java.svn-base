@@ -1,0 +1,321 @@
+package com.logica.ngph.web.action;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.apache.struts2.interceptor.SessionAware;
+import org.apache.struts2.interceptor.validation.SkipValidation;
+import org.jboss.util.Base64;
+import org.springframework.context.ApplicationContextException;
+
+import com.logica.ngph.dtos.CreateBankGuaranteeDto;
+import com.logica.ngph.service.CreateBankGuaranteeService;
+import com.logica.ngph.service.PendingAuthorizationService;
+import com.logica.ngph.web.utils.ApplicationContextProvider;
+import com.logica.ngph.web.utils.WebConstants;
+import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.ModelDriven;
+
+public class CreateBankGuaranteeAction extends ActionSupport implements
+		ModelDriven<CreateBankGuaranteeDto>, SessionAware {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private static Logger logger = Logger.getLogger(CreateBankGuaranteeAction.class);
+	private CreateBankGuaranteeDto createBankGuaranteeDto = new CreateBankGuaranteeDto();
+	private Map<String, Object> session;
+	private String hiddenTxnRef;
+	private String txnRef;
+	private String saveAction;
+	private String checkForSubmit;
+	private boolean validUserToApprove;
+
+	
+	@SkipValidation
+	public String createBankGuarantee() {
+		try {
+			System.out.println(createBankGuaranteeDto.getBgCreateType());
+			//reset(createBankGuaranteeDto);
+			return "success";
+
+		} catch (NullPointerException nullPointerException) {
+			AuditServiceUtil.logNullPointerException(nullPointerException,
+					logger);
+		} catch (ApplicationContextException applicationContextException) {
+			AuditServiceUtil.logApplicationException(
+					applicationContextException, logger);
+		} catch (ClassCastException classCastException) {
+			AuditServiceUtil.logClassCastException(classCastException, logger);
+		} catch (Exception exception) {
+			AuditServiceUtil.logException(exception, logger);
+		}
+		addActionError("Unable to perform the operation. Please try again");
+		return "input";
+	}
+	
+	public String getBGApproval() {
+		try {			
+			String txnKey="";
+			PendingAuthorizationService pendingAuthorizationService = (PendingAuthorizationService)ApplicationContextProvider.getBean("pendingAuthorizationService");
+			String userId = (String)session.get(WebConstants.CONSTANT_USER_NAME);
+			
+		    txnKey = pendingAuthorizationService.getTranRef(serializeObject(),"Create Bank Guarantee",userId);
+			return "success";
+		
+
+		} catch (NullPointerException nullPointerException) {
+			AuditServiceUtil.logNullPointerException(nullPointerException,
+					logger);
+		} catch (ApplicationContextException applicationContextException) {
+			AuditServiceUtil.logApplicationException(
+					applicationContextException, logger);
+		} catch (ClassCastException classCastException) {
+			AuditServiceUtil.logClassCastException(classCastException, logger);
+		} catch (Exception exception) {
+			AuditServiceUtil.logException(exception, logger);
+		}
+		
+		addActionError("Unable to perform the operation. Please try again");
+		return "input";
+	}	
+	
+	@SkipValidation
+	public String getBGAuthorization()
+	{
+	try{
+		PendingAuthorizationService pendingAuthorizationService = (PendingAuthorizationService)ApplicationContextProvider.getBean("pendingAuthorizationService");
+		setCheckForSubmit("Display_Approve_Reject");
+		String userId = pendingAuthorizationService.getCreatedUser(getTxnRef());
+		String userRole = pendingAuthorizationService.getUserType((String)session.get(WebConstants.CONSTANT_USER_NAME));
+		if((((String)session.get(WebConstants.CONSTANT_USER_NAME)).equals(userId) || userRole.equals("T"))){
+			setValidUserToApprove(false);
+		} else {
+			setValidUserToApprove(true);
+		}
+		String tempScreenString =pendingAuthorizationService.getScreenReturn(getTxnRef());
+		CreateBankGuaranteeDto temp= getSerializedObject(tempScreenString);
+		
+		createBankGuaranteeDto.setBgNumber(temp.getBgNumber());
+		createBankGuaranteeDto.setBgCreateType(temp.getBgCreateType());
+		createBankGuaranteeDto.setBgDate(temp.getBgDate());
+		createBankGuaranteeDto.setBgRuleCode(temp.getBgRuleCode());
+		createBankGuaranteeDto.setBgRuleNarration(temp.getBgRuleNarration());
+		createBankGuaranteeDto.setBgDetails(temp.getBgDetails());
+		createBankGuaranteeDto.setSenderToReceiverInformation(temp.getSenderToReceiverInformation());
+		createBankGuaranteeDto.setAdvisingBank(temp.getAdvisingBank());
+		
+		setHiddenTxnRef(getTxnRef());
+				
+		return "success";
+	}	
+	catch (NullPointerException  nullPointerException) {
+		AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+	}
+	catch (ApplicationContextException applicationContextException) {
+		AuditServiceUtil.logApplicationException(applicationContextException, logger);
+	}
+	catch (ClassCastException classCastException) {
+		AuditServiceUtil.logClassCastException(classCastException, logger)	;
+	}
+	catch (Exception exception) {
+		AuditServiceUtil.logException(exception,logger);
+	}
+
+	addActionError("Unable to perform the operation. Please try again");
+	return "input";
+	}
+	
+	public String getObjectForBG()
+	{
+		try{
+			String userId = (String)session.get(WebConstants.CONSTANT_USER_NAME);
+			if(getSaveAction().equalsIgnoreCase("Approve")){			
+			CreateBankGuaranteeService createBankGuaranteeService =  (CreateBankGuaranteeService)  ApplicationContextProvider.getBean("createBankGuaranteeService");			
+			createBankGuaranteeService.createBankGuarantee(createBankGuaranteeDto, userId);
+			}
+			PendingAuthorizationService pendingAuthorizationService = (PendingAuthorizationService)ApplicationContextProvider.getBean("pendingAuthorizationService");
+			pendingAuthorizationService.changeStatus(getSaveAction(), getHiddenTxnRef());
+			
+			return "success";
+		
+		}catch (NullPointerException  nullPointerException) {
+			AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+		}
+		catch (ApplicationContextException applicationContextException) {
+			AuditServiceUtil.logApplicationException(applicationContextException, logger);
+		}
+		catch (ClassCastException classCastException) {
+			AuditServiceUtil.logClassCastException(classCastException, logger)	;
+		}
+		catch (Exception exception) {
+			AuditServiceUtil.logException(exception,logger);
+		}
+	
+		addActionError("Unable to perform the operation. Please try again");
+		return "input";
+	}
+
+	private void reset(CreateBankGuaranteeDto createBankGuaranteeDto) {
+		createBankGuaranteeDto.setBgCreateType("");
+		createBankGuaranteeDto.setBgDate(null);
+		createBankGuaranteeDto.setBgDetails("");
+		createBankGuaranteeDto.setBgNumber("");
+		createBankGuaranteeDto.setBgRuleCode("");
+		createBankGuaranteeDto.setBgRuleNarration("");
+		createBankGuaranteeDto.setSenderToReceiverInformation("");
+		
+	}
+	
+	private String serializeObject(){
+		CreateBankGuaranteeDto createBankGuaranteeDTO = new CreateBankGuaranteeDto();
+		try{
+			String userId = (String)session.get(WebConstants.CONSTANT_USER_NAME);
+			
+			createBankGuaranteeDTO = createBankGuaranteeDto;
+			System.out.print("BG NUMBER :"+createBankGuaranteeDTO.getBgNumber());
+			String fileName ="serial_"+userId+".ser";
+		FileOutputStream fos = new FileOutputStream(fileName);
+        OutputStream buffer = new BufferedOutputStream( fos );
+        ObjectOutputStream oos = new ObjectOutputStream(buffer);
+        oos.writeObject(createBankGuaranteeDTO);
+        oos.flush();
+        oos.close();
+        File file = new File(fileName);
+        byte[] byteArray = new byte[(int) file.length()];
+        FileInputStream fis = new FileInputStream(file); 
+        fis.read(byteArray);
+        String objectString = Base64.encodeBytes(byteArray);
+        System.out.print("Object String :"+objectString);
+        
+		return objectString;
+		
+       
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	private CreateBankGuaranteeDto getSerializedObject(String objectString){
+		
+try{
+			
+			byte[] decoded = Base64.decode(objectString);
+            
+            FileOutputStream foss = new FileOutputStream("targetUserObject.ser");
+            foss.write(decoded);
+            foss.close();
+            CreateBankGuaranteeDto testDTO = null;
+            
+            FileInputStream fiss = new FileInputStream("targetUserObject.ser");
+            BufferedInputStream bufferee = new BufferedInputStream( fiss );
+            ObjectInputStream oiss = new ObjectInputStream(bufferee);
+            testDTO = (CreateBankGuaranteeDto)oiss.readObject();
+            oiss.close();
+            System.out.println("object2: " + testDTO); 
+            System.out.print("User(testDTO) :"+testDTO.getBgNumber());
+          
+            return testDTO;
+
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public void validate(){
+		if(createBankGuaranteeDto.getBgCreateType().equalsIgnoreCase("ISSUE")){
+			if(createBankGuaranteeDto.getBgNumber()==null ||createBankGuaranteeDto.getBgNumber().isEmpty()){
+				addFieldError("bgNumber", "BG Number cannot be left empty.");
+			}
+		}
+		if(createBankGuaranteeDto.getBgRuleCode().equalsIgnoreCase("OTHR")){
+			if(createBankGuaranteeDto.getBgRuleNarration()==null||createBankGuaranteeDto.getBgRuleNarration().isEmpty()){
+				addFieldError("bgRuleNarration", "BG Rule Narration cannot be left empty.");
+			}
+		}
+		
+		if(createBankGuaranteeDto.getBgNumber().startsWith("/")){
+			 addFieldError("lcNumber", "Lc Number Must Not start with /");
+		}else if(createBankGuaranteeDto.getBgNumber().endsWith("/")){
+			addFieldError("lcNumber", "Lc Number must not End with /");;
+		}else if(createBankGuaranteeDto.getBgNumber().contains("//")){
+			addFieldError("lcNumber", "Lc Number must not contain two consecutive slashes '//'");
+		}
+	}
+	public CreateBankGuaranteeDto getModel() {		
+		return createBankGuaranteeDto;
+	}
+
+	public CreateBankGuaranteeDto getCreateBankGuaranteeDto() {
+		return createBankGuaranteeDto;
+	}
+
+	public void setCreateBankGuaranteeDto(
+			CreateBankGuaranteeDto createBankGuaranteeDto) {
+		this.createBankGuaranteeDto = createBankGuaranteeDto;
+	}
+
+	public String getHiddenTxnRef() {
+		return hiddenTxnRef;
+	}
+
+	public void setHiddenTxnRef(String hiddenTxnRef) {
+		this.hiddenTxnRef = hiddenTxnRef;
+	}
+
+	public String getTxnRef() {
+		return txnRef;
+	}
+
+	public void setTxnRef(String txnRef) {
+		this.txnRef = txnRef;
+	}
+
+	public String getSaveAction() {
+		return saveAction;
+	}
+
+	public void setSaveAction(String saveAction) {
+		this.saveAction = saveAction;
+	}
+
+	public String getCheckForSubmit() {
+		return checkForSubmit;
+	}
+
+	public void setCheckForSubmit(String checkForSubmit) {
+		this.checkForSubmit = checkForSubmit;
+	}
+
+	public boolean isValidUserToApprove() {
+		return validUserToApprove;
+	}
+
+	public void setValidUserToApprove(boolean validUserToApprove) {
+		this.validUserToApprove = validUserToApprove;
+	}
+
+	public Map<String, Object> getSession() {
+		return session;
+	}
+	
+	public void setSession(Map<String, Object> session) {
+		
+		this.session = session;
+	}
+	
+
+}

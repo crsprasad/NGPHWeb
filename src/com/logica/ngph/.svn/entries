@@ -1,0 +1,52 @@
+10
+
+dir
+4442
+http://inprj-rtgs01.groupinfra.com/svn/NGPH/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph
+http://inprj-rtgs01.groupinfra.com/svn/NGPH
+
+
+
+2013-06-20T08:36:27.168959Z
+4433
+siddharthg
+has-props
+
+
+
+
+
+
+
+
+
+
+
+
+
+a87dbdce-cdcb-d545-9d77-7c79a00decb8
+
+service
+dir
+
+utils
+dir
+
+serviceImpl
+dir
+
+dao
+dir
+
+daoImpl
+dir
+
+dtos
+dir
+
+Entity
+dir
+
+web
+dir
+

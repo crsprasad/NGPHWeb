@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+	<field name="bgCreateType">
+		<field-validator type="requiredstring">
+		<param name="fieldName">bgCreateType</param>
+		<message>BG Create Type Is Mandatory</message>	
+		</field-validator>
+	</field>
+	
+	<field name="bgRuleCode">
+		<field-validator type="requiredstring">
+		<param name="fieldName">bgRuleCode</param>
+		<message>BG Rule Code Is Mandatory</message>	
+		</field-validator>
+	</field>
+	
+	<field name="bgDetails">
+		<field-validator type="requiredstring">
+		<param name="fieldName">bgDetails</param>
+		<message>BG Details Is Mandatory</message>	
+		</field-validator>
+		
+		<field-validator type="regex">
+			<param name="fieldName">bgDetails</param>
+			<param name="expression"><![CDATA[[0-9a-zA-Z/-?:().,+' \n]+[^@%\\[\\]&*$#{}<>'~`;_!"=]+$]]></param>
+			<message>bg Details is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="senderToReceiverInformation">
+		
+		<field-validator type="regex">
+			<param name="fieldName">senderToReceiverInformation</param>
+			<param name="expression"><![CDATA[[0-9a-zA-Z/-?:().,+' \n]+[^@%\\[\\]&*$#{}<>'~`;_!"=]+$]]></param>
+			<message>senderToReceiverInformation is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="bgRuleNarration">
+		
+		
+		<field-validator type="regex">
+			<param name="fieldName">bgRuleNarration</param>
+			<param name="expression"><![CDATA[[0-9a-zA-Z/-?:().,+' \n]+[^@%\\[\\]&*$#{}<>'~`;_!"=]+$]]></param>
+			<message>bgRuleNarration is Not Valid</message>
+		</field-validator>
+	</field>
+		
+</validators>

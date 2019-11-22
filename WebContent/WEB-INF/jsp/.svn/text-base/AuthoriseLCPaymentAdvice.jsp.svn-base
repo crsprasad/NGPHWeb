@@ -1,0 +1,490 @@
+<%@page import="com.opensymphony.xwork2.ActionContext"%>
+<%@page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+<%@taglib uri="/struts-tags" prefix="s"%>
+<%@ taglib prefix="sx" uri="/struts-dojo-tags"%>
+<%@taglib uri="http://displaytag.sf.net" prefix="display"%>
+<link href="SpryAssets/SpryCollapsiblePanel.css" rel="stylesheet"
+	type="text/css" />
+<script src="SpryAssets/SpryCollapsiblePanel.js" type="text/javascript"></script>
+<script src="js/FormField.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+
+function callFetchLCDetails()
+{
+	var lcNumber= document.getElementById("lcNumber").value;
+	if(lcNumber==""){
+		window.open(
+				"<s:url action='searchAuthoriseLCPayAdvno' windowState='EXCLUSIVE' />",
+				'mywindow', 'top=50,left=250,width=750,height=410');
+	}
+	else
+		{
+		callShowGrid();
+		}
+		
+	}
+
+function callShowGrid()
+{
+	document.forms[0].action="displayAuthoLCPaymentAdData";
+	document.forms[0].submit();
+}
+
+function callNegotidvise()
+{
+	var negotiatingBankCode = document.getElementById("negotiatingBankCode").value;
+	var negotiatingBankNameAndAddress = document.getElementById("negotiatingBankNameAndAddress").value;
+	if(negotiatingBankCode!='')
+		{
+			
+			document.getElementById("negotiatingBankNameAndAddress").disabled = true;
+		}
+	else if(negotiatingBankNameAndAddress!='')
+		{
+			document.getElementById("negotiatingBankCode").disabled = true;	
+		document.getElementById("negotiationSearch").disabled = true;		
+		}
+	else
+		{
+		document.getElementById("negotiatingBankNameAndAddress").disabled = false;
+		document.getElementById("negotiatingBankCode").disabled = false;
+		document.getElementById("negotiationSearch").disabled = false;
+		
+		}
+	
+}
+
+
+
+
+function callSubmit(saveAction)
+{
+	var aa = document.getElementById('form');
+	for ( var i = 0; i < aa.length; i++) {
+		aa.elements[i].disabled = false;
+		}
+	document.getElementById("saveAction").value = saveAction;
+	document.forms[0].action="saveAuthoLcPayment";
+	document.forms[0].submit();
+}
+
+function callSearchIFSC(Action,flag) {
+
+	document.getElementById("searchAction").value = Action;
+	document.getElementById("IFSCFLAG").value = flag;
+window.open(
+		"<s:url action='showIFSCScreen' windowState='EXCLUSIVE' />",
+		'mywindow', 'top=50,left=250,width=750,height=410');
+}
+
+function callTolerance() {
+
+	var positiveTolerence = document.getElementById("positiveTolerance").value;
+	var negativeTolerance = document.getElementById("negativeTolerance").value;
+	var maxCredit = document.getElementById("maximumCreditAmount").value;
+
+	if (positiveTolerence != "" ) {
+
+		document.getElementById("maximumCreditAmount").disabled = true;
+	}else if(negativeTolerance != "")
+	{
+		document.getElementById("maximumCreditAmount").disabled = true;
+		}
+	 else if (maxCredit != "") {
+
+		document.getElementById("positiveTolerance").disabled = true;
+		document.getElementById("negativeTolerance").disabled = true;
+	} else {
+		document.getElementById("maximumCreditAmount").disabled = false;
+		document.getElementById("positiveTolerance").disabled = false;
+		document.getElementById("negativeTolerance").disabled = false;
+	}
+}
+
+function callAuthorised()
+{
+	var authorisedBankCode = document.getElementById("authorisedBankCode").value;
+	var authorisedBankNameAndAddress = document.getElementById("authorisedAndAddress").value;
+	if (authorisedBankCode != "") {
+		document.getElementById("authorisedAndAddress").disabled = true;
+		
+	}else if (authorisedBankNameAndAddress != "") {
+		document.getElementById("authorisedBankCode").disabled = true;
+		document.getElementById("btnAuth").disabled = true;
+		
+	}else
+		{
+		document.getElementById("authorisedAndAddress").disabled = false;
+		document.getElementById("authorisedBankCode").disabled = false;
+		document.getElementById("btnAuth").disabled = false;
+		document.getElementById("authorisedAndAddress").value="";
+		}
+	
+}
+
+function callDraweeAt()
+{
+	var draweeBankNameAddress = document.getElementById("draweeBankNameAddress").value;
+	var draweeBankCode = document.getElementById("draweeBankCode").value;
+	if (draweeBankCode != "") {
+		document.getElementById("draweeBankNameAddress").disabled = true;
+		
+	}else if (draweeBankNameAddress != "") {
+		document.getElementById("draweeBankCode").disabled = true;
+		document.getElementById("draweeSearch").disabled = true;
+		
+	}else
+		{
+		document.getElementById("draweeBankNameAddress").disabled = false;
+		document.getElementById("draweeBankCode").disabled = false;
+		document.getElementById("draweeSearch").disabled = false;
+		document.getElementById("draweeBankNameAddress").value="";
+		}
+	
+}
+
+function callCommentPOPUp()
+{
+	var repair = document.getElementById("repair").value;
+//alert("Repair :  - "+repair);
+	if(repair!="")
+	{
+	//	var comment  = document.getElementById("comment").value; 
+	//	if(comment==""){
+	//	window
+	//	.open(
+		//		"<s:url action='showRepairLetterOFCreditPopup' windowState='EXCLUSIVE' />",
+		//		'mywindow', 'top=500,left=250,width=750,height=410');
+		//	}else{
+					callSubmitForScreen();
+		//		}
+		}
+	else{
+		callSubmitForScreen();	
+		}
+	
+}
+function callSubmitForScreen()
+{
+	//alert("callSubmitForScreen")
+	var aa = document.getElementById('form');
+	for ( var i = 0; i < aa.length; i++) {
+		aa.elements[i].disabled = false;
+		}
+	document.forms[0].action="getAuthoriseLCAdvicePayment";
+	document.forms[0].submit();
+}
+</script>
+
+
+<sx:head parseContent="true" />
+<s:head />
+<div id="contentPane">
+<div id="contentPaneTop"></div>
+<div id="contentPaneFluid">
+<div id="contentPaneInternal"><span class="crumbs"><a
+	href="#">Outbound Payments</a>&nbsp;>&nbsp;Letter Of Credit&nbsp;>&nbsp;Authorise LC Payment Advice</span></div>
+<div id="content">
+<h1>Authorise LC Payment Advice</h1>
+
+
+<s:form method="post" id="form">
+<s:hidden id="searchAction" name="searchAction"></s:hidden>
+<s:hidden id="repairComments" name="repairComments"></s:hidden> 
+<s:hidden name="repair" id="repair"></s:hidden>
+<s:hidden name="IFSCFLAG" id="IFSCFLAG" ></s:hidden>
+<s:hidden id="comment" name="comment"></s:hidden>
+<s:hidden id="senderBank" name="senderBank"></s:hidden>
+	<div><s:if test="hasFieldErrors()">
+				<div class="errorMsg"><span class="errorMsgInline"><s:actionerror /><s:fielderror /></span></div>
+			</s:if></div><!--Error Msg Div Ends -->
+			<div id="CollapsiblePanel1" class="CollapsiblePanel">
+	<div class="CollapsiblePanelTab"><!--  <img src="images/openPanel.png" width="9" height="7" alt="openPanel" />-->&nbsp;Basic Details</div>
+	<div class="CollapsiblePanelContent">
+	<div><!-- Group One Div Starts --> 
+	<s:div id="main"	cssClass="dataGrid" style="width:100%;">
+	<table width="100%" cellpadding="3" cellspacing="1" border="0"	bgcolor="#ffffff">
+		<s:if test="%{repair!=''}">
+			<tr>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.lc_Number')}"></s:label>:<span class="mandatory">*</span></td>
+				<td width="30%" class="text"><s:textfield name="lcNumber" id="lcNumber" maxLength="16" onKeyPress='return notAllowCheck(this,event);' ></s:textfield></td>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.AccountID')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield name="acountID" id="acountID" maxLength="35" onKeyPress='return notAllowCheck(this,event);' ></s:textfield> </td>
+			</tr>
+			
+			<tr>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.applicableRules')}"></s:label>:<span class="mandatory">*</span></td>				
+				<td width="30%" class="text"><s:select list="{'NOTURR','URR LATEST VERSION'}" name="applicableRule" id="applicableRule" headerKey="" headerValue="Select Applicable Rule" ></s:select></td>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.ExpiryDate')}"></s:label>:</td>
+				<td width="30%" class="text"><sx:datetimepicker name="lcExpiryDate"	 cssClass="txtField" id="lcExpiryDate"  displayFormat="MM/dd/yyyy" type="date" /> </td>
+			</tr>
+			<tr>	
+				<td width="20%" class="textRight"><s:label value="%{getText('label.CreditAmount')}"></s:label>:<span class="mandatory">*</span></td>
+				<td width="30%" class="text"><s:textfield name="creditAmount" id="creditAmount" maxLength="15" onKeyPress='return notAllowCheck(this,event);'></s:textfield></td>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.expiryPlace')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield name="lcExpirePlace" id="lcExpirePlace" maxLength="29" onKeyPress='return notAllowCheck(this,event);' ></s:textfield> </td>
+			
+			</tr>
+			<tr>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.creditCurrency')}"></s:label>:<span class="mandatory">*</span></td>
+				<td width="30%" class="text"><s:select list="{'EUR','GBS','INR','USD'}" name="lcCurrency" id="lcCurrency" headerKey="" headerValue="Select Currency"  ></s:select>
+			</td>		
+				<td width="20%" class="textRight"><s:label value="%{getText('label.beneficiaryAccount')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield name="beneficiaryAccount" id="beneficiaryAccount" maxLength="34" onKeyPress='return notAllowCheck(this,event);' ></s:textfield> </td>
+			</tr>
+		
+			<tr>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.AdvisingBank')}"></s:label>:</td>
+					<td width="30%" class="text"><s:textfield name="advisingBank" id="advisingBank" maxLength="11" onKeyPress='return notAllowCheck(this,event);'> </s:textfield><input type="button" value="Search IFSC..."
+					onclick="return callSearchIFSC('ADVISINGIFSC','PARTY')" id="btnSearch"	class="btn" /> </td>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.beneficiaryNameAddress')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textarea name="beneficiaryNameAddress" id="beneficiaryNameAddress" rows="4" cols="35" wrap="HARD" onKeyPress='return maxLength(this,"139","beneficiaryNameAddress","35",event);'></s:textarea> </td>
+			</tr>
+			</s:if>
+			<s:if test="%{repair==''}">
+				<tr>
+					<td width="20%" class="textRight"><s:label value="%{getText('label.lc_Number')}"></s:label>:<span class="mandatory">*</span></td>
+					<td width="30%" class="text"><s:textfield name="lcNumber" id="lcNumber" maxLength="16" onKeyPress='return notAllowCheck(this,event);' ></s:textfield> <input type="button" value="Fetch" onclick="callFetchLCDetails()"> </td>
+					<td width="20%" class="textRight"><s:label value="%{getText('label.AccountID')}"></s:label>:</td>
+					<td width="30%" class="text"><s:textfield name="acountID" id="acountID" maxLength="35" onKeyPress='return notAllowCheck(this,event);' ></s:textfield> </td>
+				</tr>
+				<tr>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.applicableRules')}"></s:label>:<span class="mandatory">*</span></td>				
+				<td width="30%" class="text"><s:select list="{'NOTURR','URR LATEST VERSION'}" name="applicableRule" id="applicableRule" headerKey="" headerValue="Select Applicable Rule" ></s:select></td>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.ExpiryDate')}"></s:label>:</td>
+				<td width="30%" class="text"><sx:datetimepicker name="lcExpiryDate"	 cssClass="txtField" id="lcExpiryDate"  displayFormat="MM/dd/yyyy" type="date" disabled="true"/> </td>
+			</tr>
+				<tr>	
+					<td width="20%" class="textRight"><s:label value="%{getText('label.CreditAmount')}"></s:label>:<span class="mandatory">*</span></td>
+					<td width="30%" class="text"><s:textfield name="creditAmount" id="creditAmount" maxLength="15" onKeyPress='return notAllowCheck(this,event);'></s:textfield></td>
+					<td width="20%" class="textRight"><s:label value="%{getText('label.expiryPlace')}"></s:label>:</td>
+					<td width="30%" class="text"><s:textfield name="lcExpirePlace" id="lcExpirePlace" maxLength="29" readonly="true"></s:textfield> </td>
+				
+				</tr>
+			<tr>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.creditCurrency')}"></s:label>:<span class="mandatory">*</span></td>
+				<td width="30%" class="text"><s:textfield  name="lcCurrency" id="lcCurrency" readonly="true"></s:textfield></td>			
+				<td width="20%" class="textRight"><s:label value="%{getText('label.beneficiaryAccount')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield name="beneficiaryAccount" id="beneficiaryAccount" maxLength="34" onKeyPress='return notAllowCheck(this,event);' ></s:textfield> </td>
+			</tr>
+			
+			<tr>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.AdvisingBank')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield name="advisingBank" id="advisingBank" rows="4" readonly="true"></s:textfield> </td>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.beneficiaryNameAddress')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textarea name="beneficiaryNameAddress" id="beneficiaryNameAddress" rows="4" cols="35" wrap="HARD" onKeyPress='return maxLength(this,"139","beneficiaryNameAddress","35",event);'></s:textarea> </td>
+			</tr>
+			</s:if>
+		</table>
+	</s:div>
+	</div>
+	</div>
+	</div>					
+	</br>
+	<div id="CollapsiblePanel2" class="CollapsiblePanel">
+	<div class="CollapsiblePanelTab"><!--  <img src="images/openPanel.png" width="9" height="7" alt="openPanel" />-->&nbsp;Authorise Details</div>
+	<div class="CollapsiblePanelContent">
+	<div><!-- Group Two Div Starts --> 
+	<s:div id="mandatory"	cssClass="dataGrid" style="width:100%;">
+	<table width="100%" cellpadding="3" cellspacing="1" border="0"	bgcolor="#ffffff">
+		
+		<tr>
+			<td width="20%" class="textRight"><s:label value="%{getText('label.NegotiatingBankPartyIdentifier')}"></s:label>:</td>
+			<td width="30%" class="text"><s:select list="{'C','D'}" name="negotiatingBankPartyIdentifier" id="negotiatingBankPartyIdentifier" headerKey="" headerValue="Select PID" ></s:select><a>
+				</a><s:textfield name="negotiatingBankAccount" id="negotiatingBankAccount" maxLength="34" onKeyPress='return notAllowCheck(this,event);' ></s:textfield> </td>
+			<td width="20%" class="textRight"><s:label value="%{getText('label.NegotiatingBankNameAndAddress')}"></s:label>:</td>
+			<td width="30%" class="text"><s:textarea name="negotiatingBankNameAndAddress" id="negotiatingBankNameAndAddress" rows="4" cols="35" wrap="HARD" onKeyPress='return maxLength(this,"139","negotiatingBankNameAndAddress","35",event);' onkeyup="callNegotidvise()"></s:textarea> </td>
+		</tr>
+		<tr>	
+			<td width="20%" class="textRight"><s:label value="%{getText('label.NegotiatingBankCode')}"></s:label>:</td>
+			<td width="30%" class="text"><s:textfield name="negotiatingBankCode" id="negotiatingBankCode" maxLength="11" onkeyup="callNegotidvise()" onKeyPress='return notAllowCheck(this,event);'></s:textfield>
+			<input type="button" value="Search IFSC..."	onclick="callSearchIFSC('NEGOTIATIONIFSC','PARTY')" id ="negotiationSearch" class="btn" /></td>
+		</tr>
+			
+		</table>
+	</s:div><!-- Group Two Div End --> 
+	</div>
+	</div>
+	</div>
+		<br />
+	<div id="CollapsiblePanel3" class="CollapsiblePanel">
+	<div class="CollapsiblePanelTab"><!--  <img src="images/openPanel.png" width="9" height="7" alt="openPanel" />-->&nbsp;Other Details</div>
+	<div class="CollapsiblePanelContent">
+	<div><!-- Group Three Div Starts --> <s:div id="otherInfo"
+		cssClass="dataGrid" style="width:100%;">
+		<table width="100%" cellpadding="5" cellspacing="1" border="0"
+			bgcolor="#ffffff">
+		<s:if test="%{repair!=''}">
+	
+		<tr>
+			<td width="20%" class="textRight"><s:label
+					value="%{getText('label.positiveTolerance')}"></s:label>:</td>
+			<td width="30%" class="text">
+			<s:select list="#session.positiveToleranceList" name="positiveTolerance" id="positiveTolerance" value="%{positiveTolerance}" headerKey="" headerValue="Select Positive Tolerance" onchange="callTolerance()"></s:select>
+			
+			</td>
+			<td width="20%" class="textRight"><s:label	value="%{getText('label.negativeTolerance')}"></s:label>:</td>
+			<td width="30%" class="text">
+			
+			<s:select list="#session.negativeToleranceList" name="negativeTolerance" id="negativeTolerance" value="%{negativeTolerance}" headerKey="" headerValue="Select Negative Tolerance" onchange="callTolerance()" ></s:select>
+						</td>
+		</tr>		
+		</s:if>	
+		<s:if test="%{repair==''}">
+		<tr>
+			<td width="20%" class="textRight"><s:label	value="%{getText('label.positiveTolerance')}"></s:label>:</td>
+			<td width="30%" class="text"><s:textfield name="positiveTolerance" id="positiveTolerance" readonly="true"></s:textfield></td>
+			<td width="20%" class="textRight"><s:label	value="%{getText('label.negativeTolerance')}"></s:label>:</td>
+			<td width="30%" class="text"><s:textfield  name="negativeTolerance" id="negativeTolerance"  readonly="true"></s:textfield></td>
+		</tr>	
+		</s:if>
+			<tr>
+			<s:if test="%{repair!=''}">
+				<td width="20%" class="textRight"><s:label value="%{getText('label.maximumCreditAmount')}"></s:label>:</td>
+				<td width="30%" class="text"><s:select name="maximumCreditAmount" id="maximumCreditAmount" headerKey=""	headerValue="Select Maximum Credit Amount" list="{'NOT EXCEEDING'}"	onchange="callTolerance()"></s:select> </td>
+				</s:if>	
+			<s:if test="%{repair==''}">
+				<td width="20%" class="textRight"><s:label value="%{getText('label.maximumCreditAmount')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield name="maximumCreditAmount" id="maximumCreditAmount" readonly="true" ></s:textfield> </td>
+			</s:if>
+				
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.AdditionalAmountsCovered')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textarea name="additionalAmountsCovered" id="additionalAmountsCovered" rows="4" cols="35" wrap="HARD" onKeyPress='return maxLength(this,"139","additionalAmountsCovered","35",event);' ></s:textarea> </td>
+			</tr>
+			<s:if test="%{repair!=''}">
+			<tr>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.authorisedBankCode')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield name="authorisedBankCode" id="authorisedBankCode" onkeyup="callAuthorised()" onKeyPress='return notAllowCheck(this,event);'></s:textfield><input type="button" value="Search IFSC..."
+						onclick="return callSearchIFSC('AUTHORISEDIFSC','BRANCH')" id ="btnAuth" class="btn" /></td>			
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.authorisationMode')}"></s:label>:<span class="mandatory">*</span></td>
+				<td width="30%" class="text">
+				<s:select list="{'BY PAYMENT','BY ACCEPTANCE','BY NEGOTIATION','BY DEF PAYMENT','BY MIXED PYMT'}" name="authorisationMode" id="authorisationMode" headerKey="" headerValue="Select Mode" ></s:select>
+				</td>
+			</tr>			
+			<tr>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.authorisedAndAddress')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textarea name="authorisedAndAddress" id="authorisedAndAddress" rows="4" cols="35" wrap="HARD" onkeyup="callAuthorised()" onKeyPress='return maxLength(this,"139","authorisedAndAddress","35",event);' ></s:textarea> </td>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.DraftsAt')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textarea name="draftsAt" id="draftsAt" rows="3" cols="35" wrap="HARD" onKeyPress='return maxLength(this,"104");' ></s:textarea> </td>
+			</tr>
+			<tr>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.DraweeBankCode')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield name="draweeBankCode" id="draweeBankCode" maxLength="11" onkeyup="callDraweeAt()" onKeyPress='return notAllowCheck(this,event);'></s:textfield><input type="button" value="Search IFSC..."
+						onclick="return callSearchIFSC('DRAWEEIFSC','BOTH')" id ="draweeSearch" class="btn" /> </td>
+				
+				<td width="20%" class="textRight"><s:label value="%{getText('label.DraweeBankID')}"></s:label>:</td>
+				<td width="30%" class="text"><s:select list="{'C','D'}" name="draweeBankpartyidentifier" id="draweeBankpartyidentifier" headerKey="" headerValue="PID" ></s:select><a>
+				</a><s:textfield name="draweeBankAccount" id="draweeBankAccount" maxLength="34" onKeyPress='return notAllowCheck(this,event);' ></s:textfield> </td>				
+			</tr>
+			<tr>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.DraweeBankNameAddress')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textarea name="draweeBankNameAddress" id="draweeBankNameAddress" rows="4" cols="35" wrap="HARD" onkeyup="callDraweeAt()" onKeyPress='return maxLength(this,"139","draweeBankNameAddress","35",event);' ></s:textarea> </td>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.MixedPaymentDetails')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textarea name="mixedPaymentDetails" id="mixedPaymentDetails" rows="4" cols="35" wrap="HARD" onKeyPress='return maxLength(this,"139","mixedPaymentDetails","35",event);'  ></s:textarea> </td>
+			</tr>
+				</s:if>	
+			<s:if test="%{repair==''}">
+			<tr>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.authorisedBankCode')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield name="authorisedBankCode" id="authorisedBankCode" readonly="true"></s:textfield>				
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.authorisationMode')}"></s:label>:<span class="mandatory">*</span></td>
+				<td width="30%" class="text"><s:textfield name="authorisationMode" id="authorisationMode" readonly="true"></s:textfield> </td>	
+			</tr>			
+			<tr>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.authorisedAndAddress')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textarea name="authorisedAndAddress" id="authorisedAndAddress" rows="4" cols="35" wrap="HARD" onKeyPress='return maxLength(this,"139","authorisedAndAddress","35",event);' readonly="true"></s:textarea> </td>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.DraftsAt')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textarea name="draftsAt" id="draftsAt" rows="3" cols="35" wrap="HARD" onKeyPress='return maxLength(this,"104");' readonly="true"></s:textarea> </td>
+			</tr>
+			<tr>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.DraweeBankCode')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield name="draweeBankCode" id="draweeBankCode" readonly="true"></s:textfield> </td>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.DraweeBankID')}"></s:label>:</td>
+				<td width="30%" class="text"><s:select list="{'C','D'}" name="draweeBankpartyidentifier" id="draweeBankpartyidentifier" headerKey="" headerValue="PID" disabled="true"></s:select><a>
+				</a><s:textfield name="draweeBankAccount" id="draweeBankAccount" maxLength="34" readonly="true"></s:textfield> </td>				
+			</tr>
+			<tr>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.DraweeBankNameAddress')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textarea name="draweeBankNameAddress" id="draweeBankNameAddress" rows="4" cols="35" wrap="HARD" onKeyPress='return maxLength(this,"139","draweeBankNameAddress","35",event);' readonly="true"></s:textarea> </td>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.MixedPaymentDetails')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textarea name="mixedPaymentDetails" id="mixedPaymentDetails" rows="4" cols="35" wrap="HARD" onKeyPress='return maxLength(this,"139","mixedPaymentDetails","35",event);'  readonly="true"></s:textarea> </td>
+			</tr>
+			
+			</s:if>
+			<tr>
+			<s:if test="%{repair!=''}">
+				<td width="20%" class="textRight"><s:label value="%{getText('label.DeferredPaymentDetails')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textarea name="deferredPaymentDetails" id="deferredPaymentDetails" rows="4" cols="35" wrap="HARD" onKeyPress='return maxLength(this,"139","deferredPaymentDetails","35",event);' ></s:textarea> </td>
+			</s:if>
+			<s:if test="%{repair==''}">
+				<td width="20%" class="textRight"><s:label value="%{getText('label.DeferredPaymentDetails')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textarea name="deferredPaymentDetails" id="deferredPaymentDetails" rows="4" cols="35" wrap="HARD" onKeyPress='return maxLength(this,"139","deferredPaymentDetails","35",event);' readonly="true"></s:textarea> </td>
+			</s:if>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.ReimbursingBanksCharges')}"></s:label>:</td>				
+				<td width="30%" class="text"><s:select list="{'CLM','OUR'}" name="reimbursingBanksCharges" id="reimbursingBanksCharges" headerKey="" headerValue="Select Reimbursing Bank charge" ></s:select>  </td>
+			</tr>		
+			<tr>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.OtherCharges')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textarea name="otherCharges" id="otherCharges" rows="6" cols="35" wrap="HARD" onKeyPress='return maxLength(this,"210","otherCharges","35",event);'></s:textarea> </td>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.SendertoReceiverInformation')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textarea name="sendertoReceiverInformation" id="sendertoReceiverInformation" rows="6" cols="35" wrap="HARD" onKeyPress='return maxLength(this,"209","sendertoReceiverInformation","35",event);'></s:textarea> </td>
+			</tr>
+			</table>
+		</s:div> <!-- Group Three Div Ends --></div>
+		</div>
+		</div>
+	<!--  button panel starts -->
+	<div class="clearfix"></div>
+	<table width="100%" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td>
+		  	<s:if test="%{checkForSubmit!='Display_Approve_Reject'}">  
+				<input type="button" onclick="callCommentPOPUp()" value="Submit"  
+					class="btn" />
+					<input type="reset" value="Cancel" onclick="cancel()" class="btn"  />
+			</s:if> 
+			<s:if test="%{checkForSubmit=='Display_Approve_Reject'}">
+				<s:if test="%{validUserToApprove}">
+					<input type="button" value="Approve" onclick="callSubmit('Approve')">
+					<input type="button" value="Reject" onclick="callSubmit('Reject')">
+					<input type="button" value="Cancel" onclick="cancel()">
+				</s:if>
+				<s:if test="%{!validUserToApprove}">
+					<input type="button" value="Approve" onclick="callSubmit('Approve')" disabled="disabled">
+					<input type="button" value="Reject" onclick="callSubmit('Reject')" disabled="disabled">
+					<input type="button" value="Cancel" onclick="cancel()" disabled="disabled">
+				</s:if>
+			</s:if>  
+			</td>
+		</tr>
+	</table>	
+	<s:hidden id="saveAction" name="saveAction"></s:hidden>
+	<s:hidden id="hiddenTxnRef" name="hiddenTxnRef"></s:hidden>	
+	<s:hidden id="msgRef" name="msgRef"></s:hidden>
+</s:form></div>
+</div>
+</div>
+<div id="contentPaneBottom"></div>
+<script type="text/javascript">
+	var CollapsiblePanel1 = new Spry.Widget.CollapsiblePanel(
+			"CollapsiblePanel1");
+	var CollapsiblePanel2 = new Spry.Widget.CollapsiblePanel(
+			"CollapsiblePanel2");
+	var CollapsiblePanel3 = new Spry.Widget.CollapsiblePanel(
+	"CollapsiblePanel3");	
+</script>
+<script type="text/javascript">
+var check= document.getElementById("hiddenTxnRef").value;
+if(check!=''){
+	var aa = document.getElementById('form');
+	for ( var i = 0; i < aa.length-6; i++) {
+		//alert(aa.elements[i].value)
+		if(aa.elements[i].value!='Approve' || aa.elements[i].value!='Reject')
+		aa.elements[i].disabled = true;
+		document.getElementById("lcExpiryDate").disabled = true;
+	}
+}
+
+</script>			

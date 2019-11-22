@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+	
+	<field name="ifsc">
+		<field-validator type="requiredstring">
+			<message> Branch IFSC is required.</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">ifsc</param>
+			<param name="expression"><![CDATA[([A-Z]{4}+[0]{1}+[0-9a-zA-Z]{6})+$]]></param>
+			<message>Branch IFSC is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="partyName">
+		<field-validator type="requiredstring">
+			<message> Branch Name is required.</message>
+		</field-validator>
+	</field>
+	
+	<field name="partyCode">
+		<field-validator type="requiredstring">
+			<message> Branch Code is required.</message>
+		</field-validator>
+	</field>
+	
+	<field name="partyBankName">
+		<field-validator type="requiredstring">
+			<message> Bank Name is required.</message>
+		</field-validator>
+	</field>
+	
+	<field name="partyAddress">
+		<field-validator type="requiredstring">
+			<message> Address is required.</message>
+		</field-validator>
+	</field>
+	
+	
+	
+</validators>

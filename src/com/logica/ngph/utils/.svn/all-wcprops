@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 81
+/svn/NGPH/!svn/ver/4157/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/utils
+END
+ExceptionLog.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/utils/ExceptionLog.java
+END
+NgphCanonicalUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/utils/NgphCanonicalUtil.java
+END
+StringEncrypter.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/utils/StringEncrypter.java
+END
+ReportEntityUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/NGPH/!svn/ver/4157/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/utils/ReportEntityUtil.java
+END
+CheckXMLContent.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/utils/CheckXMLContent.java
+END
+SodEodUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/utils/SodEodUtil.java
+END
+AuthMsgPollRowMapper.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/utils/AuthMsgPollRowMapper.java
+END
+AuthSupMapper.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/utils/AuthSupMapper.java
+END

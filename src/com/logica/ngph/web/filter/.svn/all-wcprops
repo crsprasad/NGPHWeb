@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/NGPH/!svn/ver/4126/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/filter
+END
+HttpOnlyCookieFilter.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/NGPH/!svn/ver/4126/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/filter/HttpOnlyCookieFilter.java
+END
+CustomErrorResponseFilter.java
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/filter/CustomErrorResponseFilter.java
+END

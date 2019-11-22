@@ -1,0 +1,68 @@
+package com.logica.ngph.web.action;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.struts2.interceptor.SessionAware;
+
+import com.logica.ngph.dtos.AddressDto;
+import com.logica.ngph.dtos.GenericManagerDto;
+import com.logica.ngph.service.GenericManagerService;
+import com.logica.ngph.web.utils.ApplicationContextProvider;
+import com.logica.ngph.web.utils.WebConstants;
+import com.opensymphony.xwork2.ActionSupport;
+
+public class GenericScreenManager extends ActionSupport implements SessionAware{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String screenAppender;
+	private List<GenericManagerDto> screenValue;
+	private Map<String, Object> session ;
+	
+	
+	public Map<String, Object> getSession() {
+		return session;
+	}
+	public void setSession(Map<String, Object> session) {
+		this.session = session;
+	}
+	
+	public String getScreenAppender() {
+		return screenAppender;
+	}
+	public void setScreenAppender(String screenAppender) {
+		this.screenAppender = screenAppender;
+		
+		
+	}
+	
+	public String fetchData() throws SQLException
+	{
+		try{
+		String userId = (String)session.get(WebConstants.CONSTANT_USER_NAME);
+		GenericManagerService genericManagerService = (GenericManagerService)ApplicationContextProvider.getBean("genericManagerService");
+		setScreenValue(genericManagerService.fetchData(userId));
+		
+		return "success";
+		}
+		catch (Exception e) {
+			return "input";
+		}
+	}
+	
+	public List<GenericManagerDto> getScreenValue() {
+		return screenValue;
+	}
+	
+	public void setScreenValue(List<GenericManagerDto> screenValue) {
+		this.screenValue = screenValue;
+		this.session.put("screenValue", screenValue);
+	}
+
+}

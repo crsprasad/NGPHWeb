@@ -1,0 +1,387 @@
+package com.logica.ngph.serviceImpl;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.logica.ngph.common.NGPHException;
+import com.logica.ngph.common.dtos.Addresses;
+import com.logica.ngph.common.dtos.GenericFilePojo;
+import com.logica.ngph.common.dtos.Parties;
+import com.logica.ngph.dao.FileUploadDao;
+import com.logica.ngph.dtos.IMPS_ReconsiletDto;
+import com.logica.ngph.service.FileUploadService;
+import com.logica.ngph.web.utils.ConfigManager;
+
+public class FileUploadServiceImpl implements FileUploadService{
+	static Logger logger = Logger.getLogger(FileUploadServiceImpl.class);
+	private LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, ArrayList<GenericFilePojo>>>> config = null;
+	
+	FileUploadDao fileUploadDao;
+	public FileUploadDao getFileUploadDao() {
+		return fileUploadDao;
+	}
+
+	public void setFileUploadDao(FileUploadDao fileUploadDao) {
+		this.fileUploadDao = fileUploadDao;
+	}
+
+	
+	/*
+	 * This method is used to save the date into TA_INPS_RECONCILET 
+	 */
+	public void saveAdresses(List<Addresses> addresses) throws NGPHException {
+		
+		fileUploadDao.saveAdresses(convertAddressDTOToEntity(addresses));
+		
+	}
+
+	
+	/**
+	* This method is used to save the data into TA_PARTIES table
+	* @return void
+	*/
+	public void saveParties(List<Parties> parties) throws NGPHException {
+		
+		fileUploadDao.saveParties(convertPartiesDTOToEntity(parties));
+		
+	}
+	/**
+	* This method is used to set the Dto data into entity(Addesses)
+	* @param List<Addresses> addresses
+	* @return List<com.logica.ngph.Entity.Addresses> addressesEntityList
+	*/
+	private List<com.logica.ngph.Entity.Addresses> convertAddressDTOToEntity(List<Addresses> addresses){
+		List<com.logica.ngph.Entity.Addresses> addressesEntityList = new ArrayList<com.logica.ngph.Entity.Addresses>();
+		for(Addresses addressesDto :addresses){
+			com.logica.ngph.Entity.Addresses addressesEntity = new com.logica.ngph.Entity.Addresses();
+			addressesEntity.setAddressRef(addressesDto.getAddressRef());
+			addressesEntity.setAddressFor(addressesDto.getAddressFor());
+			addressesEntity.setBranchReference(addressesDto.getBranchReference());
+			addressesEntity.setBuildingDetail(addressesDto.getBuildingDetail());
+			addressesEntity.setCityName(addressesDto.getCityName());
+			addressesEntity.setCitySubDivision(addressesDto.getCitySubDivision());
+			addressesEntity.setDepartment(addressesDto.getDepartment());
+			addressesEntity.setEmailOne(addressesDto.getEmailOne());
+			addressesEntity.setEmailThree(addressesDto.getEmailThree());
+			addressesEntity.setEmailTwo(addressesDto.getEmailTwo());
+			addressesEntity.setFax(addressesDto.getFax());
+			addressesEntity.setPhoneOne(addressesDto.getPhoneOne());
+			addressesEntity.setPhoneThree(addressesDto.getPhoneThree());
+			addressesEntity.setPhoneTwo(addressesDto.getPhoneTwo());
+			addressesEntity.setPostalAddressNature(addressesDto.getPostalAddressNature());
+			addressesEntity.setPostalCode(addressesDto.getPostalCode());
+			addressesEntity.setPostalServiceAddress(addressesDto.getPostalServiceAddress());
+			addressesEntity.setStreetName(addressesDto.getStreetName());
+			addressesEntity.setSubDepartment(addressesDto.getSubDepartment());
+			addressesEntity.setTownName(addressesDto.getTownName());
+			addressesEntityList.add(addressesEntity);
+		}
+		return addressesEntityList;
+	
+	}
+	/**
+	* This method is used to set the Dto data into entity(Parties)
+	* @param List<Parties> partiesList
+	* @return List<com.logica.ngph.Entity.Parties> partiesEntityList
+	*/
+	private List<com.logica.ngph.Entity.Parties> convertPartiesDTOToEntity(List<Parties> partiesList ){
+		List<com.logica.ngph.Entity.Parties> partiesEntityList =  new ArrayList<com.logica.ngph.Entity.Parties>();
+		
+		for(Parties partiesDto:partiesList){
+			com.logica.ngph.Entity.Parties partiesEntity = new com.logica.ngph.Entity.Parties();
+			partiesEntity.setBankIdentifierCode(partiesDto.getBankIdentifierCode());
+			partiesEntity.setAddressRef(partiesDto.getAddressRef());
+			partiesEntity.setAgentName(partiesDto.getAgentName());
+			partiesEntity.setBankReference(partiesDto.getBankReference());
+			partiesEntity.setBranch(partiesDto.getBranch());
+			partiesEntity.setClearingSystemMemberCode(partiesDto.getClearingSystemMemberCode());
+			partiesEntity.setClearingSystemMemberExternalCode(partiesDto.getClearingSystemMemberExternalCode());
+			partiesEntity.setClearingSystemMemberId(partiesDto.getClearingSystemMemberId());
+			partiesEntity.setExternalPartyIdendificationId(partiesDto.getExternalPartyIdendificationId());
+			partiesEntity.setIdendificationSchme(partiesDto.getIdendificationSchme());
+			partiesEntity.setIsCorrespondent(partiesDto.getIsCorrespondent());
+			partiesEntity.setParentIdIndicator(partiesDto.getParentIdIndicator());
+			partiesEntity.setPartyIdendificationId(partiesDto.getPartyIdendificationId());
+			partiesEntity.setPartyissr(partiesDto.getPartyissr());
+			partiesEntityList.add(partiesEntity);
+		}
+		
+		return partiesEntityList;
+		
+	}
+
+	
+	public void saveIMPSConsilet(List<IMPS_ReconsiletDto> impsReconsilet, String direction)
+			throws NGPHException {
+		fileUploadDao.saveIMPS(convertImpsDTOToEntity(impsReconsilet, direction));
+		
+		}
+	private List<com.logica.ngph.Entity.IMPS_Consilet> convertImpsDTOToEntity(List<IMPS_ReconsiletDto> impsList, String direction ){
+		List<com.logica.ngph.Entity.IMPS_Consilet> impsEntityList =  new ArrayList<com.logica.ngph.Entity.IMPS_Consilet>();
+		
+		for(IMPS_ReconsiletDto impsDto:impsList){
+			com.logica.ngph.Entity.IMPS_Consilet impsEntity = new com.logica.ngph.Entity.IMPS_Consilet();
+			impsEntity.setImps_PARTICIPANT_ID(impsDto.getImps_PARTICIPANT_ID());
+			impsEntity.setImps_TRANSACTION_TYPE(impsDto.getImps_TRANSACTION_TYPE());
+			impsEntity.setImps_FROM_ACCOUNT_TYPE(impsDto.getImps_FROM_ACCOUNT_TYPE());
+			impsEntity.setImps_TO_ACCOUNT_TYPE(impsDto.getImps_TO_ACCOUNT_TYPE());
+			impsEntity.setImps_TRANSACTION_SERIAL(impsDto.getImps_TRANSACTION_SERIAL());
+			impsEntity.setImps_RESPONSE_CODE(impsDto.getImps_RESPONSE_CODE());
+			impsEntity.setImps_PAN_NUMBER(impsDto.getImps_PAN_NUMBER());
+			impsEntity.setImps_MEMBER_NUMBER(impsDto.getImps_MEMBER_NUMBER());
+			impsEntity.setImps_APPROVAL_NUMBER(impsDto.getImps_APPROVAL_NUMBER());
+			impsEntity.setImps_SYSTEM_TRACE_AUDIT(impsDto.getImps_SYSTEM_TRACE_AUDIT());
+			impsEntity.setImps_TRANSACTION_DATE(impsDto.getImps_TRANSACTION_DATE());
+			impsEntity.setImps_TRANSACTION_TIME(impsDto.getImps_TRANSACTION_TIME());
+			impsEntity.setImps_MERCHANT_CATEGORY_CODE(impsDto.getImps_MERCHANT_CATEGORY_CODE());
+			impsEntity.setImps_SETTLEMENT_DATE(impsDto.getImps_SETTLEMENT_DATE());
+			impsEntity.setImps_CARD_ACCEPTOR_ID(impsDto.getImps_CARD_ACCEPTOR_ID());
+			impsEntity.setImps_CARD_ACCEPTOR_TERMINAL_ID(impsDto.getImps_CARD_ACCEPTOR_TERMINAL_ID());
+			impsEntity.setImps_CARD_ACCEPTOR_TERMINAL_LOC(impsDto.getImps_CARD_ACCEPTOR_TERMINAL_LOC());
+			impsEntity.setImps_AQUIRER_ID(impsDto.getImps_AQUIRER_ID());
+			impsEntity.setImps_NETWORK_ID(impsDto.getImps_NETWORK_ID());
+			impsEntity.setImps_ACCOUNT_1_NUMBER(impsDto.getImps_ACCOUNT_1_NUMBER());
+			impsEntity.setImps_ACCOUNT_1_BRANCH_ID(impsDto.getImps_ACCOUNT_1_BRANCH_ID());
+			impsEntity.setImps_ACCOUNT_2_NUMBER(impsDto.getImps_ACCOUNT_2_NUMBER());
+			impsEntity.setImps_ACCOUNT_2_BRANCH_ID(impsDto.getImps_ACCOUNT_2_BRANCH_ID());
+			impsEntity.setImps_TRANSACTION_CURRENCY(impsDto.getImps_TRANSACTION_CURRENCY());
+			impsEntity.setImps_TRANSACTION_AMOUNT(impsDto.getImps_TRANSACTION_AMOUNT());
+			impsEntity.setImps_ACTUAL_TRANSACTION_AMT(impsDto.getImps_ACTUAL_TRANSACTION_AMT());
+			impsEntity.setImps_TRANSACTION_ACTIVITY_FEE(impsDto.getImps_TRANSACTION_ACTIVITY_FEE());
+		//	impsEntity.setImps_ISSUER_1_SETTLEMENT_AMOUNT(impsDto.getImps_ISSUER_1_SETTLEMENT_AMOUNT());
+			
+			impsEntity.setImps_ISSUER_1_SETTLEMENT_CURRENCY(impsDto.getImps_ISSUER_1_SETTLEMENT_CUR());
+			impsEntity.setImps_ISSUER_1_SETTLEMENT_FEE(impsDto.getImps_ISSUER_1_SETTLEMENT_FEE());
+			impsEntity.setImps_ISSUER_1_STL_PROCESSING_FEE(impsDto.getImps_ISSUER_1_STL_PROCESSING_FEE());
+			impsEntity.setImps_CARDHOLDER_1_BILL_CURRENCY(impsDto.getImps_CARDHOLDER_1_BILL_CURRENCY());
+			impsEntity.setImps_CARDHOLDER_1_BILLING_AMOUNT(impsDto.getImps_CARDHOLDER_1_BILLING_AMOUNT());
+			impsEntity.setImps_CARDHOLDER_1_BILL_ACTV_FEE(impsDto.getImps_CARDHOLDER_1_BILL_ACTV_FEE());
+			impsEntity.setImps_CARDHOLDER_1_BILL_PROC_FEE(impsDto.getImps_CARDHOLDER_1_BILL_PROC_FEE());
+			impsEntity.setImps_CARDHOLDER_1_BILL_SVC_FEE(impsDto.getImps_CARDHOLDER_1_BILL_SVC_FEE());
+			impsEntity.setImps_CRDHLDR_1_CONV_RATE(impsDto.getImps_CRDHLDR_1_CONV_RATE());
+			impsEntity.setImps_STLMNT_CRDHLDR_1_CONV_RATE(impsDto.getImps_STLMNT_CRDHLDR_1_CONV_RATE());
+			impsEntity.setImps_DIRECTION(direction);
+			
+			
+			impsEntityList.add(impsEntity);
+		}
+		
+		return impsEntityList;
+		
+	}
+	
+	private LinkedHashMap<String, LinkedHashMap<String, LinkedHashMap<String, ArrayList<GenericFilePojo>>>>  getConfigData(String filename)
+	{
+		 config = new ConfigManager().getConfig(filename);
+		 logger.info("Map Returned from Congif File : " + config);
+		 return config;
+	}
+
+	@Transactional (propagation = Propagation.REQUIRED, readOnly=false, rollbackFor={Exception.class,RuntimeException.class,Throwable.class})
+	public String doProcess(String destFilePath, String tableName, String srcFileName, String csvFileName) 
+	{
+		String status = "input"; 
+	
+		try 
+		{
+			status = fileUploadDao.populateIFSCFileData(destFilePath, tableName, srcFileName, csvFileName);
+			fileUploadDao.populateLogFileData(srcFileName, tableName, status);
+			}
+		catch (Exception ex) 
+		{
+			 //platformTransactionManager.rollback(status);
+			 logger.error("Exception occured while file Upload", ex);
+			
+		}
+		return status;
+	}
+
+	public void logFileStatus(String fileName, String fileStatus) 
+	{
+			
+			String dupCheck=null;
+			String fileKey = null;
+			 String[] keys = (String[])( config.keySet().toArray( new String[config.size()] ) );
+			 
+			    for(int i=0;i<keys.length;i++)
+			    {
+			    	if(fileName.startsWith(keys[i].substring(0, keys[i].length()-1)))
+			    	{
+			    		dupCheck = keys[i].substring(keys[i].length()-1, keys[i].length());
+			    		fileKey = keys[i].substring(0, keys[i].length()-1);
+			    		break;
+			    	}
+			    }
+			 
+			    fileUploadDao.logFileData(fileName, config.get(fileKey + dupCheck).keySet().toArray()[0].toString(), fileStatus);
+		
+		
+	}
+	
+	public String performexecute(String data, String filename) 
+	{
+		int bodyRecordcount = 0;
+		String table = null;
+		 try{
+			 
+			 String dataFile = data;  
+			 //logger.info("Contents read from Queue for FS Provider : " + dataFile);
+			 String fileKey = null;
+			 getConfigData("configFile/GenericConfig.xml");
+			 
+			filename = filename.substring(0, filename.indexOf("."));
+			System.out.println("FileName : " + filename);
+
+			if (config != null)
+			{
+				String dupCheck = null;
+				boolean isFilePrsnt = false;
+			    String[] keys = (String[])( config.keySet().toArray( new String[config.size()] ) );
+			    
+			    for(int i=0;i<keys.length;i++)
+			    {
+			    	if(filename.startsWith(keys[i].substring(0, keys[i].length()-1)))
+			    	{
+			    		isFilePrsnt = true;
+			    		dupCheck = keys[i].substring(keys[i].length()-1, keys[i].length());
+			    		fileKey = keys[i].substring(0, keys[i].length()-1);
+			    		break;
+			    	}
+			    }
+			 if(isFilePrsnt == true)
+			 {
+				 // Fetch the Map Attribute based on file Name and get Table Name.
+				 LinkedHashMap<String, LinkedHashMap<String, ArrayList<GenericFilePojo>>> tableName = config.get(fileKey + dupCheck);
+				 logger.info(" Table Map Retrived from Config File : " + tableName);
+	
+				 Iterator<String> iterator = tableName.keySet().iterator();
+				 
+				 while (iterator.hasNext())
+				 {
+					 table = ( String ) iterator.next();
+					 logger.info("Table name Read from Configuration : " + table);
+				 
+				 // Fetch the Map Attribute based on fine Name and get Table Info.
+				 LinkedHashMap<String, ArrayList<GenericFilePojo>> tableData = tableName.get(table);
+				 logger.info("Map Retrived from Config File for tableName " + table + " : " + tableData);
+				 
+				 String rawData[]  = dataFile.split("\r\n");
+				 String strLine;
+				 for(int k=0;k<rawData.length;k++)
+				 {
+				  strLine = rawData[k];
+				  //logger.info(strLine);
+				  String id = strLine.substring(0, 2);
+				  //logger.info("ID Val -> " + id);
+				  
+				  // Line Value After removing id (first 2 Characters)
+				  String actualData = strLine.substring(id.length(), strLine.length());
+				
+				//Check if the key is present in Map
+				if(tableData.containsKey(id))
+				{
+				  ArrayList<GenericFilePojo> columns = tableData.get(id);
+				  
+				  //Local list
+				  ArrayList<GenericFilePojo> dataHolder = new ArrayList<GenericFilePojo>();
+				  for(int i=0;i<columns.size();i++)
+				  {
+					  GenericFilePojo obj = columns.get(i);
+					  if(obj!=null)
+					  {
+						  if(StringUtils.isNotBlank(obj.getColoumnName()) && StringUtils.isNotEmpty(obj.getColoumnName()))
+						  {
+							 if(id.equalsIgnoreCase("10"))
+							 {
+								 dataHolder.add(obj);
+							 }
+						  }
+						  else
+						  {
+							  //logger.info("Column Value is null for Header Id : " + id + " and Column Value :  " + obj.getFieldName());
+						  }
+					  }
+					  else
+					  {
+						  //logger.info("Null Pojo Object Received for Header Id : " + id);
+					  }
+				  }
+				  	if(dupCheck.equalsIgnoreCase("E") && fileUploadDao.checkFileData(dataHolder, actualData, table)>0)
+				  	{
+				  		logger.error("Duplicate Check Status with Record Found : " + dupCheck);
+				  	}
+				  	//Normal Functionality
+				  	else
+				  	{
+					  //Update record in DB
+				  		fileUploadDao.updateFileData(dataHolder,actualData,table);
+
+					  if(id.equalsIgnoreCase("10"))
+					  {
+						  ++bodyRecordcount;
+					  }
+					  
+					  //Check for record count in Trailer Block and Roll Back Transaction if record count do not match
+					  if(id.equalsIgnoreCase("99"))
+					  {
+						  int recordCount = Integer.parseInt(actualData.substring(0, 6));
+						  logger.info("Record Count read from trailer Block : " + recordCount );
+						  logger.info("Record Count read from Body Block : " + bodyRecordcount);
+						  
+						  if(bodyRecordcount==recordCount)
+						  {
+							  logger.info("Record count match");
+						  }
+						  else
+						  {
+							  logger.error("Record Count does not match");
+							
+						  }
+					  }
+				  	}
+			  }
+			  else
+			  {
+				  logger.warn("No key Match found for ID : " + id);
+			  }
+		 }
+			 }
+			//	 String [] auditParams = new String [1];
+			//	 auditParams[0] = filename;
+				
+			 }
+			  else
+				{
+			//	  String [] auditParams = new String [1];
+			//	auditParams[0] = filename;
+			//	EventLogger.logEvent("NGPHFILACT0005", FileListener.class, null, auditParams);
+				  logger.warn("File Name does not Exists in Config File " + filename);
+				}
+			}
+			else
+			{
+			//	String [] auditParams = new String [1];
+			//	auditParams[0] = filename;
+			//	EventLogger.logEvent("NGPHFILACT0007", FileListener.class, null, auditParams);
+			}
+		 }
+			
+		 catch (Exception e)
+		 {
+			  logger.error(e, e);
+		//	  String [] auditParams = new String [1];
+		//	  auditParams[0] = filename;
+			//  EventLogger.logEvent("NGPHFILACT0006", FileListener.class, null, auditParams);
+			  
+		 }
+		 return table;
+		 
+	}
+}

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+	<field name="bgNumber">
+		<field-validator type="requiredstring">
+		<param name="fieldName">bgNumber</param>
+		<message>Transaction Reference No(20) is Mandatory</message>	
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">bgNumber</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Transaction Reference No(20) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="relatedReference">
+		<field-validator type="requiredstring">
+		<param name="fieldName">relatedReference</param>
+		<message>Related Reference(21) is Mandatory</message>	
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">relatedReference</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Related Reference(21) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="bgAccountIdentification">
+		<field-validator type="regex">
+			<param name="fieldName">bgAccountIdentification</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Account Identification(25) is Not Valid</message>
+		</field-validator>
+	</field>
+    <field name="dateofMessageBeingAcknowledged">
+		<field-validator type="required">
+			<param name="fieldName">dateofMessageBeingAcknowledged</param>
+			<message>Date of Message Being Acknowledged(30) Is Required</message>	
+		</field-validator>
+	</field>
+	<field name="accountwithPartyLocation">
+		<field-validator type="regex">
+			<param name="fieldName">accountwithPartyLocation</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Account With Party Location(57a) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="adviseThroughBankName"> 
+		<field-validator type="textAreaSize">
+		<param name="fieldName">adviseThroughBankName</param>
+		<param name="maxNumLines">4</param>
+		<param name="maxCharInLine">35</param>
+		<param name="maxCharsField">140</param>
+			<message>Account With Name and Address(57a) must be 4*35 lines</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">adviseThroughBankName</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Account With Name and Address(57a) is Not Valid</message>
+		</field-validator>
+		
+	</field>
+	
+	<field name="chargesDetails">
+		<field-validator type="textAreaSize">
+		<param name="fieldName">chargesDetails</param>
+		<param name="maxNumLines">6</param>
+		<param name="maxCharInLine">35</param>
+		<param name="maxCharsField">210</param>
+			<message>Details of Charges(71B) must be 6*35 lines</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">chargesDetails</param>
+			<param name="expression"><![CDATA[[0-9a-zA-Z/-?:().,+' \n]+[^@%\\[\\]&*$#{}<>'~`;_!"=]+$]]></param>
+			<message>Details of Charges(71B) is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="senderToReceiverInformation">
+		<field-validator type="textAreaSize">
+		<param name="fieldName">senderToReceiverInformation</param>
+		<param name="maxNumLines">6</param>
+		<param name="maxCharInLine">35</param>
+		<param name="maxCharsField">210</param>
+			<message>senderToReceiverInformation(72) must be 6*35 lines</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">senderToReceiverInformation</param>
+			<param name="expression"><![CDATA[[0-9a-zA-Z/-?:().,+' \n]+[^@%\\[\\]&*$#{}<>'~`;_!"=]+$]]></param>
+			<message>senderToReceiverInformation(72) is Not Valid</message>
+		</field-validator>
+	</field>
+	
+</validators>

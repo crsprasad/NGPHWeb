@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+	<field name="lcNumber">
+		<field-validator type="requiredstring">
+		<param name="fieldName">lcNumber</param>
+		<message>Sender Banks Reference(20) is Mandatory</message>	
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">lcNumber</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Sender Banks Reference(20) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="relatedReference">
+		<field-validator type="requiredstring">
+		<param name="fieldName">relatedReference</param>
+		<message>Receiver Bank Reference Number(21) is Mandatory</message>	
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">relatedReference</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Receiver Bank Reference Number(21) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="lcAccId">
+		<field-validator type="regex">
+			<param name="fieldName">lcAccId</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Account Identification(25) is Not Valid</message>
+		</field-validator>
+	</field>
+    <field name="lcAckDate">
+		<field-validator type="required">
+		<param name="fieldName">lcAckDate</param>
+		<message>Date of Message Being Acknowledged(30) is Mandatory</message>	
+		</field-validator>
+	</field>
+	
+	<field name="adviseThroughBankName">
+	   <field-validator type="textAreaSize">
+		<param name="fieldName">adviseThroughBankName</param>
+		<param name="maxNumLines">4</param>
+		<param name="maxCharInLine">35</param>
+		<param name="maxCharsField">140</param>
+			<message>Account With Name and Address(57a) must be 4*35 lines</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">adviseThroughBankName</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Account With Name and Address(57a) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="chargeDetails">
+		<field-validator type="textAreaSize">
+		<param name="fieldName">chargeDetails</param>
+		<param name="maxNumLines">6</param>
+		<param name="maxCharInLine">35</param>
+		<param name="maxCharsField">210</param>
+			<message>Charges(71B) must be 6*35 lines</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">chargeDetails</param>
+			<param name="expression"><![CDATA[[0-9a-zA-Z/-?:().,+' \n]+[^@%\\[\\]&*$#{}<>'~`;_!"=]+$]]></param>
+			<message>Charges(71B) is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="SendertoReceiverInformation">
+		<field-validator type="textAreaSize">
+		<param name="fieldName">SendertoReceiverInformation</param>
+		<param name="maxNumLines">6</param>
+		<param name="maxCharInLine">35</param>
+		<param name="maxCharsField">210</param>
+			<message>Sender to Receiver Information(72) must be 6*35 lines</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">SendertoReceiverInformation</param>
+			<param name="expression"><![CDATA[[0-9a-zA-Z/-?:().,+' \n]+[^@%\\[\\]&*$#{}<>'~`;_!"=]+$]]></param>
+			<message>Sender to Receiver Information(72) is Not Valid</message>
+		</field-validator>
+	</field>
+</validators>
+	
+	
+	
+	
+	

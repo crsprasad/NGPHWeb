@@ -1,0 +1,157 @@
+<%@page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1" import="com.logica.ngph.web.utils.*"%>
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@taglib uri="/struts-tags" prefix="s"%>
+<%@ taglib prefix="sd" uri="/struts-dojo-tags"%>
+<%@taglib uri="http://displaytag.sf.net" prefix="display"%>
+<script type="text/javascript">
+	function prnTbl(strid) {
+
+		var printContent = document.getElementById(strid);
+		var windowUrl = 'about:blank';
+		var uniqueName = new Date();
+		var windowName = 'Print' + uniqueName.getTime();
+
+		var printWindow = window.open(windowUrl, windowName,
+				'left=50000,top=50000,width=800,height=600');
+		printWindow.document.body.innerHTML = printContent.innerHTML;
+		printWindow.document.close();
+		printWindow.focus();
+		printWindow.print();
+		printWindow.close();
+		return false;
+
+	}
+	function openPopUp()
+	{	
+		var msg = document.getElementById("msgRef").value;
+		PopUp(msg.replace(new RegExp('\n','g'), '<br />'));
+		//alert("helloo")
+		//alert(msg.replace(new RegExp('\n','g'), '<br />'));
+		
+	}
+
+	function PopUp(msgvalue){
+		var ScreenWidth=window.screen.width;
+		var ScreenHeight=window.screen.height;
+		var movefromedge=0;
+		placementx=(ScreenWidth/2)-((400)/2);
+		placementy=(ScreenHeight/2)-((300+50)/2);
+		WinPop=window.open("About:Blank","","width=600,height=400,toolbar=0,location=0,directories=0,status=0,scrollbars=1,menubar=0,resizable=0,left="+placementx+",top="+placementy+",scre enX="+placementx+",screenY="+placementy+",");
+		var SayWhat = "<p><font color='black'>"+msgvalue+"</font></p>"; 
+		WinPop.document.write('<html>\n<head>\n</head>\n<body>'+SayWhat+'</body></html>');
+		}
+	function goBack()
+	  {
+		document.forms[0].action="cancelView";
+		document.forms[0].submit();
+	  }
+
+
+	
+</script>
+<div id="contentPane">
+<div id="contentPaneTop"></div>
+<div id="contentPaneFluid">
+<div id="contentPaneInternal"><span class="crumbs"><a
+	href="#">Enquiries & Reports</a>&nbsp;>&nbsp;Payment Enquiry</span></div>
+<div id="content">
+<h1>View</h1>
+<s:form method="post" action="displayMessages">
+	<s:hidden name="msgRef" id="msgRef" style="width:95%;height:30%;" rows="15"></s:hidden>
+	<s:hidden name ="rawMessage" id="rawMessage"></s:hidden>
+	<table width="100%" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td>
+			<table width="95%" cellpadding="5" cellspacing="1" border="0"
+				bgcolor="#c5d6f0" id="table1">
+				<tr>
+					<td width="20%" class="textRight">Message Type:&nbsp;</td>
+					<td width="30%" class="text"><s:textfield name="msgType"
+						id="msgType" key="Msg Type" cssClass="txtField" disabled="true"></s:textfield></td>
+					<td width="20%" class="textRight">Sender Bank:&nbsp;</td>
+					<td width="30%" class="text"><s:textfield name="senderBank"
+						id="senderBank" key="sender Bank" cssClass="txtField"
+						disabled="true"></s:textfield></td>
+				</tr>
+				<tr>
+
+					<td class="textRight">Select Channel:&nbsp;</td>
+					<td class="text"><s:textfield name="msgChannel"
+						id="msgChannel" key="channel" cssClass="txtField" disabled="true"></s:textfield></td>
+					<td class="textRight">Receiver Bank:&nbsp;</td>
+					<td class="text"><s:textfield name="receiverBank"
+						id="receiverBank" key="Receiver Bank" cssClass="txtField"
+						disabled="true"></s:textfield></td>
+				</tr>
+				<tr>
+
+					<td class="textRight">Message Direction:&nbsp;</td>
+					<td class="text"><s:textfield name="msgDirection"
+						id="msgDirection" key="msgDirection" cssClass="txtField"
+						disabled="true"></s:textfield></td>
+					<td class="textRight">Message Amount:&nbsp;</td>
+					<td class="text"><s:textfield name="msgAmount" id="msgAmount"
+						key="msg Amount" cssClass="txtField" disabled="true"></s:textfield></td>
+				</tr>
+				<tr>
+
+					<td class="textRight">Transaction Reference:&nbsp;</td>
+					<td class="text"><s:textfield name="txnReference"
+						id="txnReference" key=" TRan Reference" cssClass="txtField"
+						disabled="true"></s:textfield></td>
+					<td class="textRight">Message Value Date:&nbsp;</td>
+					<td class="text"><s:textfield name="msgValueDate"
+						id="msgValueDate" key="ValueDate" cssClass="txtField"
+						disabled="true"></s:textfield></td>
+				</tr>
+				<tr>
+
+					<td class="textRight">Beneficiary Customer:&nbsp;</td>
+					<td class="text"><s:textarea name="beneficiaryCustomer"
+						id="beneficiaryCustomer" key="Beneficiary Customer"
+						cssClass="txtField" disabled="true"></s:textarea></td>
+					<td class="textRight">Ordering Customer / Institution:&nbsp;</td>
+					<td class="text"><s:textarea name="orderingCustomer"
+						id="orderingCustomer" key="ordering Customer" cssClass="txtField"
+						disabled="true"></s:textarea></td>
+				</tr>
+				<tr>
+
+					<td class="textRight">Last Modified Time</td>
+					<td class="text"><s:textarea name="lastModTime"
+						id="lastModTime" 
+						cssClass="txtField" disabled="true"></s:textarea></td>
+					<td class="textRight">Beneficiary Account :&nbsp;</td>
+					<td class="text"><s:textarea name="beneficiaryAccountNo"
+						id="beneficiaryAccountNo"  cssClass="txtField"
+						disabled="true"></s:textarea></td>
+				</tr>
+				<tr>
+
+					<td class="textRight">Narration:&nbsp;</td>
+					<td class="text" class="text"><s:textfield name="narration"
+						id="narration" key="Narration type" cssClass="txtField"
+						disabled="true"></s:textfield></td>
+						<td class="textRight">Comment :&nbsp;</td>
+					<td class="text"><s:textarea name="comments"
+						id="comments"  cssClass="txtField"
+						disabled="true"></s:textarea></td>
+				</tr>
+
+
+			</table>
+			</td>
+		</tr>
+		<tr>
+			<td class="textCenter"><br />
+			<input type="button" value="Print" onclick="prnTbl('content')"/> &nbsp;&nbsp;
+			<input type="button" value="Cancel" onclick="goBack()"/> 
+			<input type="button" value="View Raw Message" onclick="openPopUp()"/> </td>
+
+		</tr>
+	</table>
+</s:form></div>
+</div>
+</div>
+<div id="contentPaneBottom"></div>

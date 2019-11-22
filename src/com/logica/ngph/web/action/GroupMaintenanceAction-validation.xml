@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+         
+   <validators>      
+ 
+  <field name="branchCode">
+
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator>
+	</field>
+	
+	
+        
+         
+<field name="groupName">
+
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Field ${fieldName} is Not Valid</message>
+	</field-validator>
+	
+</field>
+
+<field name="groupID">
+
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>Field ${fieldName} is Not Valid</message>
+	</field-validator>
+	
+</field>
+</validators>

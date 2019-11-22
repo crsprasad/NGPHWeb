@@ -1,0 +1,47 @@
+package com.logica.ngph.daoImpl;
+
+import java.util.List;
+
+
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+import com.logica.ngph.dao.ChangePwdDao;
+
+public class ChangePwdDaoImpl extends HibernateDaoSupport implements ChangePwdDao  {
+
+	
+	public Boolean isOldPwdMatches(String userID,String oldpwd) {
+		
+		
+		List list = getHibernateTemplate().find("select userPassword from SecUsers where userPassword  =? and user = ?",oldpwd,userID);
+		if(list.isEmpty())
+		{
+			return false;
+		}
+		else
+			return true;
+		
+	}
+
+	
+	public String changePwd(String userID, String newPwd) {
+		
+		
+		
+	
+		Session session = getHibernateTemplate().getSessionFactory().openSession();
+			
+			Query query =session.createSQLQuery("update TA_SEC_USERS set USRPSWDS=:USRPSWDS where USR =:USR");
+			query.setString("USRPSWDS", newPwd);
+			query.setString("USR", userID);
+			System.out.println("Record Update : - "+query.executeUpdate());
+		
+			return "success";
+		
+		
+	}
+
+}

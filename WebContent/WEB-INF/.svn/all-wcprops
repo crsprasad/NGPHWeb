@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/NGPH/!svn/ver/4425/NGPH%20Rel%201.0/SOURCE/NgphWeb/WebContent/WEB-INF
+END
+tiles.xml
+K 25
+svn:wc:ra_dav:version-url
+V 84
+/svn/NGPH/!svn/ver/4424/NGPH%20Rel%201.0/SOURCE/NgphWeb/WebContent/WEB-INF/tiles.xml
+END
+urlrewrite.xml
+K 25
+svn:wc:ra_dav:version-url
+V 89
+/svn/NGPH/!svn/ver/3872/NGPH%20Rel%201.0/SOURCE/NgphWeb/WebContent/WEB-INF/urlrewrite.xml
+END
+applicationContext.xml
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/WebContent/WEB-INF/applicationContext.xml
+END
+web.xml
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/NGPH/!svn/ver/4243/NGPH%20Rel%201.0/SOURCE/NgphWeb/WebContent/WEB-INF/web.xml
+END

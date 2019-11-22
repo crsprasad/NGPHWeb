@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+<field name="advisingBank">
+		<field-validator type="requiredstring">
+		<param name="fieldName">advisingBank</param>
+		<message>Advising Bank Is Required</message>	
+		</field-validator>
+		<field-validator type="stringlength">
+		 <param name="fieldName">advisingBank</param>
+		 <param name="minLength">8</param>
+		 <param name="maxLength">11</param>
+		  <param name="trim">true</param>
+	 <message>advising Bank should be 8 to 11 Chars</message>
+	</field-validator>
+	<field-validator type="regex">
+			<param name="fieldName">advisingBank</param>
+			<param name="expression"><![CDATA[([A-Z]{4}+[0]{1}+[0-9a-zA-Z]{6})|([A-Z]{6}+[0-9A-Z]{2}+[0-9A-Z]{3})|([A-Z]{6}+[0-9A-Z]{2})+$]]></param>
+			<message>Advising Bank is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="lcNumber">
+		<field-validator type="requiredstring">
+		<param name="fieldName">lcNumber</param>
+		<message>LC Number Is Required</message>	
+		</field-validator>
+		<field-validator type="stringlength">
+	 <param name="fieldName">lcNumber</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">16</param>
+	  <param name="trim">true</param>
+	 <message>Lc Number should be less Than 16 Chars</message>
+	</field-validator>
+	</field>
+	<field name="SendertoReceiverInformation">
+		<field-validator type="regex">
+			<param name="fieldName">SendertoReceiverInformation</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Sender to Receiver Information is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="lcAmount">
+		<field-validator type="required">
+			<param name="fieldName">lcAmount</param>
+			<message>LC Amount Is Required</message>	
+		</field-validator>
+		
+		<field-validator type="regex">
+			<param name="fieldName">lcAmount</param>
+			<param name="expression"><![CDATA[[0-9.]+$]]></param>
+			<message>Lc Amount is Not Valid</message>
+		</field-validator>
+	</field>
+</validators>

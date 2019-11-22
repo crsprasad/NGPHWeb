@@ -1,0 +1,242 @@
+package com.logica.ngph.daoImpl;
+
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.logica.ngph.Entity.Department;
+import com.logica.ngph.Entity.Roles;
+import com.logica.ngph.Entity.SecUsers;
+import com.logica.ngph.common.NGPHException;
+import com.logica.ngph.common.dtos.UserMaintenanceDTO;
+import com.logica.ngph.dao.UserMaintenanceDao;
+import com.logica.ngph.dtos.SearchRuleIDDtos;
+
+/**
+ * 
+ * @author SATHISH
+ *
+ */
+public class UserMaintenanceDaoImpl extends HibernateDaoSupport implements UserMaintenanceDao{
+	
+	static Logger logger = Logger.getLogger(UserMaintenanceDaoImpl.class);
+	
+	@Transactional(propagation=Propagation.REQUIRED)
+	public void createUser(SecUsers secUser, List<String> assignedRoles, List<String> assignedDepts) throws SQLException {
+		System.out.println("In UserMaintenanceDaoImpl<createUser>:");
+		Session session = getHibernateTemplate().getSessionFactory().openSession();
+		session.beginTransaction();
+		
+		try{
+		session.save(secUser);
+		for(String roleId :assignedRoles){
+			Query query =session.createSQLQuery("insert into TA_SEC_USERS_TO_ROLES (USER_ID,ROLE_ID) values(:USER_ID,:ROLE_ID)");
+			query.setString("USER_ID", secUser.getUser());
+			query.setString("ROLE_ID", roleId);
+			query.executeUpdate();
+		}
+		for(String deptId :assignedDepts){
+			Query query =session.createSQLQuery("insert into TA_SEC_USERS_TO_DEPARTMENTS (USER_ID,DEPT_CODE) values(:USER_ID,:DEPT_CODE)");
+			query.setString("USER_ID", secUser.getUser());
+			query.setString("DEPT_CODE", deptId);
+			query.executeUpdate();
+			}
+		session.getTransaction().commit();
+		}catch (Exception e) {
+			e.printStackTrace();
+			session.getTransaction().rollback();
+			
+		}finally{
+		
+		session.close();
+		}
+		System.out.println("afeter insersion:");
+	}
+	
+	
+	@Transactional(propagation=Propagation.REQUIRED)
+	public void modifyUser(SecUsers userEntity, List<String> assignedRoles, List<String> assignedDepts) throws SQLException {
+		System.out.println("In UserMaintenanceDaoImpl<modifyUser>:");
+		Session session = getHibernateTemplate().getSessionFactory().openSession();
+		session.beginTransaction();
+		try{
+		session.update(userEntity);
+		Query deleteQuery =session.createSQLQuery("delete from  TA_SEC_USERS_TO_ROLES where USER_ID = :USER_ID");
+		deleteQuery.setString("USER_ID", userEntity.getUser());
+		deleteQuery.executeUpdate();
+		for(String roleId :assignedRoles){
+			Query query =session.createSQLQuery("insert into TA_SEC_USERS_TO_ROLES (USER_ID,ROLE_ID) values(:USER_ID,:ROLE_ID)");
+			query.setString("USER_ID", userEntity.getUser());
+			query.setString("ROLE_ID", roleId);
+			query.executeUpdate();
+		}
+		deleteQuery =session.createSQLQuery("delete from  TA_SEC_USERS_TO_DEPARTMENTS where USER_ID = :USER_ID");
+		deleteQuery.setString("USER_ID", userEntity.getUser());
+		deleteQuery.executeUpdate();
+		for(String deptId :assignedDepts){
+			Query query =session.createSQLQuery("insert into TA_SEC_USERS_TO_DEPARTMENTS (USER_ID,DEPT_CODE) values(:USER_ID,:DEPT_CODE)");
+			query.setString("USER_ID", userEntity.getUser());
+			query.setString("DEPT_CODE", deptId );
+			query.executeUpdate();
+		}
+		session.getTransaction().commit();
+		}catch (Exception e) {
+			session.getTransaction().rollback();
+			logger.error("Exception Occured Is: - "+e);
+		}
+		finally{
+		session.close();
+		}
+		System.out.println("afeter Modification:");
+		
+	}
+
+	
+	@Transactional(propagation=Propagation.REQUIRED)
+	public void deleteUser(String userId) throws SQLException {
+		System.out.println("In UserMaintenanceDaoImpl<deleteUser>:");
+		Session session = getHibernateTemplate().getSessionFactory().openSession();
+		
+		try{
+			session.beginTransaction();
+		Query deleteQuery =session.createSQLQuery("delete from  TA_SEC_USERS_TO_ROLES where USER_ID = :USER_ID");
+		deleteQuery.setString("USER_ID", userId);
+		deleteQuery.executeUpdate();
+		deleteQuery =session.createSQLQuery("delete from  TA_SEC_USERS_TO_DEPARTMENTS where USER_ID = :USER_ID");
+		deleteQuery.setString("USER_ID", userId);
+		deleteQuery.executeUpdate();
+		Query query = session.createQuery("delete SecUsers where user = :user");
+		query.setString("user", userId);
+		query.executeUpdate();
+		session.getTransaction().commit();
+		}
+		catch (Exception e) {
+			session.getTransaction().rollback();
+			logger.error("Exception Occured Is: - "+e);
+		}
+		finally{
+		session.close();
+		}
+		
+		System.out.println("afeter Deletion:");
+	}
+
+	
+	public List<Roles> getAvailableRoles() throws SQLException {
+		System.out.println("Inside UserMaintenanceDaoImpl<getAvailableRoles>:");
+		Session session = getHibernateTemplate().getSessionFactory().openSession();
+		Query query = session.createQuery("from Roles");
+		List<Roles> roleList = query.list();
+		System.out.println("in getAvailableRoles(): after fetching all roles.list size:"+roleList.size());
+		session.close();
+		return roleList;
+				
+	}
+	
+	
+	public List<Department> getAvailableDepts() throws SQLException {
+		System.out.println("Inside UserMaintenanceDaoImpl<getAvailableDepts>:");
+		Session session = getHibernateTemplate().getSessionFactory().openSession();
+		Query query = session.createQuery("from Department");
+		List<Department> deptList = query.list();
+		System.out.println("in getAvailableDepts(): after fetching all roles. list size:"+deptList.size());
+		session.close();
+		return deptList;
+				
+	}
+
+	
+	public boolean isUserIdAvailable(String userId) {
+		SecUsers secUser = (SecUsers)getSession().get(SecUsers.class, userId);
+		getSession().close();
+		System.out.println(" useid check. userId in request:"+userId);
+		if(secUser!=null && secUser.getUser().equals(userId)){
+			System.out.println(" userId check. userId got from DB:"+secUser.getUser());
+			return true;
+		}
+		return false;
+	}
+
+	
+	public List<UserMaintenanceDTO> getUserIDList(String userId) throws SQLException {
+		System.out.println("Inside UserMaintenanceDaoImpl<getUserIDList>:");
+		List<UserMaintenanceDTO> searchList = new ArrayList<UserMaintenanceDTO>();
+		if(userId == null){
+			userId = "%";
+		}else{
+			userId = "%"+userId+"%";
+		}
+		@SuppressWarnings("rawtypes")
+		List userIdList = 	getHibernateTemplate().find("select user,userFirstName,userLastName from com.logica.ngph.Entity.SecUsers where user like ?",userId);
+		for (int i = 0; i < userIdList.size(); i++) {
+			UserMaintenanceDTO userDTO = new UserMaintenanceDTO();
+            Object[] obj = (Object[]) userIdList.get(i);
+            userDTO.setUser((String) obj[0]);
+            userDTO.setUserFirstName((String) obj[1]);
+            userDTO.setUserLastName((String) obj[2]);
+            searchList.add(userDTO);
+        }
+		return searchList;
+	}
+
+	
+	public SecUsers getUserDataAction(String userId) throws SQLException {
+		System.out.println("Inside UserMaintenanceDaoImpl<getUserDataAction>:");
+		SecUsers userObject= (SecUsers)getSession().get(SecUsers.class, userId);
+		getSession().close();
+		return userObject;
+	}
+	
+	
+	public List<String> getAssignedRoles(String userId) throws SQLException {
+		System.out.println("Inside UserMaintenanceDaoImpl<getAssignedRoles>:");
+		Session session = getSession();
+		List<String> assignedRoleList = new ArrayList<String>();
+		Query Query = session.createSQLQuery("SELECT ROLE_ID FROM TA_SEC_USERS_TO_ROLES WHERE USER_ID = :USER_ID");
+		Query.setString("USER_ID", userId);
+		assignedRoleList = Query.list();
+		session.close();
+		return assignedRoleList;
+	}
+	
+	
+	public List<String>  getAssignedDepts(String userId) throws SQLException {
+		System.out.println("Inside UserMaintenanceDaoImpl<getAssignedDepts>:");
+		Session session = getSession();
+		List<String> assignedDeptList = new ArrayList<String>();
+		Query Query = session.createSQLQuery("SELECT DEPT_CODE FROM TA_SEC_USERS_TO_DEPARTMENTS WHERE USER_ID = :USER_ID");
+		Query.setString("USER_ID", userId);
+		assignedDeptList = Query.list();
+		session.close();
+		return assignedDeptList;
+	}
+
+
+	
+	public Boolean isUserPresent(String user) throws NGPHException {
+		
+		String userCount = getHibernateTemplate().find("select count(userFirstName) from SecUsers where user =?",user).get(0).toString();
+		/*SecUsers userObject= (SecUsers)getSession().get(SecUsers.class, user);
+		getSession().close();*/
+		if(userCount.equals("0")){
+			return false;
+			
+		}else{
+			
+			return true;
+		}
+		
+	}
+
+	
+}

@@ -1,0 +1,53 @@
+K 25
+svn:wc:ra_dav:version-url
+V 59
+/svn/NGPH/!svn/ver/4433/NGPH%20Rel%201.0/SOURCE/NgphWeb/src
+END
+RulesAction-validation.xml
+K 25
+svn:wc:ra_dav:version-url
+V 86
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/RulesAction-validation.xml
+END
+System.properties
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svn/NGPH/!svn/ver/4224/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/System.properties
+END
+struts.xml
+K 25
+svn:wc:ra_dav:version-url
+V 70
+/svn/NGPH/!svn/ver/4423/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/struts.xml
+END
+WebApplicationContext.xml
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/NGPH/!svn/ver/4423/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/WebApplicationContext.xml
+END
+validators.xml
+K 25
+svn:wc:ra_dav:version-url
+V 74
+/svn/NGPH/!svn/ver/4320/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/validators.xml
+END
+ApplicationResources.properties
+K 25
+svn:wc:ra_dav:version-url
+V 91
+/svn/NGPH/!svn/ver/4337/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/ApplicationResources.properties
+END
+PaymentEntry.properties
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/PaymentEntry.properties
+END
+log4j.xml
+K 25
+svn:wc:ra_dav:version-url
+V 69
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/log4j.xml
+END

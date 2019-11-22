@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+	
+	<field name="roleId">
+		<field-validator type="requiredstring">
+			<message> Role ID is required.</message>
+		</field-validator>
+	</field>
+	
+	<field name="roleName">
+		<field-validator type="requiredstring">
+			<message> Role Name is required.</message>
+		</field-validator>
+	</field>
+	
+</validators>

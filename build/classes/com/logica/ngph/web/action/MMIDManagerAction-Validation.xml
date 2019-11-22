@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+	
+	<field name="accountNo">
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="fieldName">accountNo</param>
+	<param name="expression"><![CDATA[[0-9]+$]]></param>
+	<message> Account No is Not Valid </message>
+	</field-validator>
+	</field>
+	
+	<field name="benificiaryMMID">
+	
+	<field-validator type="regex">
+	<param name="fieldName">benificiaryMMID</param>
+	<param name="expression"><![CDATA[[0-9]{7}+$]]></param>
+	<message> Beneficiary MMID is Not Valid</message>
+	</field-validator>
+	</field>
+	
+	<field name="benificiaryMobileNo">
+	
+	<field-validator type="regex">
+	<param name="fieldName">benificiaryMobileNo</param>
+	<param name="expression"><![CDATA[[0-9]{10}+$]]></param>
+	<message> Mobile No is Not Valid </message>
+	</field-validator>
+	</field>
+
+	<field name="orderingAmount">
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="fieldName">orderingAmount</param>
+	<param name="expression"><![CDATA[[0-9.,]+$]]></param>
+	<message> Amount Is Not Valid </message>
+	</field-validator>
+	</field>
+	
+	
+
+<field name="transactionType">
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator></field>
+
+<field name="fromAccType">
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator></field>
+	
+<field name="toAccType">
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator></field>
+</validators>

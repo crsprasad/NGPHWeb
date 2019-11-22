@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+	<field name="bgNumber">
+		<field-validator type="requiredstring">
+		<param name="fieldName">bgNumber</param>
+		<message>Transaction Reference Number(20) is Mandatory</message>	
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">bgNumber</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Transaction Reference Number(20) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="relatedReference">
+		<field-validator type="regex">
+			<param name="fieldName">relatedReference</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Related Reference Number(21) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="narrative"> 
+		<field-validator type="requiredstring">
+		<param name="fieldName">narrative</param>
+		<message>Narrative(79) Is Required</message>	
+		</field-validator>
+		
+		<field-validator type="regex">
+			<param name="fieldName">narrative</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Narrative(79) is Not Valid</message>
+		</field-validator>
+		<field-validator type="textAreaSize">
+		<param name="fieldName">narrative</param>
+		<param name="maxNumLines">35</param>
+		<param name="maxCharInLine">50</param>
+		<param name="maxCharsField">1750</param>
+			<message>Narrative(79) must be 35*50 lines</message>
+		</field-validator>
+	
+	</field>
+		
+</validators>

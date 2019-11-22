@@ -1,0 +1,236 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+<%@taglib uri="/struts-tags" prefix="s"%>
+<%@ taglib prefix="sx" uri="/struts-dojo-tags"%>
+<%@taglib uri="http://displaytag.sf.net" prefix="display"%>
+
+<script type="text/javascript">
+	function setReportType(type) {
+		document.getElementById("reportType").value =type;
+		document.downloadReport.submit();
+	}
+</script>
+<div id="contentPane">
+<div id="contentPaneTop"></div>
+<div id="contentPaneFluid">
+<div id="contentPaneInternal"><span class="crumbs"><a
+	href="#">Report</a>&nbsp;>&nbsp;Report</span></div>
+<div id="content">
+<h1>Generated Reports</h1>
+<br />
+<!--Error Msg Div Starts -->
+	<div>
+		<s:if test="hasFieldErrors() || hasActionErrors()">
+			<div class="errorMsg">
+				<span class="errorMsgInline">
+					<s:actionerror /><s:fielderror />
+				</span>
+			</div>
+		</s:if>
+	</div>
+	<!--Error Msg Div Ends -->
+<s:form name="downloadReport" action="downloadReport" method="post" validate="true">
+	<s:hidden name="reportType" id="reportType"/>
+<table width="70%" cellpadding="3" cellspacing="1" border="1"
+	bgcolor="#ffffff" align="center">
+	<tr>
+		<td class="divBg">
+		<table width="99%" align="center" cellpadding="3" cellspacing="1" border="0"
+		bgcolor="#ffffff" id="table1" >
+			<tr>
+				<td class="textRight">Message Type:&nbsp;</td>
+				<td class="text"><s:label name="messageList" key="Message Type"></s:label>
+				</td>
+			</tr>
+			<tr>
+				<td class="textRight">Status:&nbsp;</td>
+				<td><s:label name="outwardQueue" key="Outward Message"></s:label>
+				</td>
+			</tr>
+
+			<tr>
+				<td class="textRight">Receiver Name:&nbsp;</td>
+				<td><s:label name="SenderReceiver" key="Receiver Name"></s:label>
+				</td>
+			</tr>
+			<tr>
+				<td class="textRight">Group By:&nbsp;</td>
+				<td><s:label name="groupby" key="Group By"></s:label></td>
+			</tr>
+
+			<tr>
+				<td class="textRight">From Date:&nbsp;</td>
+				<td><s:label name="ValueFromDate" key="Value From Date"></s:label>
+				</td>
+			</tr>
+
+			<tr>
+				<td class="textRight">To Date:&nbsp;</td>
+				<td><s:label name="ValueToDate" key="Value To Date"></s:label>
+				</td>
+			</tr>
+
+			<tr>
+				<td class="textRight">Amount From:&nbsp;</td>
+				<td><s:label name="fromAmount" key="From Amount"></s:label></td>
+			</tr>
+			<tr>
+				<td class="textRight">Amount To:&nbsp;</td>
+				<td><s:label name="toAmount" key="To Amount"></s:label></td>
+			</tr>
+		</table>
+		</td>
+	</tr>
+</table><br/><br/>
+		<table width="99%" cellpadding="3" cellspacing="1" border="0"
+		bgcolor="#ffffff" id="table1">
+			<tr>
+			<td><display:table uid="row" name="ReportList"
+					pagesize="30" requestURI="/success" cellpadding="3" cellspacing="0" class="dataGrid">
+				<display:setProperty name="basic.msg.empty_list" 
+    				value='<div class="infoMsg"><span>Nothing found to display</span></div>' />
+				<display etProperty name="css.tr.even" value="TDBGlightgray" />
+				<display etProperty name="css.tr.odd" value="TDBGgray" cssClass="odd"/>
+				
+				<s:if test="%{session.msgType=='Required'}">
+						<display:column title="Msg Type" property="msgType"
+							headerClass="gridHdrBg" style="text-align:center" />
+					</s:if>
+				<s:if test="%{session.txnReference=='Required'}">
+						<display:column title="Reference" property="txnReference"
+							headerClass="gridHdrBg" style="text-align:center" />
+					</s:if>				
+					<s:if test="%{session.channel=='Required'}">
+						<display:column title="Chnl" property="msgChannel"
+							headerClass="gridHdrBg" style="text-align:center" />
+					</s:if>
+					
+					<s:if test="%{session.branch=='Required'}">
+						<display:column title="Brn"
+							property="branch" headerClass="gridHdrBg" style="text-align:center"
+							 />
+					</s:if>
+					<!--<s:if test="%{session.Department=='Required'}">
+						<display:column title="Department"
+							property="department" headerClass="gridHdrBg" style="text-align:center"
+							 />
+					</s:if>
+					--><s:if test="%{session.senderBank=='Required'}">
+						<display:column title="Sender" property="senderBank"
+							headerClass="gridHdrBg" style="text-align:center" />
+					</s:if>
+					<s:if test="%{session.receiverBank=='Required'}">
+						<display:column title="Receiver" property="receiverBank"
+							headerClass="gridHdrBg" style="text-align:center" />
+					</s:if>	
+					<s:if test="%{session.msgValueDate=='Required'}">
+						<display:column title="Value_Date" property="msgValueDate"
+							headerClass="gridHdrBg" style="text-align:center" />
+					</s:if>
+				
+				<!--
+					<s:if test="%{session.direction=='Required'}">
+						<display:column title="Direction"
+							property="msgDirection" headerClass="gridHdrBg" style="text-align:center"
+							 />
+					</s:if>
+					
+					-->
+					<s:if test="%{session.currency=='Required'}">
+						<display:column title="Ccy" property="msgCurrency"
+							headerClass="gridHdrBg" style="text-align:center" />
+					</s:if>
+					
+					<s:if test="%{session.amount=='Required'}">
+						<display:column title="Amount" property="msgAmount"
+							headerClass="gridHdrBg" style="text-align:center" />
+					</s:if>
+					<s:if test="%{session.orderingAccount=='Required'}">
+						<display:column title="Ordering Customer account"
+							property="orderingAccount" headerClass="gridHdrBg" style="text-align:center"
+							 />
+					</s:if>
+					
+					<s:if test="%{session.orderingCustomer=='Required'}">
+						<display:column title="Ordering Customer"
+							property="orderingCustomer" headerClass="gridHdrBg" style="text-align:center"
+							 />
+					</s:if>
+						<s:if test="%{session.beneficiaryAccount=='Required'}">
+						<display:column title="Beneficiary Account"
+							property="beneficiaryAccount" headerClass="gridHdrBg" style="text-align:center"
+							 />
+					</s:if>
+					
+					
+					<s:if test="%{session.beneficiaryCustomer=='Required'}">
+						<display:column title="Beneficiary Customer"
+							property="beneficiaryCustomer" headerClass="gridHdrBg" style="text-align:center"
+							 />
+					</s:if><!--
+					<s:if test="%{session.MUR=='Required'}">
+						<display:column title="M U R" property="MUR" headerClass="gridHdrBg" style="text-align:center"
+							/>
+					</s:if>
+					-->
+					<s:if test="%{session.txnType=='Required'}">
+						<display:column title="Type"
+							property="txnType" headerClass="gridHdrBg" style="text-align:center"
+							 />
+					</s:if>
+					
+					<s:if test="%{session.sendertoreciverInfo=='Required'}">
+						<display:column title="Narration"
+							property="sendertoreciverInfo" headerClass="gridHdrBg" style="text-align:center"
+							 />
+					</s:if>
+					<!--<s:if test="%{session.hostID=='Required'}">
+						<display:column title="Host ID" property="hostID"
+							headerClass="gridHdrBg" style="text-align:center" />
+					</s:if>
+					<s:if test="%{session.relatedRefrence=='Required'}">
+						<display:column title="Related Refrence"
+							property="relatedRefrence" headerClass="gridHdrBg" style="text-align:center"
+							 />
+					</s:if>
+					-->
+					<s:if test="%{session.lastModifiedDate=='Required'}">
+						<display:column title="Last Modified Date"
+							property="lastModifiedDate" headerClass="gridHdrBg" style="text-align:center"
+							 />
+					</s:if>
+						<s:if test="%{session.msgStatus=='Required'}">
+						<display:column title="Status" property="paymentStatus"
+							headerClass="gridHdrBg"  style="text-align:center"/>
+					</s:if>
+					
+
+
+				</display:table></td>
+			</tr>
+
+		</table>
+		
+		<!--  button panel starts -->
+	<div class="clearfix"></div>
+	<table width="100%" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td> <font>Download Report :</font>
+				<a href="#" onclick="setReportType('EXCEL')">
+					<img src="images/xls.png" width="24" height="24" alt="EXCEL" border="0"/>
+				</a>|
+				<a href="#" onclick="setReportType('PDF')">
+					<img src="images/pdf.png" width="24" height="24" alt="PDF" border="0"/>
+				</a>|
+				<a href="#" onclick="setReportType('CSV')">
+					<img src="images/csv.png" width="24" height="24" alt="CSV" border="0"/>
+				</a>
+			</td>
+		</tr>
+	</table>
+	<!--  button panel ends -->
+	</s:form>	
+</div>
+</div>
+</div>
+<div id="contentPaneBottom"></div>

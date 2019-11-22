@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+
+<validators>
+
+	<field name="EI_ID">
+		<field-validator type="requiredstring">
+			<message> ${fieldName} is required.</message>
+		</field-validator>
+	</field>
+	<field name="EI_Name">
+		<field-validator type="requiredstring">
+			<message> ${fieldName} is required.</message>
+		</field-validator>
+		<field-validator type="regex">
+	<param name="fieldName">receiverBank</param>
+	<param name="expression"><![CDATA[^[a-zA-Z0-9]+$]]></param>
+	<message>${fieldName} is Not Valid</message>
+	</field-validator>
+
+	</field>
+	<field name="EI_Gateway">
+		<field-validator type="requiredstring">
+			<message> ${fieldName} is required.</message>
+		</field-validator>
+
+	</field>
+	<field name="EIType">
+		<field-validator type="requiredstring">
+			<message> ${fieldName} is required.</message>
+		</field-validator>
+	</field>
+	<field name="EIConnectionType">
+		<field-validator type="requiredstring">
+			<message> ${fieldName} is required.</message>
+		</field-validator>
+	</field>
+	<field name="EI_Format">
+		<field-validator type="requiredstring">
+			<message> ${fieldName} is required.</message>
+		</field-validator>
+	</field>
+		
+	
+	
+	
+
+</validators>

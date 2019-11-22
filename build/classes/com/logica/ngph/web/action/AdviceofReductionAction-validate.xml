@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+	<field name="bgNumber">
+		<field-validator type="requiredstring">
+		<param name="fieldName">bgNumber</param>
+		<message>Transaction Reference Number(20) is Mandatory</message>	
+		<field-validator type="stringlength">
+			 <param name="fieldName">bgNumber</param>
+			 <param name="minLength">1</param>
+			 <param name="maxLength">16</param>
+			 <param name="trim">true</param>
+			 <message>Transaction Reference Number(20) should be less Then 16 Chars</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">bgNumber</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Transaction Reference Number(20) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="relatedReference">
+		<field-validator type="requiredstring">
+		<param name="fieldName">relatedReference</param>
+		<message>Related Reference Number(21) is Mandatory</message>	
+		<field-validator type="stringlength">
+			 <param name="fieldName">relatedReference</param>
+			 <param name="minLength">1</param>
+			 <param name="maxLength">16</param>
+			 <param name="trim">true</param>
+			 <message>Related Reference Number(21) should be less Then 16 Chars</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">relatedReference</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Related Reference Number(21) is Not Valid</message>
+		</field-validator>
+	</field>
+</validators>

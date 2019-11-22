@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+	<field name="bgNumber">
+		<field-validator type="requiredstring">
+		<param name="fieldName">bgNumber</param>
+		<message>Transaction Reference Number(7020) is Required</message>	
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">bgNumber</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Transaction Reference Number(7020) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="bgFormNumber">
+		<field-validator type="regex">
+			<param name="fieldName">bgFormNumber</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Guarantee Form Number(7022) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="bgType">
+		<field-validator type="requiredstring">
+			<param name="fieldName">bgType</param>
+			<message>Type of Bank Guarantee(7024) is Required</message>	
+		</field-validator>
+	</field>
+	<field name="currency">
+		<field-validator type="requiredstring">
+		   <param name="fieldName">currency</param>
+		   <message>Currency Code(7025) is Required</message>	
+		</field-validator>
+	</field>
+	<field name="bgAmount">
+		<field-validator type="required">
+			<param name="fieldName">bgAmount</param>
+			<message>Amount of Guarantee(7025) is Required</message>	
+		</field-validator>
+	</field>
+	<field name="bgFromDate">
+		<field-validator type="required">
+		<param name="fieldName">bgFromDate</param>
+		<message>Guarantee From Date(7026) is Required</message>	
+		</field-validator>
+	</field>
+	<field name="bgToDate">
+		<field-validator type="required">
+		<param name="fieldName">bgToDate</param>
+		<message>Guarantee To Date(7026) is Required</message>	
+		</field-validator>
+	</field>
+	<field name="bgEffectiveDate">
+		<field-validator type="required">
+		<param name="fieldName">bgEffectiveDate</param>
+		<message>Guarantee Effective Date(7027) is Required</message>	
+		</field-validator>
+	</field>
+	<field name="bgLodgementEndDate">
+		<field-validator type="required">
+		<param name="fieldName">bgLodgementEndDate</param>
+		<message>End Date for Lodgement of Claim(7029) is Required</message>	
+		</field-validator>
+	</field>
+	<field name="bgLodgementPalce">
+		<field-validator type="regex">
+			<param name="fieldName">bgLodgementPalce</param>
+		<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Place of Lodgement of Claim(7030) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="bgIssuingBankCode">
+		<field-validator type="requiredstring">
+		<param name="fieldName">bgIssuingBankCode</param>
+		<message>Issuing Branch IFSC(7031) is Required</message>	
+		</field-validator>
+		<field-validator type="stringlength">
+		 <param name="fieldName">bgIssuingBankCode</param>
+		 <param name="minLength">8</param>
+		 <param name="maxLength">11</param>
+		  <param name="trim">true</param>
+	 		<message>Issuing Branch IFSC(7031) should be max 11 Chars</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">bgIssuingBankCode</param>
+			<param name="expression"><![CDATA[([A-Z]{4}+[0]{1}+[0-9a-zA-Z]{6})|([A-Z]{6}+[0-9A-Z]{2}+[0-9A-Z]{3})|([A-Z]{6}+[0-9A-Z]{2})+$]]></param>
+			<message>Issuing Branch IFSC(7031) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="issunigBankNameAndAddress">
+		<field-validator type="requiredstring">
+		<param name="fieldName">issunigBankNameAndAddress</param>
+		<message>Issuing Bank Name and Address(7032) is Required</message>	
+		</field-validator>
+		<field-validator type="textAreaSize">
+			<param name="fieldName">issunigBankNameAndAddress</param>
+			<param name="maxNumLines">6</param>
+			<param name="maxCharInLine">35</param>
+			<param name="maxCharsField">140</param>
+			<message>Issuing Bank Name and Address(7032) must be 6*35 lines</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">issunigBankNameAndAddress</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Issuing Bank Name and Address(7032) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="bgApplicentNameAndDetails">
+		<field-validator type="requiredstring">
+		<param name="fieldName">bgApplicentNameAndDetails</param>
+		<message>Name of Applicant and his details(7033) is Required</message>	
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">bgApplicentNameAndDetails</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Name of Applicant and his details(7033) is Not Valid</message>
+		</field-validator>
+		<field-validator type="textAreaSize">
+			<param name="fieldName">bgApplicentNameAndDetails</param>
+			<param name="maxNumLines">6</param>
+			<param name="maxCharInLine">35</param>
+			<param name="maxCharsField">140</param>
+			<message>Name of Applicant and his details(7033) must be 6*35 lines</message>
+		</field-validator>
+	</field>
+	<field name="beneficiaryBankNameAndAddress">
+		<field-validator type="requiredstring">
+		<param name="fieldName">beneficiaryBankNameAndAddress</param>
+		<message>Name of Beneficiary and his details(7034) is Required</message>	
+		</field-validator>
+		<field-validator type="textAreaSize">
+			<param name="fieldName">beneficiaryBankNameAndAddress</param>
+			<param name="maxNumLines">6</param>
+			<param name="maxCharInLine">35</param>
+			<param name="maxCharsField">140</param>
+			<message>Name of Beneficiary and his details(7034) must be 6*35 lines</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">beneficiaryBankNameAndAddress</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Name of Beneficiary and his details(7034) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="beneficiaryBankCode">
+		<field-validator type="requiredstring">
+		<param name="fieldName">beneficiaryBankCode</param>
+		<message>Beneficiary IFSC(7035) is Required</message>	
+		</field-validator>
+		<field-validator type="stringlength">
+		 <param name="fieldName">beneficiaryBankCode</param>
+		 <param name="minLength">8</param>
+		 <param name="maxLength">11</param>
+		  <param name="trim">true</param>
+	 		<message>Beneficiary IFSC(7035) should be max 11 Chars</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">beneficiaryBankCode</param>
+			<param name="expression"><![CDATA[([A-Z]{4}+[0]{1}+[0-9a-zA-Z]{6})|([A-Z]{6}+[0-9A-Z]{2}+[0-9A-Z]{3})|([A-Z]{6}+[0-9A-Z]{2})+$]]></param>
+			<message>Beneficiary IFSC(7035) is Not Valid</message>
+		</field-validator>
+	</field>	
+	<field name="beneficiaryNameAndDetails">
+		<field-validator type="requiredstring">
+		<param name="fieldName">beneficiaryNameAndDetails</param>
+		<message>Beneficiary branch name and address(7036) is Required</message>	
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">beneficiaryNameAndDetails</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Beneficiary branch name and address(7036) is Not Valid</message>
+		</field-validator>
+		<field-validator type="textAreaSize">
+			<param name="fieldName">beneficiaryNameAndDetails</param>
+			<param name="maxNumLines">6</param>
+			<param name="maxCharInLine">35</param>
+			<param name="maxCharsField">140</param>
+			<message>Beneficiary branch name and address(7036) must be 6*35 lines</message>
+		</field-validator>
+	</field>
+	<field name="senderToReciverInformation">
+		<field-validator type="textAreaSize">
+			<param name="fieldName">senderToReciverInformation</param>
+			<param name="maxNumLines">10</param>
+			<param name="maxCharInLine">35</param>
+			<param name="maxCharsField">350</param>
+			<message>Sender to receiver information(7037) must be 10*35 lines</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">senderToReciverInformation</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Sender to receiver information(7037) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="bgPurpose">
+		<field-validator type="textAreaSize">
+			<param name="fieldName">bgPurpose</param>
+			<param name="maxNumLines">6</param>
+			<param name="maxCharInLine">35</param>
+			<param name="maxCharsField">210</param>
+			<message>Purpose of Guarantee(7038) must be 6*35 lines</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">bgPurpose</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Purpose of Guarantee(7038) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="descriptionOfUnderlinedContract">
+		<field-validator type="textAreaSize">
+			<param name="fieldName">descriptionOfUnderlinedContract</param>
+			<param name="maxNumLines">3</param>
+			<param name="maxCharInLine">35</param>
+			<param name="maxCharsField">105</param>
+			<message>Reference/Description of the underlined contract(7039) must be 3*35 lines</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">descriptionOfUnderlinedContract</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Reference/Description of the underlined contract(7039) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="stampCertificateNumber">
+	      <field-validator type="regex">
+			<param name="fieldName">stampCertificateNumber</param>
+			<param name="expression"><![CDATA[[0-9.]+$]]></param>
+			<message>E-Stamp Certificate Number(7041) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="bgStateCode">
+	      <field-validator type="regex">
+			<param name="fieldName">bgStateCode</param>
+			<param name="expression"><![CDATA[[0-9.]+$]]></param>
+			<message>State Code(7044) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="custodianServiceProvider">
+		<field-validator type="regex">
+			<param name="fieldName">custodianServiceProvider</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Custodian Service Provider(7050) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="dematAccNumber">
+		<field-validator type="regex">
+			<param name="fieldName">dematAccNumber</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Demat Account Number(7049) is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	
+</validators>
+	
+	
+	
+	
+	

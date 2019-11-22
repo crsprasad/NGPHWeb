@@ -1,0 +1,134 @@
+package com.logica.ngph.dtos;
+
+import java.io.Serializable;
+import java.util.Date;
+
+public class CreateBankGuaranteeDto implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String bgNumber;
+	private String bgCreateType;
+	private Date bgDate;
+	private String bgRuleCode;
+	private String bgRuleNarration;	
+	private String senderToReceiverInformation;	
+	private String msgRef;	
+	private int noOfMsg;
+	private String bgDirection;
+	private Date bgIssueDate;	
+	private String bgRuleDesc;
+	private String bgDetails;	
+	private int bgAmount;
+	private int bgStatus;
+	private int bgNoOfAmntmnt;
+	private Date bgLastModifiedTime;
+	private String advisingBank;
+	
+	public String getBgNumber() {
+		return bgNumber;
+	}
+	public void setBgNumber(String bgNumber) {
+		this.bgNumber = bgNumber;
+	}
+	public String getBgCreateType() {
+		return bgCreateType;
+	}
+	public void setBgCreateType(String bgCreateType) {
+		this.bgCreateType = bgCreateType;
+	}
+	public String getBgRuleCode() {
+		return bgRuleCode;
+	}
+	public void setBgRuleCode(String bgRuleCode) {
+		this.bgRuleCode = bgRuleCode;
+	}
+	public String getBgRuleNarration() {
+		return bgRuleNarration;
+	}
+	public void setBgRuleNarration(String bgRuleNarration) {
+		this.bgRuleNarration = bgRuleNarration;
+	}	
+	public String getSenderToReceiverInformation() {
+		return senderToReceiverInformation;
+	}
+	public void setSenderToReceiverInformation(String senderToReceiverInformation) {
+		this.senderToReceiverInformation = senderToReceiverInformation;
+	}
+	public Date getBgDate() {
+		return bgDate;
+	}
+	public void setBgDate(Date bgDate) {
+		this.bgDate = bgDate;
+	}
+	public String getMsgRef() {
+		return msgRef;
+	}
+	public void setMsgRef(String msgRef) {
+		this.msgRef = msgRef;
+	}
+	public int getNoOfMsg() {
+		return noOfMsg;
+	}
+	public void setNoOfMsg(int noOfMsg) {
+		this.noOfMsg = noOfMsg;
+	}
+	public String getBgDirection() {
+		return bgDirection;
+	}
+	public void setBgDirection(String bgDirection) {
+		this.bgDirection = bgDirection;
+	}
+	public Date getBgIssueDate() {
+		return bgIssueDate;
+	}
+	public void setBgIssueDate(Date bgIssueDate) {
+		this.bgIssueDate = bgIssueDate;
+	}
+	public String getBgRuleDesc() {
+		return bgRuleDesc;
+	}
+	public void setBgRuleDesc(String bgRuleDesc) {
+		this.bgRuleDesc = bgRuleDesc;
+	}
+	public String getBgDetails() {
+		return bgDetails;
+	}
+	public void setBgDetails(String bgDetails) {
+		this.bgDetails = bgDetails;
+	}
+	public int getBgAmount() {
+		return bgAmount;
+	}
+	public void setBgAmount(int bgAmount) {
+		this.bgAmount = bgAmount;
+	}
+	public int getBgStatus() {
+		return bgStatus;
+	}
+	public void setBgStatus(int bgStatus) {
+		this.bgStatus = bgStatus;
+	}
+	public int getBgNoOfAmntmnt() {
+		return bgNoOfAmntmnt;
+	}
+	public void setBgNoOfAmntmnt(int bgNoOfAmntmnt) {
+		this.bgNoOfAmntmnt = bgNoOfAmntmnt;
+	}
+	public Date getBgLastModifiedTime() {
+		return bgLastModifiedTime;
+	}
+	public void setBgLastModifiedTime(Date bgLastModifiedTime) {
+		this.bgLastModifiedTime = bgLastModifiedTime;
+	}
+	public String getAdvisingBank() {
+		return advisingBank;
+	}
+	public void setAdvisingBank(String advisingBank) {
+		this.advisingBank = advisingBank;
+	}
+	
+	
+}

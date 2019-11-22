@@ -1,0 +1,79 @@
+<%@page import="com.opensymphony.xwork2.ActionContext"%>
+<%@page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+<%@taglib uri="/struts-tags" prefix="s"%>
+<%@ taglib prefix="sx" uri="/struts-dojo-tags"%>
+<%@taglib uri="http://displaytag.sf.net" prefix="display"%>
+
+<s:head theme="simple" />
+
+<script type="text/javascript">
+function cancel()
+{
+	document.forms[0].action="getChangePwdgetChangePassword";
+	document.forms[0].submit();
+}
+</script>
+<sx:head parseContent="true" />
+<s:head />
+<div id="contentPane">
+<div id="contentPaneTop"></div>
+<div id="contentPaneFluid">
+
+<div id="content">
+<s:form method="post" id="form"><br/><br/>
+<div><s:if test="hasFieldErrors()">
+				<div class="errorMsg"><span class="errorMsgInline"><s:actionerror /><s:fielderror /></span></div>
+			</s:if>
+			</div><!--Error Msg Div Ends -->
+<div><s:if test="hasActionMessages()">
+			<div class="errorMsg"><span class="errorMsgInline"><s:actionmessage /></span></div>
+</s:if></div>			
+	<!-- Collapsible Panels Start-->
+	<div id="CollapsiblePanel1" class="CollapsiblePanel">
+	<div class="CollapsiblePanelTab"><!--  <img src="images/openPanel.png" width="9" height="7" alt="openPanel" />-->&nbsp;</div>
+	<div class="CollapsiblePanelContent">
+	<div><!-- Group One Div Starts --> 
+	<s:div id="main"	cssClass="dataGrid" style="width:100%;">
+	<table width="100%" cellpadding="3" cellspacing="1" border="0"	bgcolor="#ffffff">
+			<tr>
+				<td  width="20%" class="textRight"><s:label value="Old Password"></s:label>:
+				</td><td width="30%" class="text">
+				<s:password name="oldPwd" id="oldPwd"></s:password> </td>
+				
+			</tr>
+			<tr>
+				<td width="20%" class="textRight"><s:label value="New Password"></s:label>:
+			</td><td width="30%" class="text">	<s:password name="newPwd" id="newPwd"></s:password> </td>
+				
+			</tr>
+			<tr>
+				<td  width="20%" class="textRight"><s:label value="Confirm Password"></s:label>:
+			</td><td width="30%" class="text">	<s:password name="confPwd" id="confPwd"></s:password> </td>
+				
+			</tr>
+		</table>
+	</s:div> <!-- Group One Div Ends --></div>
+	</div>
+	</div>
+	<br />
+	<center>
+	<table width="100%" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td>
+			
+				<s:submit value="Submit" action="changePwd" cssClass="btn" />
+					<input type="reset" value="Cancel" onclick="cancel()" class="btn"  />
+			</td></tr></table> </center>
+
+</s:form>
+</div>
+
+
+
+
+</div>
+
+</div>
+
+<div id="contentPaneBottom"></div>

@@ -1,0 +1,237 @@
+package com.logica.ngph.daoImpl;
+
+import java.io.FileInputStream;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.text.Format;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
+
+import oracle.sql.CLOB;
+
+import org.hibernate.Session;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.logica.ngph.Entity.MsgPolled;
+import com.logica.ngph.Entity.NgphCanonical;
+import com.logica.ngph.common.ConstantUtil;
+import com.logica.ngph.dao.CreateBankGuaranteeDao;
+import com.logica.ngph.dtos.CreateBankGuaranteeDto;
+
+public class CreateBankGuaranteeDaoImpl extends HibernateDaoSupport implements
+		CreateBankGuaranteeDao {
+	
+	private final static String propName = "System.properties";
+	/*//
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void createBG(CreateBankGuaranteeDto createBankGuaranteeDto,
+			int status, String mesRef, String bgNumber, String bgDirection, NgphCanonical canonical, MsgPolled msgPolled) throws SQLException {
+		Session session = getHibernateTemplate().getSessionFactory()
+				.openSession();
+		session.beginTransaction();
+		String MSGS_MSGREF = mesRef;
+		String BG_NUMBER = bgNumber;
+		String BG_ISSUE_DT = convertStringToTimestamp(createBankGuaranteeDto
+				.getBgDate());
+		String BG_CREATE_TYPE = createBankGuaranteeDto.getBgCreateType();
+		String BG_RULES_CODE = createBankGuaranteeDto.getBgRuleCode();
+		String BG_DETAILS = insertNewLine(createBankGuaranteeDto.getBgDetails());
+		String BG_NARRATION = createBankGuaranteeDto.getBgRuleNarration();
+		int BG_STATUS = status;
+		String BG_DIRECTION = bgDirection;
+		String BG_ADVISINGBANK = createBankGuaranteeDto.getAdvisingBank();
+		
+		Query query = session
+				.createSQLQuery("INSERT INTO TA_BG_MAST(MSGS_MSGREF,BG_NUMBER,BG_DIRECTION,BG_ISSUE_DT,BG_CREATE_TYPE,BG_RULES_CODE,BG_DETAILS,BG_NARRATION,BG_ADVISINGBANK,BG_STATUS) values('"
+						+ MSGS_MSGREF
+						+ "','"
+						+ BG_NUMBER
+						+ "','"
+						+ BG_DIRECTION
+						+ "',TO_DATE('"
+						+ BG_ISSUE_DT
+						+ "','"
+						+ "DD-Mon-YY"
+						+ "'),'"
+						+ BG_CREATE_TYPE
+						+ "','"
+						+ BG_RULES_CODE
+						+ "','"
+						+ BG_DETAILS
+						+ "','"
+						+ BG_NARRATION
+						+ "','"
+						+ BG_ADVISINGBANK
+						+ "','"
+						+ BG_STATUS
+						+ "')");
+		
+		query.executeUpdate();	
+		session.saveOrUpdate(canonical);
+		session.saveOrUpdate(msgPolled);
+		session.getTransaction().commit();
+		session.close();
+		System.out.println("Data Insertion Complete.");
+	}*/
+
+	private String convertStringToTimestamp(Date date) {
+		if (date != null) {
+			try {
+				Format formatter = new SimpleDateFormat("dd-MMM-yy");
+				String dateTime = formatter.format(date);
+				return dateTime;
+
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				return null;
+			}
+		} else {
+			return null;
+		}
+	}
+	
+		
+	public String getDept(String userId) {
+		List branchnDepartment = getHibernateTemplate().find("select userDept,userBranch from SecUsers where user =?",userId);
+		List ifsc=null;
+		if(branchnDepartment!=null){
+			Object[] obj = (Object[]) branchnDepartment.get(0);
+			String branchCode =(String) obj[1];
+			if(branchCode.equals(ConstantUtil.ALL)){
+				String initEntry = "DEFBRANCH";
+				List val= getHibernateTemplate().find("select initValue from Initialisation where initEntry =?",initEntry);
+				if(!val.isEmpty())
+				{
+					branchCode=val.get(0).toString();
+				}
+			}
+			
+			ifsc = getHibernateTemplate().find("select branchIFSCCode from Branches where  branchCode =?",branchCode);
+			if(ifsc!=null)
+			return ifsc.get(0)+"~"+obj[0]+"~"+obj[1];
+		}
+		return null;
+	}
+	
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void createBG(CreateBankGuaranteeDto createBankGuaranteeDto,
+			int status, String mesRef, String bgNumber, String bgDirection, NgphCanonical canonical, MsgPolled msgPolled) throws Exception {
+		Properties props = new Properties();		
+		PreparedStatement pstmt = null;
+		CLOB clob = null; 
+		 Connection conn = null;
+		 Session session = null;
+		try{
+		 session = getHibernateTemplate().getSessionFactory()
+				.openSession();
+		session.beginTransaction();
+		final String MSGS_MSGREF = mesRef;
+		final String BG_NUMBER = bgNumber;
+		final Timestamp BG_ISSUE_DT = converrtStringToTimestamp(createBankGuaranteeDto
+				.getBgDate());
+		final String BG_CREATE_TYPE = createBankGuaranteeDto.getBgCreateType();
+		final String BG_RULES_CODE = createBankGuaranteeDto.getBgRuleCode();
+		final String BG_DETAILS = insertNewLine(createBankGuaranteeDto.getBgDetails());
+		final String BG_NARRATION = createBankGuaranteeDto.getBgRuleNarration();
+		final int BG_STATUS = status;
+		final String BG_DIRECTION = bgDirection;
+		final String BG_ADVISINGBANK = createBankGuaranteeDto.getAdvisingBank();
+
+			 
+		 props.load(Thread.currentThread().getContextClassLoader().getResourceAsStream(propName));
+		  
+		  //props.load(new FileInputStream((propName)));
+		  String url = props.getProperty("db.url");//"jdbc:Oracle:thin:@10.14.1.35:1521:NGPH";
+		 
+		  String driver = props.getProperty("db.driverClassName");//"oracle.jdbc.driver.OracleDriver";
+		  String userName = props.getProperty("db.username");
+		  String password1 = props.getProperty("db.password");
+		  
+		  org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig obj = new org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig();
+		  obj.setAlgorithm("PBEWithMD5AndDES");
+		  obj.setPassword(props.getProperty("makerKey"));
+		  
+		  
+		  org.jasypt.encryption.pbe.StandardPBEStringEncryptor obj1 = new org.jasypt.encryption.pbe.StandardPBEStringEncryptor();
+		  obj1.setConfig(obj);
+		  String tmppassword = password1.substring(4, password1.length()-1);
+		  String password = obj1.decrypt(tmppassword);
+			 
+			  Class.forName(driver).newInstance();
+			  conn = DriverManager.getConnection(url,userName,password);
+			  conn.setAutoCommit(false);
+			  System.out.println("Connected to the database");
+			  
+			  clob = CLOB.createTemporary(conn, false, CLOB.DURATION_SESSION);  
+	          clob.putString(1, BG_DETAILS);  
+			       
+			  String sql = "INSERT INTO TA_BG_MAST(MSGS_MSGREF,BG_NUMBER,BG_DIRECTION,BG_ISSUE_DT,BG_CREATE_TYPE,BG_RULES_CODE,BG_DETAILS,BG_NARRATION,BG_ADVISINGBANK,BG_STATUS) values(?,?,?,?,?,?,?,?,?,?)";
+
+			  pstmt = conn.prepareStatement(sql);
+			    pstmt.setString(1,MSGS_MSGREF);
+				pstmt.setString(2, BG_NUMBER);
+				pstmt.setString(3, BG_DIRECTION);
+				pstmt.setTimestamp(4, BG_ISSUE_DT);
+				pstmt.setString(5, BG_CREATE_TYPE);
+				pstmt.setString(6, BG_RULES_CODE);				
+				pstmt.setClob(7,clob);
+				pstmt.setString(8, BG_NARRATION);
+				pstmt.setString(9, BG_ADVISINGBANK);
+				pstmt.setInt(10, BG_STATUS);				 
+			    System.out.println(mesRef);		 
+			  pstmt.executeUpdate();
+		
+		session.saveOrUpdate(canonical);
+		session.saveOrUpdate(msgPolled);
+				
+		session.getTransaction().commit();
+		conn.commit();
+		session.close();
+		
+		 } catch (SQLException sqlex) {
+			    conn.rollback();
+			    session.getTransaction().rollback();
+		        throw new SQLException();
+		 } catch (Exception ex) {
+		    	conn.rollback();
+		    	session.getTransaction().rollback();
+		    	throw new Exception();		      
+		 } 
+		finally{
+			pstmt.close();
+			conn.close();
+		}
+	}
+	private Timestamp converrtStringToTimestamp(Date date) {
+		if(date != null){
+			try{
+				return new Timestamp(date.getTime());
+			}catch(Exception ex){
+				ex.printStackTrace();
+				return null;
+			}
+		}else {
+			return null;
+		}
+	}
+	
+	private String insertNewLine(String str){		 
+		StringBuilder sb = new StringBuilder();
+		String lineSeparator = System.getProperty("line.separator");
+		for (int i = 0; i < str.length(); i++) { 
+			if (i > 0 && (i % 65 == 0)) { 
+				sb.append(lineSeparator);     }  
+			sb.append(str.charAt(i)); 
+			}  
+		str = sb.toString();
+		return str;
+	}
+
+}

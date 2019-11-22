@@ -1,0 +1,8 @@
+package com.logica.ngph.dao;
+
+public interface ChangePwdDao {
+	public Boolean isOldPwdMatches(String userID,String oldpwd);
+	public String changePwd(String userID, String newPwd);
+	
+
+}

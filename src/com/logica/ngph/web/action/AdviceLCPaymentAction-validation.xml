@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+	<field name="lcNumber">
+	   <field-validator type="requiredstring">
+		<param name="fieldName">lcNumber</param>
+		<message>Sender's Reference(20) Is Required</message>	
+	   </field-validator>
+	   <field-validator type="regex">
+			<param name="fieldName">lcNumber</param>
+			<param name="expression"><![CDATA[([-0-9a-zA-Z/-?:().,+' \n`]*)+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Sender's Reference(20) is Not Valid</message>
+		</field-validator>
+    </field>
+
+    <field name="presentingBanksReference">
+		<field-validator type="requiredstring">
+		<param name="fieldName">presentingBanksReference</param>
+		<message>Presenting Bank's Reference(21) Is Required</message>	
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">presentingBanksReference</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Presenting Banks Reference(21) is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="claimCurrency">
+		<field-validator type="requiredstring">
+			<param name="fieldName">claimCurrency</param>
+			<message>LC Currency(32B) Is Required</message>	
+		</field-validator>
+	</field>
+	
+	<field name="totalAmountClaimed">
+		<field-validator type="required">
+			<param name="fieldName">totalAmountClaimed</param>
+			<message>Total Amount Claimed(32B) Is Required</message>	
+		</field-validator>
+	</field>
+	
+	<field name="amountPaidDate">
+		<field-validator type="required">
+			<param name="fieldName">amountPaidDate</param>
+			<message>Amount Paid Or Reimbursed Date(33A) Is Required</message>	
+		</field-validator>
+	</field>
+	
+	<field name="currency">
+		<field-validator type="requiredstring">
+			<param name="fieldName">currency</param>
+			<message>Currency(33A) Is Required</message>	
+		</field-validator>
+	</field>
+	
+	
+	
+	<field name="paidAmount">
+		<field-validator type="required">
+			<param name="fieldName">paidAmount</param>
+			<message>Amount Paid Or Reimbursed(33A) Is Required</message>	
+		</field-validator>
+	</field>
+	
+	<field name="sendersCorrespondentLocation">
+		<field-validator type="regex">
+			<param name="fieldName">sendersCorrespondentLocation</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Sender's Correspondent  Location(53a) is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="sendersCorrespondentNameandAddress">
+		<field-validator type="textAreaSize">
+			<param name="fieldName">sendersCorrespondentNameandAddress</param>
+			<param name="maxNumLines">4</param>
+			<param name="maxCharInLine">35</param>
+			<param name="maxCharsField">140</param>
+			<message>Sender's Correspondent  Name and Address(53a) must be 4*35 lines</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">sendersCorrespondentNameandAddress</param>
+		<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Sender's Correspondent  Name and Address(53a) is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="receiversCorrespondentLocation">
+		<field-validator type="regex">
+			<param name="fieldName">receiversCorrespondentLocation</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Receiver's Correspondent  Location(54a) is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="receiversCorrespondentNameandAddress">
+		<field-validator type="textAreaSize">
+			<param name="fieldName">receiversCorrespondentNameandAddress</param>
+			<param name="maxNumLines">4</param>
+			<param name="maxCharInLine">35</param>
+			<param name="maxCharsField">140</param>
+			<message>Receiver's Correspondent  Name and Address(54a) must be 4*35 lines</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">receiversCorrespondentNameandAddress</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Receiver's Correspondent  Name and Address(54a) is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="sendertoReceiverInformation">
+		<field-validator type="textAreaSize">
+			<param name="fieldName">sendertoReceiverInformation</param>
+			<param name="maxNumLines">6</param>
+			<param name="maxCharInLine">35</param>
+			<param name="maxCharsField">210</param>
+			<message>Sender to Receiver Information(72) must be 6*35 lines</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">sendertoReceiverInformation</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Sender to Receiver Information(72) is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	
+	
+</validators>

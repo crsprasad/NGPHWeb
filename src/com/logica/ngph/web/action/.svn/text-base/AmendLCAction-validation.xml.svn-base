@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+
+<field name="lcNumber">
+		<field-validator type="requiredstring">
+		<param name="fieldName">lcNumber</param>
+		<message>LC Number Is Required</message>	
+		</field-validator>
+		<field-validator type="stringlength">
+	 <param name="fieldName">lcNumber</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">16</param>
+	  <param name="trim">true</param>
+	 <message>Channel TypeLc Number should be less Then 16 Chars</message>
+	</field-validator>	
+		<field-validator type="regex">
+			<param name="fieldName">lcNumber</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>lc Number is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="advisingBank">
+		<field-validator type="requiredstring">
+		<param name="fieldName">advisingBank</param>
+		<message>Receiver Bank Code Is Required</message>	
+		</field-validator>
+		<field-validator type="stringlength">
+		 <param name="fieldName">advisingBank</param>
+		 <param name="minLength">8</param>
+		 <param name="maxLength">11</param>
+		  <param name="trim">true</param>
+	 <message>Receiver Bank Code should be 8 to 11 Chars</message>
+	</field-validator>
+	<field-validator type="regex">
+			<param name="fieldName">advisingBank</param>
+			<param name="expression"><![CDATA[([A-Z]{4}+[0]{1}+[0-9a-zA-Z]{6})|([A-Z]{6}+[0-9A-Z]{2}+[0-9A-Z]{3})|([A-Z]{6}+[0-9A-Z]{2})+$]]></param>
+			<message>Receiver Bank Code is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="receiverBankReference">
+		<field-validator type="requiredstring">
+			<param name="fieldName">receiverBankReference</param>
+			<message>Receiver Bank Referencer Is Required</message>	
+		</field-validator>
+		<field-validator type="stringlength">
+			<param name="fieldName">receiverBankReference</param>
+			<param name="minLength">1</param>
+	 		<param name="maxLength">16</param>
+	  		<param name="trim">true</param>
+	 		<message>Receiver Bank Referencer should be less Then 16 Chars</message>
+		</field-validator>
+			<field-validator type="regex">
+			<param name="fieldName">receiverBankReference</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Receiver Bank Reference is Not Valid</message>
+		</field-validator>
+		
+	</field>
+		<field name="applicantBankCode">
+		
+		<field-validator type="stringlength">
+		 <param name="fieldName">applicantBankCode</param>
+		 <param name="minLength">8</param>
+		 <param name="maxLength">11</param>
+		  <param name="trim">true</param>
+	 <message>Issuing Bank Code should be 8 to 11 Chars</message>
+	</field-validator>
+	<field-validator type="regex">
+			<param name="fieldName">applicantBankCode</param>
+			<param name="expression"><![CDATA[([A-Z]{4}+[0]{1}+[0-9a-zA-Z]{6})|([A-Z]{6}+[0-9A-Z]{2}+[0-9A-Z]{3})|([A-Z]{6}+[0-9A-Z]{2})+$]]></param>
+			<message>Issuing Bank Code is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	
+	<field name="senderBankReference">
+		<field-validator type="requiredstring">
+			<param name="fieldName">senderBankReference</param>
+			<message>sender Bank Reference Is Required</message>	
+		</field-validator>
+		<field-validator type="stringlength">
+			<param name="fieldName">senderBankReference</param>
+			<param name="minLength">1</param>
+	 		<param name="maxLength">16</param>
+	  		<param name="trim">true</param>
+	 		<message>sender Bank Reference should be less Then 16 Chars</message>
+		</field-validator>
+			<field-validator type="regex">
+			<param name="fieldName">senderBankReference</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>sender Bank Reference is Not Valid</message>
+		</field-validator>
+		
+	</field>
+	
+	<field name="lcAmndmntNo">
+		<field-validator type="regex">
+			<param name="fieldName">lcAmndmntNo</param>
+			<param name="expression"><![CDATA[^\d+$]]></param>
+			<message>Number of Amendment is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="beneficiaryAccount">
+		<field-validator type="regex">
+			<param name="fieldName">beneficiaryAccount</param>
+		<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Beneficiary Account is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	
+	<field name="beneficiaryNameAddress">
+		<field-validator type="requiredstring">
+		<param name="fieldName">beneficiaryNameAddress</param>
+		<message>Beneficiary Name and Address Is Required</message>	
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">beneficiaryNameAddress</param>
+		<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Beneficiary Name and Address is Not Valid</message>
+		</field-validator>
+		<field-validator type="textAreaSize">
+			<param name="fieldName">beneficiaryNameAddress</param>
+			<param name="maxNumLines">4</param>
+			<param name="maxCharInLine">35</param>
+			<param name="maxCharsField">146</param>
+			<message>Beneficiary Name Address must be 4X35 lines</message>
+		</field-validator>
+	</field>
+		
+	
+	
+	<field name="increaseAmendAmount">
+		<field-validator type="regex">
+			<param name="fieldName">increaseAmendAmount</param>
+			<param name="expression"><![CDATA[[0-9.]+$]]></param>
+			<message>Increase Amend Amount is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="decreaseAmendAmount">
+		<field-validator type="regex">
+			<param name="fieldName">decreaseAmendAmount</param>
+			<param name="expression"><![CDATA[[0-9.]+$]]></param>
+			<message>decrease Amend Amount is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="newLcAmount">
+		<field-validator type="regex">
+			<param name="fieldName">newLcAmount</param>
+			<param name="expression"><![CDATA[[0-9.]+$]]></param>
+			<message>New LC Amount is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="maximumCreditAmount">
+		<field-validator type="regex">
+			<param name="fieldName">maximumCreditAmount</param>
+		<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Maximum Credit Amount is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	
+	<field name="additionalAmountsCovered">
+		<field-validator type="regex">
+			<param name="fieldName">additionalAmountsCovered</param>
+		<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Additional Amounts Covered is Not Valid</message>
+		</field-validator>
+		<field-validator type="textAreaSize">
+			<param name="fieldName">additionalAmountsCovered</param>
+			<param name="maxNumLines">4</param>
+			<param name="maxCharInLine">35</param>
+			<param name="maxCharsField">146</param>
+			<message>Additional Amounts Covered must be 4X35 lines</message>
+		</field-validator>
+	</field>
+	
+	<field name="goodsLoadingDispatchPlace">
+		<field-validator type="regex">
+			<param name="fieldName">goodsLoadingDispatchPlace</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Dispatch Place is Not Valid</message>
+		</field-validator>
+	</field>
+
+	<field name="goodsDestination">
+		<field-validator type="regex">
+			<param name="fieldName">goodsDestination</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Goods Destination is Not Valid</message>
+		</field-validator>
+	</field>
+	
+		<field name="initialDispatchPlace">
+		<field-validator type="regex">
+			<param name="fieldName">initialDispatchPlace</param>
+				<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Initial Dispatch Place is Not Valid</message>
+		</field-validator>
+	</field>
+
+	<field name="finalDeliveryPlace">
+		<field-validator type="regex">
+			<param name="fieldName">finalDeliveryPlace</param>
+				<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Final Delivery Place is Not Valid</message>
+		</field-validator>
+	</field>
+	
+		<field name="shipmentPeriod">
+		<field-validator type="regex">
+			<param name="fieldName">shipmentPeriod</param>
+		<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Shipment Period is Not Valid</message>
+		</field-validator>
+		<field-validator type="textAreaSize">
+			<param name="fieldName">shipmentPeriod</param>
+			<param name="maxNumLines">6</param>
+			<param name="maxCharInLine">65</param>
+			<param name="maxCharsField">400</param>
+			<message>Shipment Period must be 6X65 lines</message>
+		</field-validator>
+	</field>
+	
+	<field name="Narrative">
+		<field-validator type="regex">
+			<param name="fieldName">Narrative</param>
+				<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Narrative is Not Valid</message>
+		</field-validator>
+		<field-validator type="textAreaSize">
+			<param name="fieldName">Narrative</param>
+			<param name="maxNumLines">35</param>
+			<param name="maxCharInLine">50</param>
+			<param name="maxCharsField">1818</param>
+			<message>Narrative must be 35X50 lines</message>
+		</field-validator>
+	</field>
+	
+	<field name="sendertoReceiverInformation">
+		<field-validator type="regex">
+			<param name="fieldName">sendertoReceiverInformation</param>
+				<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`^\s*/.*s/$]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Sender to Receiver Information is Not Valid</message>
+		</field-validator>
+		<field-validator type="textAreaSize">
+			<param name="fieldName">sendertoReceiverInformation</param>
+			<param name="maxNumLines">6</param>
+			<param name="maxCharInLine">35</param>
+			<param name="maxCharsField">220</param>
+			<message>Sender to Receiver Information must be 6X35 lines</message>
+		</field-validator>
+	</field>
+	
+
+		
+</validators>

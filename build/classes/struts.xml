@@ -1,0 +1,3314 @@
+<?xml version="1.0" encoding="UTF-8" ?><!--comment -->
+<!DOCTYPE struts PUBLIC "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN" "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
+	<constant name="struts.devMode" value="false" />
+	<constant name="struts.ui.theme" value="simple" />
+	<constant name="struts.custom.i18n.resources" value="ApplicationResources,PaymentEntry" />
+
+	<package name="default" extends="struts-default" namespace="/">
+		<interceptors>
+			<interceptor class="com.logica.ngph.web.interceptor.LoginInterceptor"
+				name="loginInterceptor"></interceptor>
+			<interceptor-stack name="loginStack">
+				<interceptor-ref name="loginInterceptor" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+			<interceptor name="validation"
+				class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor" />
+		</interceptors>
+		<default-interceptor-ref name="loginStack" />
+
+		<global-results>
+			<result name="login">UserLogin.jsp</result>
+		</global-results>
+
+		<action name="ruleAction" class="com.logica.ngph.web.action.RulesAction"
+			method="loadRules">
+			<result name="session">SessionExpired.jsp</result>
+			<result name="input">/WEB-INF/jsp/Rules.jsp</result>
+			<result name="success">/WEB-INF/jsp/SendForApproval.jsp</result>
+			<result name="ruleSuccess">Success.jsp</result>
+		</action>
+
+		<action name="displayUserLogoutPage" class="com.logica.ngph.web.action.UserLoginAction"
+			method="logoutAction">
+			<result name="input">UserLogout.jsp</result>
+			<result name="userSuccess">UserLogout.jsp</result>
+		</action>
+		<action name="forgotPassWord" class="com.logica.ngph.web.action.UserLoginAction"
+			method="forgotPassWord">
+			<result name="input">UserLogin.jsp</result>
+			<result name="forgotPassword">UserLogin.jsp</result>
+		</action>
+		
+		<action name="reLogin" class="com.logica.ngph.web.action.UserLoginAction"
+			method="reLogin">
+			<result name="success">UserLogin.jsp</result>
+		</action>
+		
+		<action name="userLogin" class="com.logica.ngph.web.action.UserLoginAction"
+			method="validateUser">
+			<result name="input">UserLogin.jsp</result>
+			<result name="userSuccess" type="chain">
+				<param name="actionName">welComeForwardLogin</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="getChangePwd" type="chain">
+				<param name="actionName">getChangePwdgetChangePassword</param>
+				<param name="namespace">/</param>
+			</result>
+		</action>
+
+		<action name="userLoginSSO" class="com.logica.ngph.web.action.UserLoginAction"
+			method="validateUserForSSO">
+			<result name="input">UserLogin.jsp</result>
+			<result name="userSuccess" type="chain">
+				<param name="actionName">welComeForwardLogin</param>
+				<param name="namespace">/</param>
+			</result>
+		</action>
+
+		<action name="showSearchScreen">
+			<result>Search.jsp</result>
+		</action>
+
+		<action name="searchAction" class="com.logica.ngph.web.action.SearchAction"
+			method="getSearchData">
+			<result name="input">Search.jsp</result>
+			<result name="populateData">Search.jsp</result>
+		</action>
+
+		<action name="showUserIDSearchScreen">
+			<result>/WEB-INF/jsp/SearchUserID.jsp</result>
+		</action>
+
+		<action name="showIFSCScreen">
+			<result>/WEB-INF/jsp/SearchIFSC.jsp</result>
+		</action>
+
+		<action name="showAdvisingIFSCScreen">
+			<result>/WEB-INF/jsp/searchAdvisingBank.jsp</result>
+		</action>
+
+		<action name="getHelpData" method="fetchHelpData"
+			class="com.logica.ngph.web.action.HelpAction">
+			<result name="fetchData">/WEB-INF/jsp/HelpScreen.jsp</result>
+			<result name="input">/WEB-INF/jsp/HelpScreen.jsp</result>
+		</action>
+
+
+		<action name="searchIFSCCode" class="com.logica.ngph.web.action.LetterOfCreditAction"
+			method="getIFSCCodeList">
+			<result name="success">/WEB-INF/jsp/SearchIFSC.jsp</result>
+			<result name="input">/WEB-INF/jsp/SearchIFSC.jsp</result>
+		</action>
+
+		<action name="searchAdvisingIFSCCode" class="com.logica.ngph.web.action.LetterOfCreditAction"
+			method="getIFSCsearch">
+			<result name="success">/WEB-INF/jsp/searchAdvisingBank.jsp</result>
+			<result name="input">/WEB-INF/jsp/searchAdvisingBank.jsp</result>
+		</action>
+
+		<action name="lcOpenSearchLCNo">
+			<result>/WEB-INF/jsp/searchLCNumber.jsp</result>
+		</action>
+
+		<action name="transferDocumentarySearchLCNo">
+			<result>/WEB-INF/jsp/searchDocumentaryLCNumber.jsp</result>
+		</action>
+
+		<action name="searchUserIDAction" class="com.logica.ngph.web.action.UserMaintenanceAction"
+			method="getSearchData">
+			<result name="input">/WEB-INF/jsp/SearchUserID.jsp</result>
+			<result name="populateData">/WEB-INF/jsp/SearchUserID.jsp</result>
+		</action>
+
+		<action name="showRuleIDSearchScreen">
+			<result>/WEB-INF/jsp/SearchRuleID.jsp</result>
+		</action>
+
+		<action name="showTemplateSearch">
+			<result>/WEB-INF/jsp/SearchTemplate.jsp</result>
+		</action>
+
+		<action name="showBankNameSearch">
+			<result>/WEB-INF/jsp/SearchBankName.jsp</result>
+		</action>
+
+		<action name="showBranchNameSearch">
+			<result>/WEB-INF/jsp/SearchBranchName.jsp</result>
+		</action>
+
+		<action name="showIFSCCodeSearch">
+			<result>/WEB-INF/jsp/SearchIFSCCode.jsp</result>
+		</action>
+
+		<action name="showIFSCData">
+			<result>/WEB-INF/jsp/searchIFSCData.jsp</result>
+		</action>
+
+		<action name="searchRuleIDAction" class="com.logica.ngph.web.action.SearchRuleIDAction"
+			method="getSearchData">
+			<result name="input">/WEB-INF/jsp/SearchRuleID.jsp</result>
+			<result name="populateData">/WEB-INF/jsp/SearchRuleID.jsp</result>
+		</action>
+
+		<action name="paymentMainAction" class="com.logica.ngph.web.action.PaymentMainAction"
+			method="performPaymentMain">
+			<result name="input">PaymentMain.jsp</result>
+			<result name="populatePaymentMain">PaymentMain.jsp</result>
+		</action>
+
+		<action name="paymentAction" class="com.logica.ngph.web.action.PaymentAction"
+			method="performPayment">
+			<result name="input">/WEB-INF/jsp/PaymentEntry.jsp</result>
+			<result name="payment">/WEB-INF/jsp/PaymentEntry.jsp</result>
+		</action>
+
+		<action name="savePaymentAction" class="com.logica.ngph.web.action.PaymentAction"
+			method="savePayment">
+			<result name="input">/WEB-INF/jsp/PaymentEntry.jsp</result>
+			<result name="paymentSuccess">Success.jsp</result>
+		</action>
+
+		<action name="paymentMessage"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input">/WEB-INF/jsp/PaymentMessageStatus.jsp</result>
+			<result name="performPaymentMessage">/WEB-INF/jsp/PaymentMessageStatus.jsp</result>
+		</action>
+		<!-- For Repair -->
+		<action name="paymentAwaitingRepair"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="paymentToRepair">
+			<result name="repair" type="chain">
+				<param name="actionName">performPaymentStatus</param>
+				<param name="namespace">/</param>
+			</result>
+		</action>
+
+		<action name="repairPreAdvice"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="paymentToRepairLc">
+			<result name="failure">/WEB-INF/jsp/PaymentMessageStatus.jsp</result>
+
+			<result name="PRE_ADVICE" type="chain">
+				<param name="actionName">viewLcPaymentletterOfCredit</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="LCOPEN" type="chain">
+				<param name="actionName">viewOpenLcPaymentlcOpen</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="AMENDLC" type="chain">
+				<param name="actionName">lcAmendadmendLCPage</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="ADVICE_PAYMENT" type="chain">
+				<param name="actionName">viewAdvicePaymentadvicePayment</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="AUTHORISEPAYMENTADVICE" type="chain">
+				<param name="actionName">viewAuthorisePaymentauthoriseLcPaymentAdvi</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="repair" type="chain">
+				<param name="actionName">performPaymentStatus</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="TRANSFERDOCUMENTARYCREDITS" type="chain">
+				<param name="actionName">viewTransferDocumentaryPaymenttransferDocumentaryCredit</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="REIMBURSMENTCLAIMS" type="chain">
+				<param name="actionName">viewReimbursementClaimPaymentreimbursementClaim</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="AUTHORISATIONTOPAY" type="chain">
+				<param name="actionName">viewAuthorisationToPayRepairauthorisToPay</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="CREATE_BANK_GUARANTEE" type="chain"><!-- 760 message -->
+				<param name="actionName">viewCreateBankGuanteecreateBankGuaranteeAction</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="AMENDBG" type="chain"><!-- 767 message -->
+				<param name="actionName">viewAmendBGamendBGPage</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="BG_ACKNOWLEDGEMENT" type="chain"><!-- 768 message -->
+				<param name="actionName">viewAckBGackBGPage</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="CREATE_BG_COVER" type="chain"><!-- 760 COV message -->
+				<param name="actionName">viewCreateBankGuanteeCovercovBGPage</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="CREATE_AMEND_BG_COVER" type="chain"><!-- 767 COV message -->
+				<param name="actionName">viewCreateAmendBGCoverAmdCoverBGPage</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="FREE_FORMAT_MESSAGE" type="chain"> <!-- 799 message -->
+				<param name="actionName">viewFreeFormatPaymentFreeFormatMessage</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="CREATE_ADVICE_OF_REDUCTION" type="chain"><!-- 769 message -->
+				<param name="actionName">viewAdviceofReductionAdviceofReduction</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="LC_ACKNOWLEDGEMENT" type="chain"><!-- 730 message -->
+				<param name="actionName">viewLCAcknowledgementLCAcknowledgement</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="ADVICEOFREFUSAL" type="chain">
+				<param name="actionName">viewAdviceofRefusalAdviceofRefusalAction</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="ADVICEOFDISCREPANCY" type="chain">
+				<param name="actionName">viewAdviceofDiscrepancy</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="ADVICEOFPAYMENT" type="chain">
+				<param name="actionName">viewAdviceofPaymentadviceofPaymentAction</param>
+				<param name="namespace">/</param>
+			</result>
+		</action>
+
+		<action name="authorizationView"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="paymentView">
+			<result name="view" type="chain">
+				<param name="actionName">viewPaymentStatus</param>
+				<param name="namespace">/</param>
+			</result>
+		</action>
+
+		<action name="lCNoFetch">
+			<result>/WEB-INF/jsp/fetchLcNumber.jsp</result>
+		</action>
+
+		<action name="searchAdvicePaymentLCno">
+			<result>/WEB-INF/jsp/SearchAdviceLcNumber.jsp</result>
+		</action>
+
+		<action name="searchAuthoriseLCPayAdvno">
+			<result>/WEB-INF/jsp/SearchAuthorisePAyAdviceLcNumber.jsp</result>
+		</action>
+		<action name="searchLCAuthorisetoPay">
+			<result>/WEB-INF/jsp/SearchLCAuthoriseTOPay.jsp</result>
+		</action>
+
+		<action name="searchAdmendLCno">
+			<result>/WEB-INF/jsp/AmendLCSearch.jsp</result>
+		</action>
+
+		<action name="showRepairPopup">
+			<result>PaymentRepair.jsp</result>
+		</action>
+
+		<action name="showDeleteRepairPopup">
+			<result>RepairedDeleteComments.jsp</result>
+		</action>
+
+		<action name="showRepairLetterOFCreditPopup">
+			<result>/WEB-INF/jsp/RepairPOPComment.jsp</result>
+		</action>
+
+		<action name="searchAmendBGNo">
+			<result>/WEB-INF/jsp/AmendBGSearch.jsp</result>
+		</action>
+		<action name="searchAckBGNo">
+			<result>/WEB-INF/jsp/AckBGSearch.jsp</result>
+		</action>
+		<action name="searchAckLCNo">
+			<result>/WEB-INF/jsp/searchAckLCNumber.jsp</result>
+		</action>
+		<action name="displayRawInformationMsg" class="com.logica.ngph.web.action.InformationAction"
+			method="displayRawInformationMsg">
+			<result name="success">/WEB-INF/jsp/InfoPopup.jsp</result>
+			<result name="input">/WEB-INF/jsp/InfoPopup.jsp</result>
+		</action>
+
+		<action name="showOutboundInfoPopup">
+			<result>/WEB-INF/jsp/InfoPopup.jsp</result>
+		</action>
+
+		<action name="showBranchScreen">
+			<result>/WEB-INF/jsp/SearchBranches.jsp</result>
+		</action>
+		<action name="showIFSCScreenByName">
+			<result>/WEB-INF/jsp/SearchIFSCName.jsp</result>
+		</action>
+
+		<!-- Siddharth Work -->
+		<action name="ViewMessage" class="com.logica.ngph.web.action.EnquiryAction"
+			method="callOnPrint">
+			<result name="success">view.jsp</result>
+			<result name="success" type="chain">
+				<param name="actionName">displayMessages</param>
+				<param name="namespace">/</param>
+			</result>
+		</action>
+
+		<action name="ViewRawMessage">
+			<result>/WEB-INF/jsp/ViewRawMessage.jsp</result>
+		</action>
+
+		<action name="Banner" class="com.logica.ngph.web.action.BannerAction"
+			method="getBanner">
+			<result name="input">/WEB-INF/jsp/Banner.jsp</result>
+			<result name="success">/WEB-INF/jsp/Banner.jsp</result>
+		</action>
+
+		<action name="FeedBack" class="com.logica.ngph.web.action.FeedbackAction"
+			method="onloadFeedbackForm">
+			<result name="input">/WEB-INF/jsp/Feedback.jsp</result>
+			<result name="success">/WEB-INF/jsp/Feedback.jsp</result>
+		</action>
+
+		<action name="FeedBackReturn" class="com.logica.ngph.web.action.FeedbackAction"
+			method="getFeedback">
+			<result name="input">/WEB-INF/jsp/Feedback.jsp</result>
+			<result name="success">/WEB-INF/jsp/Feedback.jsp</result>
+		</action>
+
+		<action name="quickStatsAction" class="com.logica.ngph.web.action.QuickStatsAction"
+			method="getStatsValues">
+			<result name="input">/WEB-INF/jsp/QuickStats.jsp</result>
+			<result name="success">/WEB-INF/jsp/QuickStats.jsp</result>
+		</action>
+
+		<action name="showReceiverSearchScreen">
+			<result>/WEB-INF/jsp/Receiver.jsp</result>
+		</action>
+
+		<action name="receiverSearchAction" class="com.logica.ngph.web.action.ReceiverAction"
+			method="getSearchData">
+			<result name="input">/WEB-INF/jsp/Receiver.jsp</result>
+			<result name="populateData">/WEB-INF/jsp/Receiver.jsp</result>
+		</action>
+
+		<action name="showStreamIDSearchScreen">
+			<result>/WEB-INF/jsp/streamIDSearch.jsp</result>
+		</action>
+
+		<action name="StreamIDsearchAction" class="com.logica.ngph.web.action.StreamIDSearchAction"
+			method="getSearchData">
+			<result name="input">/WEB-INF/jsp/streamIDSearch.jsp</result>
+			<result name="populateData">/WEB-INF/jsp/streamIDSearch.jsp</result>
+		</action>
+
+		<action name="showEI_IDSearchScreen">
+			<result>/WEB-INF/jsp/searchEI_ID.jsp</result>
+		</action>
+
+		<action name="eiIDsearchAction" class="com.logica.ngph.web.action.EI_IDSearchAction"
+			method="getSearchData">
+			<result name="input">/WEB-INF/jsp/searchEI_ID.jsp</result>
+			<result name="populateData">/WEB-INF/jsp/searchEI_ID.jsp</result>
+		</action>
+
+		<action name="showAccountSearchScreen">
+			<result>/WEB-INF/jsp/AccountSearch.jsp</result>
+		</action>
+
+		<action name="accountSearchAction" class="com.logica.ngph.web.action.AccountSearchAction"
+			method="getSearchData">
+			<result name="input">/WEB-INF/jsp/AccountSearch.jsp</result>
+			<result name="populateData">/WEB-INF/jsp/AccountSearch.jsp</result>
+		</action>
+
+		<action name="showBenificaryAccountSearchScreen">
+			<result>/WEB-INF/jsp/BenificaryAccountSearch.jsp</result>
+		</action>
+
+		<action name="benificaryAccountSearchAction" class="com.logica.ngph.web.action.MMIDManagerAction"
+			method="getSearchData">
+			<result name="input">/WEB-INF/jsp/BenificaryAccountSearch.jsp</result>
+			<result name="populateData">/WEB-INF/jsp/BenificaryAccountSearch.jsp</result>
+		</action>
+
+
+		<action name="showAccountSearchRepotScreen">
+			<result>/WEB-INF/jsp/AccountSearchReport.jsp</result>
+		</action>
+
+		<action name="accountSearchReportAction"
+			class="com.logica.ngph.web.action.MMIDAccountSearchAction" method="getSearchData">
+			<result name="input">/WEB-INF/jsp/AccountSearchReport.jsp</result>
+			<result name="populateData">/WEB-INF/jsp/AccountSearchReport.jsp</result>
+		</action>
+
+		<action name="showEventIDSearchScreen">
+			<result>/WEB-INF/jsp/EventIDSearch.jsp</result>
+		</action>
+
+		<action name="eventIdSearchAction" class="com.logica.ngph.web.action.EventSearchAction"
+			method="getSearchData">
+			<result name="input">/WEB-INF/jsp/EventIDSearch.jsp</result>
+			<result name="success">/WEB-INF/jsp/EventIDSearch.jsp</result>
+		</action>
+
+		<action name="showRoleIDSearchScreen">
+			<result>/WEB-INF/jsp/SearchRoleID.jsp</result>
+		</action>
+
+		<action name="searchRoleIDAction" class="com.logica.ngph.web.action.RoleAction"
+			method="getSearchData">
+			<result name="populateData">/WEB-INF/jsp/SearchRoleID.jsp</result>
+			<result name="input">/WEB-INF/jsp/SearchRoleID.jsp</result>
+		</action>
+
+		<action name="populatedLCContent" class="com.logica.ngph.web.action.LcOpenAction"
+			method="PopulatedLCContent">
+			<result name="success">/WEB-INF/jsp/searchLCNumber.jsp</result>
+			<result name="input">/WEB-INF/jsp/searchLCNumber.jsp</result>
+		</action>
+
+		<action name="populatedTransferDocumentaryContent"
+			class="com.logica.ngph.web.action.TransferDocumentOfcreditAction"
+			method="populatedTransferDocumentaryContent">
+			<result name="success">/WEB-INF/jsp/searchDocumentaryLCNumber.jsp
+			</result>
+			<result name="input">/WEB-INF/jsp/searchDocumentaryLCNumber.jsp
+			</result>
+		</action>
+
+		<action name="getLCNumber"
+			class="com.logica.ngph.web.action.MarkAcknowledgementAction" method="PopulatedLCContent">
+			<result name="success">/WEB-INF/jsp/fetchLcNumber.jsp</result>
+			<result name="input">/WEB-INF/jsp/fetchLcNumber.jsp</result>
+		</action>
+
+		<action name="getLCAdvicePayment"
+			class="com.logica.ngph.web.action.AdvicePaymentLCSearchAction"
+			method="getSearchData">
+			<result name="populateData">/WEB-INF/jsp/SearchAdviceLcNumber.jsp</result>
+			<result name="input">/WEB-INF/jsp/SearchAdviceLcNumber.jsp</result>
+		</action>
+		<action name="getLCAuthtoPay"
+			class="com.logica.ngph.web.action.AuthToPayLCSearchAction" method="getSearchData">
+			<result name="populateData">/WEB-INF/jsp/SearchLCAuthoriseTOPay.jsp</result>
+			<result name="input">/WEB-INF/jsp/SearchLCAuthoriseTOPay.jsp</result>
+		</action>
+
+
+		<action name="getAuthLCAdvicePayment"
+			class="com.logica.ngph.web.action.AuthoriseLCPaymentAdviceSearchAction"
+			method="getSearchData">
+			<result name="populateData">/WEB-INF/jsp/SearchAuthorisePAyAdviceLcNumber.jsp
+			</result>
+			<result name="input">/WEB-INF/jsp/SearchAuthorisePAyAdviceLcNumber.jsp
+			</result>
+		</action>
+
+		<action name="getAdmendLCData" class="com.logica.ngph.web.action.AmendLCSearchAction"
+			method="getSearchData">
+			<result name="populateData">/WEB-INF/jsp/AmendLCSearch.jsp</result>
+			<result name="input">/WEB-INF/jsp/AmendLCSearch.jsp</result>
+		</action>
+
+		<action name="searchBranchAction" class="com.logica.ngph.web.action.MaintainBranchAction"
+			method="searchBranchAction">
+			<result name="success">/WEB-INF/jsp/SearchBranches.jsp</result>
+			<result name="input">/WEB-INF/jsp/SearchBranches.jsp</result>
+		</action>
+		<action name="searchIFSCAction" class="com.logica.ngph.web.action.IFSCMaintainAction"
+			method="searchIFSCAction">
+			<result name="success">/WEB-INF/jsp/SearchIFSCName.jsp</result>
+			<result name="input">/WEB-INF/jsp/SearchIFSCName.jsp</result>
+		</action>
+
+		<action name="getAmendBGData" class="com.logica.ngph.web.action.AmendBGSearchAction"
+			method="getSearchData">
+			<result name="populateData">/WEB-INF/jsp/AmendBGSearch.jsp</result>
+			<result name="input">/WEB-INF/jsp/AmendBGSearch.jsp</result>
+		</action>
+		<action name="getAckBGData" class="com.logica.ngph.web.action.AmendBGSearchAction"
+			method="getSearchData">
+			<result name="populateData">/WEB-INF/jsp/AmendBGSearch.jsp</result>
+			<result name="input">/WEB-INF/jsp/AmendBGSearch.jsp</result>
+		</action>
+		<!-- Start :: Template Search -->
+		<action name="getTempNameData" class="com.logica.ngph.web.action.GenericScreenManager"
+			method="getSearchData">
+			<result name="success">/WEB-INF/jsp/SearchTemplate.jsp</result>
+			<result name="input">/WEB-INF/jsp/SearchTemplate.jsp</result>
+		</action>
+		<!-- Start :: Template Search -->
+		<!-- Start :: IFSCCode Search -->
+		<action name="getBankNameList" class="com.logica.ngph.web.action.IFSCSearchAction"
+			method="getBankNameListData">
+			<result name="success">/WEB-INF/jsp/SearchBankName.jsp</result>
+			<result name="input">/WEB-INF/jsp/SearchBankName.jsp</result>
+		</action>
+		<action name="getBranchNameList" class="com.logica.ngph.web.action.IFSCSearchAction"
+			method="getBranchNameListData">
+			<result name="success">/WEB-INF/jsp/SearchBranchName.jsp</result>
+			<result name="input">/WEB-INF/jsp/SearchBranchName.jsp</result>
+		</action>
+		<action name="getIFSCCodeListData" class="com.logica.ngph.web.action.IFSCSearchAction"
+			method="getIFSCCodeListData">
+			<result name="success">/WEB-INF/jsp/SearchIFSCCode.jsp</result>
+			<result name="input">/WEB-INF/jsp/SearchIFSCCode.jsp</result>
+		</action>
+		<action name="getIFSCCodeList" class="com.logica.ngph.web.action.IFSCSearchAction"
+			method="getIFSCCodeList">
+			<result name="success">/WEB-INF/jsp/searchIFSCData.jsp</result>
+			<result name="input">/WEB-INF/jsp/searchIFSCData.jsp</result>
+		</action>
+		
+		
+		
+		
+		<!-- Start :: Forgot Password -->
+		
+			<action name="forgotPasswordAction" class="com.logica.ngph.web.action.ForgotPasswordAction" method="forgotPassword">
+				<result name="input">UserLogin.jsp</result>
+				<result name="success">/WEB-INF/jsp/ForgotPassword.jsp</result>
+			</action>
+			
+			<action name="fetchSecurityQuestion" class="com.logica.ngph.web.action.ForgotPasswordAction" method="fetchSecurityQuestion">
+				<result name="success">/WEB-INF/jsp/ForgotPassword.jsp</result>
+				<result name="input">/WEB-INF/jsp/ForgotPassword.jsp</result>
+			</action>
+			
+			<action name="validateSecAnswerAction"
+				class="com.logica.ngph.web.action.ForgotPasswordAction" method="validateSecAnswer">
+				<result name="success">/WEB-INF/jsp/ForgotPasswordChange.jsp</result>
+				<result name="input">/WEB-INF/jsp/ForgotPassword.jsp</result>
+			</action>
+			
+			<action name="newPasswordChange" class="com.logica.ngph.web.action.ForgotPasswordAction" method="changePwd">
+				<result name="success">/WEB-INF/jsp/ForgotPasswordChange.jsp</result>
+				<result name="input">/WEB-INF/jsp/ForgotPasswordChange.jsp</result>
+			</action>
+				
+		
+		<!-- End :: Forgot Password -->
+		
+		<action name="callCurrencyCodeDropDown" class="com.logica.ngph.web.action.EnquiryAction" method="callCurrencyCodeDropDown">
+		</action>
+		<!-- End :: IFSCCode Search -->
+	</package>
+
+	<!-- Added for tiles -->
+	<package name="tiles" extends="tiles-default">
+		<result-types>
+			<result-type name="tiles"
+				class="org.apache.struts2.views.tiles.TilesResult" default="true" />
+		</result-types>
+
+		<interceptors>
+			<interceptor class="com.logica.ngph.web.interceptor.LoginInterceptor"
+				name="loginInterceptor"></interceptor>
+			<interceptor-stack name="loginStack">
+				<interceptor-ref name="loginInterceptor" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+			<interceptor name="validation"
+				class="org.apache.struts2.interceptor.validation.AnnotationValidationInterceptor" />
+		</interceptors>
+		<default-interceptor-ref name="loginStack" />
+
+		<global-results>
+			<result name="login" type="tiles">showLoginPage</result>
+		</global-results>
+
+		<action name="*Login" method="{1}"
+			class="com.logica.ngph.web.action.UserLoginAction">
+			<result name="welcomeForward" type="tiles">welcomeForward</result>
+		</action>
+
+		<action name="paymentStatusChange"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="changePaymentStatus">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="failiure" type="tiles">paymentStatusForward</result>
+		</action>
+
+		<action name="*Status" method="{1}"
+			class="com.logica.ngph.web.action.PaymentAction">
+			<result name="payment" type="tiles">performPayment</result>
+			<result name="input" type="tiles">performPayment</result>
+			<result name="paymentSuccess" type="tiles">successForward</result>
+			<result name="viewPayment" type="tiles">viewPaymentForward</result>
+
+		</action>
+
+		<action name="saveRepairedPayment" method="saveRepairedPayment"
+			class="com.logica.ngph.web.action.PaymentAction">
+			<result name="success" type="chain">
+				<param name="actionName">getPaymentMessageQueue</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="input" type="tiles">performPayment</result>
+		</action>
+
+		<action name="*ruleAction" method="{1}"
+			class="com.logica.ngph.web.action.RulesAction">
+			<result name="success" type="tiles">ruleForward</result>
+			<result name="input" type="tiles">ruleForward</result>
+			<result name="ruleSuccess" type="tiles">successForward</result>
+			<result name="saveSuccess" type="tiles">sentForApproval</result>
+
+		</action>
+
+		<action name="getRuleAuthorization" method="getAuthorization"
+			class="com.logica.ngph.web.action.RulesAction">
+			<result name="success" type="tiles">ruleForward</result>
+			<result name="input" type="tiles">ruleForward</result>
+		</action>
+
+		<!-- Screen comparison -->
+		<action name="callSeeOldDataRulesMaitenance" method="callSeeOldData"
+			class="com.logica.ngph.web.action.RulesAction">
+			<result name="success" type="tiles">ruleForward</result>
+			<result name="input" type="tiles">ruleForward</result>
+		</action>
+		<!-- Screen comparison End -->
+
+		<action name="deletePayment"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="deletePayment">
+			<result name="input">paymentStatusForward</result>
+			<result name="performPaymentMessage">paymentStatusForward</result>
+			<result name="success" type="tiles">successForward</result>
+		</action>
+
+		<action name="authPayment"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="authComment">
+			<result name="input">paymentStatusForward</result>
+			<result name="performPaymentMessage">paymentStatusForward</result>
+		</action>
+
+		<action name="*sodEodAction" method="{1}"
+			class="com.logica.ngph.web.action.SOdEodTaskAction">
+			<result name="loadSodEod" type="tiles">forwardToSodEod</result>
+			<result name="forwardToSame" type="tiles">forwardToSodEod</result>
+			<result name="input" type="tiles">forwardToSodEod</result>
+			<result name="taskStatus" type="tiles">forwardToSodEod</result>
+		</action>
+
+		<action name="*Queue"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="{1}">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+		</action>
+		<!-- Payement Message Status Action Mapping Starts -->
+		<action name="sentToHostAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">SEND_TO_HOST_I;I</param>
+		</action>
+
+		<action name="rejectedAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">REJECTED_I;I</param>
+		</action>
+
+		<action name="duplicatesAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">DUPLICATES_I;I</param>
+		</action>
+
+		<action name="exceptionsAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">EXCEPTIONS;O</param>
+		</action>
+
+		<action name="exceptionsInAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">EXCEPTIONS;I</param>
+		</action>
+
+		<action name="receiveOutboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">Received;O</param>
+		</action>
+
+		<action name="awaitingRepairOutboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">AWAITING_REPAIR;O</param>
+		</action>
+
+		<action name="warehouseOutboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">WAREHOUSED;O</param>
+		</action>
+
+		<action name="awaitingReleaseOutboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">AWAITING_RELEASE;O</param>
+		</action>
+
+		<action name="returnedOutboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">RETURNED_0;O</param>
+		</action>
+
+		<action name="awaitingAuthorisationOutboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">AWAITING_AUTHORISATION;O</param>
+		</action>
+
+
+		<action name="rejectedByChannelOutboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">REJECTED_BY_CHANNEL;O</param>
+		</action>
+
+		<action name="invalidOutboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">INVALIDS;O</param>
+		</action>
+
+		<action name="awaitingAcknowledgementOutboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">AWAITING_ACKNOWLEDGEMENT;O</param>
+		</action>
+
+		<action name="completedOutboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">COMPLETED;O</param>
+		</action>
+
+		<action name="finalisedOutboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">FINALISED;O</param>
+		</action>
+
+		<action name="rejectedOutboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">REJECTED_O;O</param>
+		</action>
+
+		<action name="duplicatesOutboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">DUPLICATES_O;O</param>
+		</action>
+
+		<action name="intervenedInboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">INTERVENED;I</param>
+		</action>
+
+		<action name="awaitingRepairInboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">AWAITING_REPAIR_I;I</param>
+		</action>
+
+		<action name="processedManuallyInboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">PROCESSED_MANUALLY_I;I</param>
+		</action>
+
+		<action name="returnedInboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">RETURNED_I;I</param>
+		</action>
+
+		<action name="awaitingAccountingInboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">AWAITING_ACCOUNTING_I;I</param>
+		</action>
+		<!-- -->
+
+		<action name="accountingCompletedInboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">ACCOUNTING_COMPLETED_I;I</param>
+		</action>
+
+		<action name="amlCompletedInboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">AML_COMPLETED_I;I</param>
+		</action>
+
+		<action name="awaitingBillingInboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">AWAITING_BILLING_I;I</param>
+		</action>
+
+		<action name="billingCompetedInboundAction"
+			class="com.logica.ngph.web.action.PaymentMessageStatusAction" method="getPaymentMessage">
+			<result name="input" type="tiles">paymentStatusForward</result>
+			<result name="performPaymentMessage" type="tiles">paymentStatusForward
+			</result>
+			<param name="paymentStatus">BILLING_COMPLETED_I;I</param>
+		</action>
+
+		<!-- Payement Message Status Action Mapping End -->
+		<action name="*File" class="com.logica.ngph.web.action.UploadFileAction"
+			method="{1}">
+			<result name="fileUpload" type="tiles">fileUploadForward</result>
+			<result name="input" type="tiles">fileUploadForward</result>
+			<result name="fileSubmit" type="tiles">successForward</result>
+		</action>
+
+		<!-- siddharth work -->
+		<action name="*enquiryAction" method="{1}"
+			class="com.logica.ngph.web.action.EnquiryAction">
+			<result name="success" type="tiles">callLoadToDropDown</result>
+			<result name="input" type="tiles">callLoadToDropDown</result>
+		</action>
+
+		<action name="*findPaymentHistory" method="{1}"
+			class="com.logica.ngph.web.action.EnquiryAction">
+			<result name="success" type="tiles">callFindHistory</result>
+			<result name="input" type="tiles">callFindHistory</result>
+		</action>
+
+		<action name="enquirySearch" class="com.logica.ngph.web.action.EnquiryAction"
+			method="callEnquirySearch">
+			<result name="input" type="tiles">callLoadToDropDown</result>
+			<result name="EnquiryList" type="tiles">callsearchResult</result>
+			<result name="histroyInput" type="tiles">callFindHistory</result>
+		</action>
+		
+		<action name="enquiryHistSearch" class="com.logica.ngph.web.action.EnquiryAction"
+			method="callEnquiryHistSearch">
+			<result name="input" type="tiles">callLoadToDropDown</result>
+			<result name="EnquiryList" type="tiles">callsearchResult</result>
+			<result name="histroyInput" type="tiles">callFindHistory</result>
+		</action>
+
+		<action name="cancelView" class="com.logica.ngph.web.action.EnquiryAction" method="cancelViewPage">
+			<result name="success" type="tiles">callLoadToDropDown</result>
+			<result name="input" type="tiles">callLoadToDropDown</result>
+		</action>
+
+
+		<action name="displayMessages" class="com.logica.ngph.web.utils.DisplayEnquiryData"
+			method="loadData">
+			<result name="input" type="tiles">callOnPrint</result>
+			<result name="success" type="tiles">callOnPrint</result>
+		</action>
+
+		<action name="*quickStatsAction" method="{1}"
+			class="com.logica.ngph.web.action.QuickStatsAction">
+			<result name="success" type="tiles">getStatsValues</result>
+			<result name="input" type="tiles">getStatsValues</result>
+		</action>
+
+		<action name="quickStatsActionPosition" method="getPosition"
+			class="com.logica.ngph.web.action.QuickStatsAction">
+			<result name="success" type="tiles">getPosition</result>
+			<result name="input" type="tiles">getPosition</result>
+		</action>
+
+		<action name="quickStatsActionVariation" method="getVariation"
+			class="com.logica.ngph.web.action.QuickStatsAction">
+			<result name="success" type="tiles">getVariation</result>
+			<result name="input" type="tiles">getVariation</result>
+		</action>
+
+		<action name="quickStatsActionSystem" method="getSystem"
+			class="com.logica.ngph.web.action.QuickStatsAction">
+			<result name="success" type="tiles">getVariation</result>
+			<result name="input" type="tiles">getVariation</result>
+		</action>
+
+		<action name="*authorizationMaintenanceAction" method="{1}"
+			class="com.logica.ngph.web.action.AuthorizationMaintenanceAction">
+			<result name="input" type="tiles">loadDataAuthorization</result>
+			<result name="success" type="tiles">loadDataAuthorization</result>
+		</action>
+
+		<action name="getAuthorizationSchemaAuthorization" method="getAuthorization"
+			class="com.logica.ngph.web.action.AuthorizationMaintenanceAction">
+			<result name="input" type="tiles">loadDataAuthorization</result>
+			<result name="success" type="tiles">loadDataAuthorization</result>
+		</action>
+
+		<action name="InsertAutorizationData"
+			class="com.logica.ngph.web.action.AuthorizationMaintenanceAction"
+			method="insertData">
+			<result name="input" type="tiles">loadDataAuthorization</result>
+			<result name="success" type="tiles">successForward</result>
+		</action>
+
+		<action name="*groupMaintenanceAction" method="{1}"
+			class="com.logica.ngph.web.action.GroupMaintenanceAction">
+			<result name="getValue" type="tiles">loadDataGroup</result>
+			<result name="input" type="tiles">loadDataGroup</result>
+		</action>
+
+		<action name="groupMaintenanceDataInsert"
+			class="com.logica.ngph.web.action.GroupMaintenanceAction" method="insertData">
+			<result name="input" type="tiles">loadDataGroup</result>
+			<result name="success" type="tiles">successForward</result>
+		</action>
+
+		<action name="getGroupMaintenanceAuthorization" method="getAuthorization"
+			class="com.logica.ngph.web.action.GroupMaintenanceAction">
+			<result name="success" type="tiles">loadDataGroup</result>
+			<result name="input" type="tiles">loadDataGroup</result>
+		</action>
+
+		<action name="*PaymentSubmittedReportLoadData" method="{1}"
+			class="com.logica.ngph.web.action.PaymentSubmittedReportAction">
+			<result name="success" type="tiles">loadDataOutward</result>
+			<result name="input" type="tiles">loadDataOutward</result>
+		</action>
+
+		<action name="generateReport"
+			class="com.logica.ngph.web.action.PaymentSubmittedReportAction"
+			method="generateReport">
+			<result name="input" type="tiles">loadDataOutward</result>
+			<result name="success" type="tiles">generateReport</result>
+			<result name="inputInward" type="tiles">loadDataInward</result>
+		</action>
+
+		<action name="downloadReport"
+			class="com.logica.ngph.web.action.PaymentSubmittedReportAction"
+			method="downloadReport">
+			<result name="input" type="tiles">loadDataOutward</result>
+			<result name="success" type="tiles">generateReport</result>
+		</action>
+
+		<action name="*PaymentSubmittedReportInwardLoadData" method="{1}"
+			class="com.logica.ngph.web.action.PaymentSubmittedReportAction">
+			<result name="success" type="tiles">loadDataInward</result>
+			<result name="input" type="tiles">loadDataInward</result>
+		</action>
+
+		<action name="generateReportInward"
+			class="com.logica.ngph.web.action.PaymentSubmittedReportAction"
+			method="generateReport">
+			<result name="input" type="tiles">loadDataOutward</result>
+			<result name="success" type="tiles">generateReport</result>
+			<result name="inputInward" type="tiles">loadDataInward</result>
+		</action>
+
+		<action name="*esbXMLCreator" method="{1}"
+			class="com.logica.ngph.web.action.ESBXMLCreatorAction">
+			<result name="success" type="tiles">populateData</result>
+			<result name="input" type="tiles">populateData</result>
+		</action>
+
+		<action name="doProcess" class="com.logica.ngph.web.action.ESBXMLCreatorAction"
+			method="createXML">
+			<result name="success" type="tiles">populateData</result>
+			<result name="input" type="tiles">populateData</result>
+		</action>
+
+		<action name="displayHostDetails" class="com.logica.ngph.web.action.ESBXMLCreatorAction"
+			method="ajaxForQueueDetails">
+			<result name="success" type="tiles">populateData</result>
+			<result name="input" type="tiles">populateData</result>
+		</action>
+
+		<action name="getESBCreatorAuthorization" method="getAuthorization"
+			class="com.logica.ngph.web.action.ESBXMLCreatorAction">
+			<result name="success" type="tiles">populateData</result>
+			<result name="input" type="tiles">populateData</result>
+		</action>
+
+		<action name="*maintainingServiceOrchestration" method="{1}"
+			class="com.logica.ngph.web.action.MaintainingServiceOrchestrationAction">
+			<result name="success" type="tiles">getValuesForOrchestration</result>
+			<result name="input" type="tiles">getValuesForOrchestration</result>
+		</action>
+
+		<action name="doProcessForOrchestration"
+			class="com.logica.ngph.web.action.MaintainingServiceOrchestrationAction"
+			method="insertSequencyOfRecord">
+			<result name="success" type="tiles">getValuesForOrchestration</result>
+			<result name="input" type="tiles">getValuesForOrchestration</result>
+		</action>
+
+		<action name="getMaintainingOrchestrationAuthorization" method="getAuthorization"
+			class="com.logica.ngph.web.action.MaintainingServiceOrchestrationAction">
+			<result name="success" type="tiles">getValuesForOrchestration</result>
+			<result name="input" type="tiles">getValuesForOrchestration</result>
+		</action>
+
+		<action name="*ChequeServlet" method="{1}"
+			class="com.logica.ngph.web.action.ChequeServletAction">
+			<result name="success" type="tiles">loadData</result>
+			<result name="input" type="tiles">loadData</result>
+		</action>
+
+		<action name="generateCheck" method="getServlet"
+			class="com.logica.ngph.web.action.ChequeServletAction">
+			<result name="input" type="tiles">loadData</result>
+			<result name="success" type="tiles">getServlet</result>
+		</action>
+
+		<action name="*accountMaintenance" method="{1}"
+			class="com.logica.ngph.web.action.AccountMaintenanceAction">
+			<result name="success" type="tiles">displayAccountMantenance</result>
+			<result name="input" type="tiles">displayAccountMantenance</result>
+		</action>
+
+		<action name="accountMaintenanceAction" method="getActionPerform"
+			class="com.logica.ngph.web.action.AccountMaintenanceAction">
+			<result name="input" type="tiles">displayAccountMantenance</result>
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="successfullyApproved" type="tiles">successAccountMaintenance
+			</result>
+			<result name="rejected" type="tiles">rejected</result>
+		</action>
+
+		<action name="generteMMID" method="getMMIDGenerator"
+			class="com.logica.ngph.web.action.AccountMaintenanceAction">
+			<result name="input" type="tiles">displayAccountMantenance</result>
+			<result name="success" type="tiles">displayAccountMantenance</result>
+		</action>
+
+		<action name="addMMIDTOGrid" method="getAddTOGrid"
+			class="com.logica.ngph.web.action.AccountMaintenanceAction">
+			<result name="input" type="tiles">displayAccountMantenance</result>
+			<result name="success" type="tiles">displayAccountMantenance</result>
+		</action>
+
+		<action name="displayGridView" method="showGrid"
+			class="com.logica.ngph.web.action.AccountMaintenanceAction">
+			<result name="input" type="tiles">displayAccountMantenance</result>
+			<result name="success" type="tiles">displayAccountMantenance</result>
+		</action>
+
+		<action name="reset" method="reset"
+			class="com.logica.ngph.web.action.AccountMaintenanceAction">
+			<result name="input" type="tiles">displayAccountMantenance</result>
+			<result name="success" type="tiles">displayAccountMantenance</result>
+		</action>
+
+		<action name="callSeeOldDataAccountMaintainence" method="callSeeOldData"
+			class="com.logica.ngph.web.action.AccountMaintenanceAction">
+			<result name="input" type="tiles">displayAccountMantenance</result>
+			<result name="success" type="tiles">displayAccountMantenance</result>
+		</action>
+
+		<action name="*returnImpsTrasaction" method="{1}"
+			class="com.logica.ngph.web.action.ReturnTransactionAction">
+			<result name="success" type="tiles">displayReturnTransaction</result>
+			<result name="input" type="tiles">displayReturnTransaction</result>
+		</action>
+
+		<action name="getFetchTrasactionData" method="getFetchData"
+			class="com.logica.ngph.web.action.ReturnTransactionAction">
+			<result name="success" type="tiles">displayReturnTransaction</result>
+			<result name="input" type="tiles">displayReturnTransaction</result>
+		</action>
+
+		<action name="doPolledOperation" method="doOperation"
+			class="com.logica.ngph.web.action.ReturnTransactionAction">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayReturnTransaction</result>
+			<result name="sendForApproval" type="tiles">sentForApproval</result>
+		</action>
+
+		<action name="getIMPSReturnsAuthorization" method="getAuthorization"
+			class="com.logica.ngph.web.action.ReturnTransactionAction">
+			<result name="success" type="tiles">displayReturnTransaction</result>
+			<result name="input" type="tiles">displayReturnTransaction</result>
+		</action>
+
+		<action name="*eventManage" method="{1}"
+			class="com.logica.ngph.web.action.EventManagerAction">
+			<result name="success" type="tiles">getEventScreen</result>
+			<result name="input" type="tiles">getEventScreen</result>
+		</action>
+
+		<action name="getEventMasterAuthorization" method="getAuthorization"
+			class="com.logica.ngph.web.action.EventManagerAction">
+			<result name="success" type="tiles">getEventScreen</result>
+			<result name="input" type="tiles">getEventScreen</result>
+		</action>
+
+		<action name="getStringAppender" method="getpostion"
+			class="com.logica.ngph.web.action.EventManagerAction">
+			<result name="success" type="tiles">getEventScreen</result>
+			<result name="input" type="tiles">getEventScreen</result>
+		</action>
+
+		<action name="callSeeOldDataEventManager" class="com.logica.ngph.web.action.EventManagerAction"
+			method="callSeeOldData">
+			<result name="success" type="tiles">getEventScreen</result>
+			<result name="input" type="tiles">getEventScreen</result>
+		</action>
+
+		<action name="eventManagerSubmit" method="doProcess"
+			class="com.logica.ngph.web.action.EventManagerAction">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">getEventScreen</result>
+			<result name="rejected" type="tiles">rejected</result>
+			<result name="auth" type="tiles">sentForApproval</result>
+		</action>
+
+		<action name="populateDate" method="populateDate"
+			class="com.logica.ngph.web.action.EventManagerAction">
+			<result name="success" type="tiles">getEventScreen</result>
+			<result name="input" type="tiles">getEventScreen</result>
+		</action>
+
+		<action name="callSeeOldDataEventManager" class="com.logica.ngph.web.action.EventManagerAction"
+			method="callSeeOldData">
+			<result name="success" type="tiles">getEventScreen</result>
+			<result name="input" type="tiles">getEventScreen</result>
+		</action>
+
+		<action name="genericScreenFetchValues" method="fetchData"
+			class="com.logica.ngph.web.action.GenericScreenManager">
+			<result name="success" type="tiles">getPage</result>
+			<result name="input" type="tiles">getPage</result>
+		</action>
+
+		<action name="genericScreenpopulateData" method="getScreenData"
+			class="com.logica.ngph.web.action.AccountMaintenanceAction">
+			<result name="success" type="tiles">displayAccountMantenance</result>
+			<result name="input" type="tiles">displayAccountMantenance</result>
+		</action>
+
+		<action name="*userMaintenance" method="{1}"
+			class="com.logica.ngph.web.action.UserMaintenanceAction">
+			<result name="success" type="tiles">displayUserRegistraionPage
+			</result>
+			<result name="input" type="tiles">displayUserRegistraionPage</result>
+		</action>
+
+		<action name="performUserAction" method="performUserAction"
+			class="com.logica.ngph.web.action.UserMaintenanceAction">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayUserRegistraionPage</result>
+			<result name="sendForApproval" type="tiles">sentForApproval</result>
+			<result name="rejected" type="tiles">rejected</result>
+		</action>
+
+		<action name="deleteUserAction" method="deleteUserAction"
+			class="com.logica.ngph.web.action.UserMaintenanceAction">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayUserRegistraionPage</result>
+			<result name="sendForApproval" type="tiles">sentForApproval</result>
+		</action>
+
+		<action name="getUserDataAction" method="getUserDataAction"
+			class="com.logica.ngph.web.action.UserMaintenanceAction">
+			<result name="success" type="tiles">displayUserRegistraionPage</result>
+			<result name="input" type="tiles">displayUserRegistraionPage</result>
+		</action>
+
+		<action name="getUserMaintenanceAuthorization" method="getAuthorization"
+			class="com.logica.ngph.web.action.UserMaintenanceAction">
+			<result name="success" type="tiles">displayUserRegistraionPage
+			</result>
+			<result name="input" type="tiles">displayUserRegistraionPage</result>
+		</action>
+
+		<action name="getUserMaintenanceApproval" method="getApproval"
+			class="com.logica.ngph.web.action.UserMaintenanceAction">
+			<result name="success" type="tiles">displayUserRegistraionPage
+			</result>
+			<result name="input" type="tiles">displayUserRegistraionPage</result>
+		</action>
+
+		<action name="callSeeOldDataUserMaintenance" method="callSeeOldData"
+			class="com.logica.ngph.web.action.UserMaintenanceAction">
+			<result name="success" type="tiles">displayUserRegistraionPage
+			</result>
+			<result name="input" type="tiles">displayUserRegistraionPage</result>
+		</action>
+
+		<action name="getRoleData" method="getRoleData"
+			class="com.logica.ngph.web.action.RoleAction">
+			<result name="success" type="tiles">displayRole</result>
+			<result name="input" type="tiles">displayRole</result>
+		</action>
+
+		<action name="*newRoleAction" class="com.logica.ngph.web.action.RoleAction"
+			method="{1}">
+			<result name="success" type="tiles">roleForward</result>
+			<result name="input" type="tiles">roleForward</result>
+		</action>
+
+		<action name="performRoleAction" class="com.logica.ngph.web.action.RoleAction"
+			method="performRoleAction">
+			<result name="roleModified" type="tiles">roleModified</result>
+			<result name="roleDeleted" type="tiles">roleDeleted</result>
+			<result name="roleCreated" type="tiles">displayRolenewSuccessPage
+			</result>
+			<result name="input" type="tiles">roleForward</result>
+			<result name="sendForApproval" type="tiles">sentForApproval</result>
+			<result name="rejected" type="tiles">rejected</result>
+		</action>
+
+		<action name="getRoleCreatorAuthorization" method="getAuthorization"
+			class="com.logica.ngph.web.action.RoleAction">
+			<result name="success" type="tiles">roleForward</result>
+			<result name="input" type="tiles">roleForward</result>
+		</action>
+
+		<action name="callSeeOldDataRoleMaitenance" method="callSeeOldData"
+			class="com.logica.ngph.web.action.RoleAction">
+			<result name="success" type="tiles">roleForward</result>
+			<result name="input" type="tiles">roleForward</result>
+		</action>
+
+		<action name="*mmidManager" class="com.logica.ngph.web.action.MMIDManagerAction"
+			method="{1}">
+			<result name="success" type="tiles">initalActionMMID</result>
+			<result name="input" type="tiles">initalActionMMID</result>
+		</action>
+
+		<action name="insertMMID" class="com.logica.ngph.web.action.MMIDManagerAction"
+			method="insertData">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">initalActionMMID</result>
+		</action>
+
+		<action name="*eventAudit" class="com.logica.ngph.web.action.EventAuditAction"
+			method="{1}">
+			<result name="success" type="tiles">eventDisplay</result>
+			<result name="input" type="tiles">eventDisplay</result>
+		</action>
+
+		<action name="eventSearch" class="com.logica.ngph.web.action.EventAuditAction"
+			method="getEventSearch">
+			<result name="success" type="tiles">eventDisplay</result>
+			<result name="input" type="tiles">eventDisplay</result>
+		</action>
+
+		<action name="*invalidMessages" class="com.logica.ngph.web.action.InvalidMesAction"
+			method="{1}">
+			<result name="success" type="tiles">execute</result>
+			<result name="input" type="tiles">execute</result>
+		</action>
+
+		<action name="changeStatusAndMSgpolled" class="com.logica.ngph.web.action.InvalidMesAction"
+			method="changeStatusAndMSgpolled">
+			<result name="success" type="tiles">errorMsgRepair</result>
+			<result name="input" type="tiles">execute</result>
+		</action>
+		<action name="repairRawMessage" class="com.logica.ngph.web.action.InvalidMesAction"
+			method="repairRawMessage">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">errorMsgRepair</result>
+		</action>
+
+		<action name="eventView" class="com.logica.ngph.web.action.EventAuditAction"
+			method="ViewDetails">
+			<result name="success" type="tiles">callOnPrint</result>
+			<result name="input" type="tiles">eventDisplay</result>
+		</action>
+
+		<!-- Letter Of Credit -->
+		<action name="*letterOfCredit" class="com.logica.ngph.web.action.LetterOfCreditAction"
+			method="{1}">
+			<result name="success" type="tiles">getCreditDetails</result>
+			<result name="input" type="tiles">getCreditDetails</result>
+			<result name="viewLCPayment" type="tiles">getCreditDetails</result>
+			<result name="failure" type="tiles">paymentStatusForward</result>
+			<result name="notValidUser" type="tiles">notValidUser</result>
+		</action>
+
+		<action name="saveLcCredit" class="com.logica.ngph.web.action.LetterOfCreditAction"
+			method="getObjectForLC">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">getCreditDetails</result>
+		</action>
+
+		<action name="addRowToLcGrid" class="com.logica.ngph.web.action.LetterOfCreditAction"
+			method="addRowToLcGrid">
+			<result name="success" type="tiles">getCreditDetails</result>
+			<result name="input" type="tiles">getCreditDetails</result>
+		</action>
+
+		<action name="rowToDelete" class="com.logica.ngph.web.action.LetterOfCreditAction"
+			method="rowToDelete">
+			<result name="success" type="tiles">getCreditDetails</result>
+			<result name="input" type="tiles">getCreditDetails</result>
+		</action>
+
+		<action name="getLetterOFCreditApproval" class="com.logica.ngph.web.action.LetterOfCreditAction"
+			method="getLetterOFCreditApproval">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">getCreditDetails</result>
+		</action>
+
+		<action name="getLetterOFCreditAuthorization" class="com.logica.ngph.web.action.LetterOfCreditAction"
+			method="getLetterOFCreditAuthorization">
+			<result name="success" type="tiles">getCreditDetails</result>
+			<result name="input" type="tiles">getCreditDetails</result>
+		</action>
+
+		<!-- LC Open -->
+		<action name="*lcOpen" class="com.logica.ngph.web.action.LcOpenAction"
+			method="{1}">
+			<result name="success" type="tiles">displayLCOpenScreen</result>
+			<result name="input" type="tiles">displayLCOpenScreen</result>
+			<result name="viewOpenLCPayment" type="tiles">displayLCOpenScreen
+			</result>
+			<result name="failure" type="tiles">paymentStatusForward</result>
+
+		</action>
+
+		<action name="displayLCOpenData" class="com.logica.ngph.web.action.LcOpenAction"
+			method="displayLCOpenData">
+			<result name="success" type="tiles">displayLCOpenScreen</result>
+			<result name="input" type="tiles">displayLCOpenScreen</result>
+		</action>
+
+		<action name="addRowToLcGridlcOpen" class="com.logica.ngph.web.action.LcOpenAction"
+			method="addRowToLcGrid">
+			<result name="success" type="tiles">displayLCOpenScreen</result>
+			<result name="input" type="tiles">displayLCOpenScreen</result>
+		</action>
+
+		<action name="rowToDeletelcOpen" class="com.logica.ngph.web.action.LcOpenAction"
+			method="rowToDelete">
+			<result name="success" type="tiles">displayLCOpenScreen</result>
+			<result name="input" type="tiles">displayLCOpenScreen</result>
+		</action>
+
+		<action name="getLetterOFCreditApprovalLcOpen" class="com.logica.ngph.web.action.LcOpenAction"
+			method="getLetterOFCreditApproval">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayLCOpenScreen</result>
+		</action>
+
+		<action name="getLetterOFCreditAuthorizationLcOpen" class="com.logica.ngph.web.action.LcOpenAction"
+			method="getLetterOFCreditAuthorization">
+			<result name="success" type="tiles">displayLCOpenScreen</result>
+			<result name="input" type="tiles">displayLCOpenScreen</result>
+		</action>
+
+		<action name="saveLcCreditLcOpen" class="com.logica.ngph.web.action.LcOpenAction"
+			method="getObjectForLC">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayLCOpenScreen</result>
+		</action>
+		
+		<action name="resetLCOpen" class="com.logica.ngph.web.action.LcOpenAction"
+			method="reset">
+			<result name="success" type="tiles">displayLCOpenScreen</result>
+			<result name="input" type="tiles">displayLCOpenScreen</result>
+		</action>
+		
+		
+
+		<!-- LC BG reports -->
+		<action name="*lcSentReport" class="com.logica.ngph.web.action.LcReportsAction"
+			method="{1}">
+			<result name="success" type="tiles">displayLCsentScreen</result>
+			<result name="input" type="tiles">displayLCsentScreen</result>
+		</action>
+
+		<action name="*lcReviveReport" class="com.logica.ngph.web.action.LcReportsAction"
+			method="{1}">
+			<result name="success" type="tiles">displayLCReciveScreen</result>
+			<result name="input" type="tiles">displayLCReciveScreen</result>
+		</action>
+
+		<action name="generteLcReports" class="com.logica.ngph.web.action.LcReportsAction"
+			method="generateReport">
+			<result name="success" type="tiles">generateLcReport</result>
+			<result name="input" type="tiles">displayLCsentScreen</result>
+		</action>
+
+		<action name="downloadReportLCReport" class="com.logica.ngph.web.action.LcReportsAction"
+			method="downloadReport">
+			<result name="input" type="tiles">displayLCsentScreen</result>
+			<result name="success" type="tiles">generateLcReport</result>
+		</action>
+
+		<action name="*bgSentReport" class="com.logica.ngph.web.action.BgReportsAction"
+			method="{1}">
+			<result name="success" type="tiles">displayBgSentScreen</result>
+			<result name="input" type="tiles">displayBgSentScreen</result>
+		</action>
+
+		<action name="*bgReceiveReport" class="com.logica.ngph.web.action.BgReportsAction"
+			method="{1}">
+			<result name="success" type="tiles">displayBgReceiveScreen</result>
+			<result name="input" type="tiles">displayBgReceiveScreen</result>
+		</action>
+
+		<action name="generteBgReports" class="com.logica.ngph.web.action.BgReportsAction"
+			method="generateReport">
+			<result name="success" type="tiles">generateBgReport</result>
+			<result name="input" type="tiles">displayBgSentScreen</result>
+		</action>
+
+		<action name="downloadReportBgReport" class="com.logica.ngph.web.action.BgReportsAction"
+			method="downloadReport">
+			<result name="input" type="tiles">displayBgSentScreen</result>
+			<result name="success" type="tiles">generateBgReport</result>
+		</action>
+
+		<action name="*markAck"
+			class="com.logica.ngph.web.action.MarkAcknowledgementAction" method="{1}">
+			<result name="success" type="tiles">displayMarkAck</result>
+			<result name="input" type="tiles">displayMarkAck</result>
+		</action>
+
+		<action name="fetchStatus"
+			class="com.logica.ngph.web.action.MarkAcknowledgementAction" method="fetchStatus">
+			<result name="success" type="tiles">displayMarkAck</result>
+			<result name="input" type="tiles">displayMarkAck</result>
+		</action>
+
+		<action name="sendForApproval"
+			class="com.logica.ngph.web.action.MarkAcknowledgementAction" method="sendForApproval">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayMarkAck</result>
+		</action>
+
+		<action name="displayAuthorizationDetails"
+			class="com.logica.ngph.web.action.MarkAcknowledgementAction" method="displayAuthorizationDetails">
+			<result name="success" type="tiles">displayMarkAck</result>
+			<result name="input" type="tiles">displayMarkAck</result>
+		</action>
+
+		<action name="changeLcStatus"
+			class="com.logica.ngph.web.action.MarkAcknowledgementAction" method="changeLcStatus">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayMarkAck</result>
+		</action>
+
+		<!--BG Creation -->
+		<action name="*createBankGuaranteeAction"
+			class="com.logica.ngph.web.action.CreateBankGuaranteeAction" method="{1}">
+			<result name="success" type="tiles">createBankGuarantee</result>
+			<result name="input" type="tiles">createBankGuarantee</result>
+		</action>
+
+		<action name="getBGApproval"
+			class="com.logica.ngph.web.action.CreateBankGuaranteeAction" method="getBGApproval">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">createBankGuarantee</result>
+		</action>
+
+		<action name="getBGAuthorization"
+			class="com.logica.ngph.web.action.CreateBankGuaranteeAction" method="getBGAuthorization">
+			<result name="success" type="tiles">createBankGuarantee</result>
+			<result name="input" type="tiles">createBankGuarantee</result>
+		</action>
+
+		<action name="saveBGAction"
+			class="com.logica.ngph.web.action.CreateBankGuaranteeAction" method="getObjectForBG">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">createBankGuarantee</result>
+		</action>
+
+		<action name="*advicePayment" class="com.logica.ngph.web.action.AdviceLCPaymentAction"
+			method="{1}">
+			<result name="success" type="tiles">displayLcAdvicing</result>
+			<result name="input" type="tiles">displayLcAdvicing</result>
+			<result name="viewAdvicePayment" type="tiles">displayLcAdvicing
+			</result>
+			<result name="failure" type="tiles">paymentStatusForward</result>
+		</action>
+
+		<action name="displayLCAdvPayData" class="com.logica.ngph.web.action.AdviceLCPaymentAction"
+			method="displayLCAdvicePaymentData">
+			<result name="success" type="tiles">displayLcAdvicing</result>
+			<result name="input" type="tiles">displayLcAdvicing</result>
+		</action>
+
+		<action name="saveAdviceLcPayment" class="com.logica.ngph.web.action.AdviceLCPaymentAction"
+			method="getObjectForLCAP">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayLcAdvicing</result>
+		</action>
+
+		<action name="getAdvicePayment" class="com.logica.ngph.web.action.AdviceLCPaymentAction"
+			method="getAdvicePayment">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayLcAdvicing</result>
+		</action>
+
+		<action name="getAdviceLCPaymentAuthorization" class="com.logica.ngph.web.action.AdviceLCPaymentAction"
+			method="getAdviceLCPaymentAuthorization">
+			<result name="success" type="tiles">displayLcAdvicing</result>
+			<result name="input" type="tiles">displayLcAdvicing</result>
+		</action>
+		
+		<action name="resetAdviceLCPayment" class="com.logica.ngph.web.action.AdviceLCPaymentAction"
+			method="reset">
+			<result name="success" type="tiles">displayLcAdvicing</result>
+			<result name="input" type="tiles">displayLcAdvicing</result>
+		</action>
+
+		<action name="*authoriseLcPaymentAdvi"
+			class="com.logica.ngph.web.action.AuthoriseLCPaymentAdviceAction"
+			method="{1}">
+			<result name="success" type="tiles">displayAuthoriseLcPaymentAdvice
+			</result>
+			<result name="input" type="tiles">displayAuthoriseLcPaymentAdvice
+			</result>
+			<result name="viewAuthorisePayment" type="tiles">displayAuthoriseLcPaymentAdvice
+			</result>
+			<result name="failure" type="tiles">paymentStatusForward</result>
+		</action>
+
+		<action name="displayAuthoLCPaymentAdData" class="com.logica.ngph.web.action.AuthoriseLCPaymentAdviceAction" 
+				method="displayAuthoLCPaymentAdviceData">
+			<result name="success" type="tiles">displayAuthoriseLcPaymentAdvice</result>
+			<result name="input" type="tiles">displayAuthoriseLcPaymentAdvice</result>
+		</action>
+
+		<action name="getAuthoriseLCAdvicePayment"
+			class="com.logica.ngph.web.action.AuthoriseLCPaymentAdviceAction"
+			method="getAuthoriseLCAdvicePayment">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayAuthoriseLcPaymentAdvice</result>
+		</action>
+
+		<action name="saveAuthoLcPayment"
+			class="com.logica.ngph.web.action.AuthoriseLCPaymentAdviceAction"
+			method="getObjectForAuthoLCPaymentAdvice">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAuthoriseLcPaymentAdvice
+			</result>
+		</action>
+
+		<action name="getAuthoLCPaymentAdviceAuthorization" class="com.logica.ngph.web.action.AuthoriseLCPaymentAdviceAction"
+			method="getAuthoLCPaymentAdviceAuthorization">
+			<result name="success" type="tiles">displayAuthoriseLcPaymentAdvice</result>
+			<result name="input" type="tiles">displayAuthoriseLcPaymentAdvice</result>
+		</action>
+		
+		<action name="resetAuthoriseLCPaymentADvice" class="com.logica.ngph.web.action.AuthoriseLCPaymentAdviceAction" method="reset">
+		 <result name="success" type="tiles">displayAuthoriseLcPaymentAdvice</result>
+		 <result name="input" type="tiles">displayAuthoriseLcPaymentAdvice</result>
+		</action>
+
+		<!-- Start :: Added for Mizuho Bank -->
+
+		<action name="saveAuthoriseTemplate"
+			class="com.logica.ngph.web.action.AuthoriseLCPaymentAdviceAction"
+			method="saveAuthoriseTemplate">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAuthoriseLcPaymentAdvice
+			</result>
+		</action>
+
+		<!-- End :: Added for Mizuho Bank -->
+
+		<action name="*displayAllLcNumber" class="com.logica.ngph.web.action.LcNumberdetailsAction"
+			method="{1}">
+			<result name="success" type="tiles">getAllInwardLcNumber</result>
+			<result name="input" type="tiles">getAllInwardLcNumber</result>
+		</action>
+
+		<action name="populateDataInLcOpen" class="com.logica.ngph.web.action.LcOpenAction"
+			method="displayLCOpenData">
+			<result name="success" type="tiles">displayLCOpenScreen</result>
+			<result name="input" type="tiles">getAllInwardLcNumber</result>
+		</action>
+
+		<action name="markAsAcknowledge" class="com.logica.ngph.web.action.LcOpenAction"
+			method="markAsAcknowledge">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">getAllInwardLcNumber</result>
+		</action>
+
+		<action name="*admendLCPage" class="com.logica.ngph.web.action.AmendLCAction"
+			method="{1}">
+			<result name="success" type="tiles">displayAmendLC</result>
+			<result name="input" type="tiles">displayAmendLC</result>
+			<result name="lcAmend" type="tiles">displayAmendLC</result>
+			<result name="failure" type="tiles">paymentStatusForward</result>
+
+		</action>
+
+		<action name="displayAmendLCData" class="com.logica.ngph.web.action.AmendLCAction"
+			method="displayAdmendLCData">
+			<result name="success" type="tiles">displayAmendLC</result>
+			<result name="input" type="tiles">displayAmendLC</result>
+		</action>
+
+		<action name="getAmendLCSubmit" class="com.logica.ngph.web.action.AmendLCAction"
+			method="getAmendLCSubmit">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayAmendLC</result>
+		</action>
+
+		<action name="getAmendLCAuthorization" class="com.logica.ngph.web.action.AmendLCAction"
+			method="getAmendLCAuthorization">
+			<result name="success" type="tiles">displayAmendLC</result>
+			<result name="input" type="tiles">displayAmendLC</result>
+		</action>
+
+		<action name="saveAmendLC" class="com.logica.ngph.web.action.AmendLCAction"
+			method="getObjectForAmendLC">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAmendLC</result>
+		</action>
+		
+		<action name="resetAmendLC" class="com.logica.ngph.web.action.AmendLCAction"
+			method="reset">
+			<result name="success" type="tiles">displayAmendLC</result>
+			<result name="input" type="tiles">displayAmendLC</result>
+		</action>
+		
+		<!-- Maintain Branch -->
+		<action name="*maintainBranchScreen" class="com.logica.ngph.web.action.MaintainBranchAction"
+			method="{1}">
+			<result name="success" type="tiles">getMaintainBranchScreen</result>
+			<result name="input" type="tiles">getMaintainBranchScreen</result>
+			<result name="notValidUser" type="tiles">notValidUser</result>
+		</action>
+
+		<action name="getMaintainBranchApproval" class="com.logica.ngph.web.action.MaintainBranchAction"
+			method="getMaintainBranchApproval">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">getMaintainBranchScreen</result>
+		</action>
+
+		<action name="getMaintainBranchAuthorization" class="com.logica.ngph.web.action.MaintainBranchAction"
+			method="getMaintainBranchAuthorization">
+			<result name="success" type="tiles">getMaintainBranchScreen</result>
+			<result name="input" type="tiles">getMaintainBranchScreen</result>
+		</action>
+
+		<action name="callSeeOldData" class="com.logica.ngph.web.action.MaintainBranchAction"
+			method="callSeeOldData">
+			<result name="success" type="tiles">getMaintainBranchScreen</result>
+			<result name="input" type="tiles">getMaintainBranchScreen</result>
+		</action>
+
+		<action name="submitBranchMaintainance" class="com.logica.ngph.web.action.MaintainBranchAction"
+			method="saveMaintainBranches">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">getMaintainBranchScreen</result>
+			<result name="rejected" type="tiles">rejected</result>
+		</action>
+
+		<action name="callDisplay" class="com.logica.ngph.web.action.MaintainBranchAction"
+			method="displayDetails">
+			<result name="success" type="tiles">getMaintainBranchScreen</result>
+			<result name="input" type="tiles">getMaintainBranchScreen</result>
+		</action>
+
+		<action name="callSeeOldData" class="com.logica.ngph.web.action.MaintainBranchAction"
+			method="callSeeOldData">
+			<result name="success" type="tiles">getMaintainBranchScreen</result>
+			<result name="input" type="tiles">getMaintainBranchScreen</result>
+		</action>
+
+		<action name="*feedspage" class="com.logica.ngph.web.action.FeedsAction"
+			method="{1}">
+			<result name="success" type="tiles">displayFeeds</result>
+			<result name="input" type="tiles">displayFeeds</result>
+		</action>
+
+		<action name="changeStatus" class="com.logica.ngph.web.action.FeedsAction"
+			method="changeStatusFeeds">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayFeeds</result>
+		</action>
+
+		<action name="*mmidReport" class="com.logica.ngph.web.action.MMIDReportAction"
+			method="{1}">
+			<result name="success" type="tiles">displayMmidReportScreen</result>
+			<result name="input" type="tiles">displayMmidReportScreen</result>
+		</action>
+
+		<action name="generteMMIDReports" class="com.logica.ngph.web.action.MMIDReportAction"
+			method="generateReport">
+			<result name="success" type="tiles">generateMMIDReport</result>
+			<result name="input" type="tiles">displayMmidReportScreen</result>
+		</action>
+
+		<action name="downloadReportMMIDReport" class="com.logica.ngph.web.action.MMIDReportAction"
+			method="downloadReport">
+			<result name="input" type="tiles">displayMmidReportScreen</result>
+			<result name="success" type="tiles">generateMMIDReport</result>
+		</action>
+
+		<!-- Discrepancies Report -->
+		<action name="*discrepanciesReport"
+			class="com.logica.ngph.web.action.DiscrepanciesReportAction" method="{1}">
+			<result name="success" type="tiles">getReportsDetailsPage</result>
+			<result name="input" type="tiles">getReportsDetailsPage</result>
+		</action>
+
+		<action name="displayDiscripancy"
+			class="com.logica.ngph.web.action.DiscrepanciesReportAction" method="getReportsDetails">
+			<result name="success" type="tiles">getReportsDetailsPage</result>
+			<result name="input" type="tiles">getReportsDetailsPage</result>
+		</action>
+
+		<action name="displayNewGenerateDiscripancy"
+			class="com.logica.ngph.web.action.DiscrepanciesReportAction" method="getNewGeneratorReportsDetails">
+			<result name="success" type="tiles">getReportsDetailsPage</result>
+			<result name="input" type="tiles">getReportsDetailsPage</result>
+		</action>
+
+		<action name="downloadDiscripenyReport"
+			class="com.logica.ngph.web.action.DiscrepanciesReportAction" method="downloadReport">
+			<result name="input" type="tiles">getReportsDetailsPage</result>
+			<result name="success" type="tiles">getReportsDetailsPage</result>
+		</action>
+
+		<!-- Member Transaction limit -->
+		<action name="*memberTransactionlimit"
+			class="com.logica.ngph.web.action.MemberTransactionLimitsAction"
+			method="{1}">
+			<result name="success" type="tiles">initalizeAllLimitsFields</result>
+			<result name="input" type="tiles">initalizeAllLimitsFields</result>
+		</action>
+
+		<action name="getTransactionLimitDetails"
+			class="com.logica.ngph.web.action.MemberTransactionLimitsAction"
+			method="getTransactionLimitDetails">
+			<result name="success" type="tiles">initalizeAllLimitsFields</result>
+			<result name="input" type="tiles">initalizeAllLimitsFields</result>
+		</action>
+
+		<action name="callsendToAuthorize"
+			class="com.logica.ngph.web.action.MemberTransactionLimitsAction"
+			method="callsendToAuthorize">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">initalizeAllLimitsFields</result>
+		</action>
+
+		<action name="callsentToApprove"
+			class="com.logica.ngph.web.action.MemberTransactionLimitsAction"
+			method="callsentToApprove">
+			<result name="success" type="tiles">initalizeAllLimitsFields</result>
+			<result name="input" type="tiles">initalizeAllLimitsFields</result>
+		</action>
+
+		<action name="doFinaLOperationForTransactionLimits"
+			class="com.logica.ngph.web.action.MemberTransactionLimitsAction"
+			method="doFinaLOperationForTransactionLimits">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">initalizeAllLimitsFields</result>
+			<result name="rejected" type="tiles">rejected</result>
+		</action>
+
+		<action name="callSeeOldDataMemberTransactionLimit"
+			class="com.logica.ngph.web.action.MemberTransactionLimitsAction"
+			method="callSeeOldData">
+			<result name="success" type="tiles">initalizeAllLimitsFields</result>
+			<result name="input" type="tiles">initalizeAllLimitsFields</result>
+		</action>
+
+		<!-- Change Pwd -->
+		<action name="*getChangePassword" class="com.logica.ngph.web.action.ChangePasswordAction"
+			method="{1}">
+			<result name="success" type="tiles">getChangePwd</result>
+			<result name="input" type="tiles">getChangePwd</result>
+		</action>
+
+		<action name="changePwd" class="com.logica.ngph.web.action.ChangePasswordAction" method="changePwd">
+			<result name="success" type="tiles">pwdChange</result>
+			<result name="input" type="tiles">getChangePwd</result>
+		</action>
+
+		<action name="*statusMonitor" class="com.logica.ngph.web.action.StatusMonitorAction"
+			method="{1}">
+			<result name="success" type="tiles">displayStatusMonitor</result>
+			<result name="input" type="tiles">displayStatusMonitor</result>
+		</action>
+		<action name="fetchStatusData" class="com.logica.ngph.web.action.StatusMonitorAction"
+			method="fetchStatusDataOnDate">
+			<result name="success" type="tiles">displayStatusMonitor</result>
+			<result name="input" type="tiles">displayStatusMonitor</result>
+		</action>
+
+
+
+		<action name="*bgRejectedReport" class="com.logica.ngph.web.action.BgRejectReportsAction"
+			method="{1}">
+			<result name="success" type="tiles">displayBgRejectScreen</result>
+			<result name="input" type="tiles">displayBgRejectScreen</result>
+		</action>
+
+		<action name="generteBgRejectReports" class="com.logica.ngph.web.action.BgRejectReportsAction"
+			method="generateReport">
+			<result name="success" type="tiles">generateBgRejectReport</result>
+			<result name="input" type="tiles">displayBgRejectScreen</result>
+		</action>
+		<action name="downloadReportBgRejectReport" class="com.logica.ngph.web.action.BgRejectReportsAction"
+			method="downloadReport">
+			<result name="input" type="tiles">displayBgRejectScreen</result>
+			<result name="success" type="tiles">generateBgRejectReport</result>
+		</action>
+
+		<action name="*lcRejectedReport" class="com.logica.ngph.web.action.LcRejectReportsAction"
+			method="{1}">
+			<result name="success" type="tiles">displayLcRejectScreen</result>
+			<result name="input" type="tiles">displayLcRejectScreen</result>
+		</action>
+		<action name="generteLcRejectReports" class="com.logica.ngph.web.action.LcRejectReportsAction"
+			method="generateReport">
+			<result name="success" type="tiles">generateLcRejectReport</result>
+			<result name="input" type="tiles">displayLcRejectScreen</result>
+		</action>
+		<action name="downloadReportLcRejectReport" class="com.logica.ngph.web.action.LcRejectReportsAction"
+			method="downloadReport">
+			<result name="input" type="tiles">displayLcRejectScreen</result>
+			<result name="success" type="tiles">generateLcRejectReport</result>
+		</action>
+
+		<!-- Transfer Document Of Credit -->
+		<action name="*transferDocumentaryCredit"
+			class="com.logica.ngph.web.action.TransferDocumentOfcreditAction"
+			method="{1}">
+			<result name="success" type="tiles">displayTransferDocumentaryCreditScreen
+			</result>
+			<result name="input" type="tiles">displayTransferDocumentaryCreditScreen
+			</result>
+			<result name="viewTransferDocumentaryPayment" type="tiles">displayTransferDocumentaryCreditScreen
+			</result>
+			<result name="failure" type="tiles">paymentStatusForward</result>
+
+		</action>
+		<action name="displayDocumentaryCreditData"
+			class="com.logica.ngph.web.action.TransferDocumentOfcreditAction"
+			method="displayDocumentaryCreditData">
+			<result name="success" type="tiles">displayTransferDocumentaryCreditScreen
+			</result>
+			<result name="input" type="tiles">displayTransferDocumentaryCreditScreen
+			</result>
+		</action>
+		<action name="getTransferDocumentaryCreditApproval"
+			class="com.logica.ngph.web.action.TransferDocumentOfcreditAction"
+			method="getTransferDocumentaryCreditSentForApproval">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayTransferDocumentaryCreditScreen
+			</result>
+		</action>
+		<action name="saveTransferDocumentaryCredit"
+			class="com.logica.ngph.web.action.TransferDocumentOfcreditAction"
+			method="getObjectForTransferDocumentaryCredit">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayTransferDocumentaryCreditScreen
+			</result>
+		</action>
+		<action name="getTransferDocumentaryCreditAuthorized"
+			class="com.logica.ngph.web.action.TransferDocumentOfcreditAction"
+			method="getTransferDocumentaryCreditAuthorization">
+			<result name="success" type="tiles">displayTransferDocumentaryCreditScreen
+			</result>
+			<result name="input" type="tiles">displayTransferDocumentaryCreditScreen
+			</result>
+		</action>
+
+		<action name="displayInboundInfoScreen" class="com.logica.ngph.web.action.InformationAction"
+			method="displayInboundInfoScreen">
+			<result name="INBOUND" type="tiles">displayoutboundInfoScreen</result>
+			<result name="input" type="tiles">displayoutboundInfoScreen</result>
+		</action>
+
+		<action name="*outInfo" class="com.logica.ngph.web.action.InformationAction"
+			method="{1}">
+			<result name="success" type="tiles">displayoutboundInfoScreen</result>
+			<result name="input" type="tiles">displayoutboundInfoScreen</result>
+		</action>
+		<!-- Reimbursement Claim -->
+		<action name="*reimbursementClaim"
+			class="com.logica.ngph.web.action.ReimbursementClaimAction" method="{1}">
+			<result name="success" type="tiles">displayReimbursmentClaim</result>
+			<result name="input" type="tiles">displayReimbursmentClaim</result>
+			<result name="viewReimbursementClaimPayment" type="tiles">displayReimbursmentClaim
+			</result>
+			<result name="failure" type="tiles">paymentStatusForward</result>
+		</action>
+		<action name="displayReimbursementClaimData"
+			class="com.logica.ngph.web.action.ReimbursementClaimAction" method="displayReimbursementClaimData">
+			<result name="success" type="tiles">displayReimbursmentClaim</result>
+			<result name="input" type="tiles">displayReimbursmentClaim</result>
+		</action>
+		<action name="getReimbursementClaimApproval"
+			class="com.logica.ngph.web.action.ReimbursementClaimAction" method="getReimbursementClaimApproval">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayReimbursmentClaim</result>
+		</action>
+		<action name="saveReimbursementClaim"
+			class="com.logica.ngph.web.action.ReimbursementClaimAction" method="getObjectForReimbursementClaim">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayReimbursmentClaim</result>
+		</action>
+		<action name="getReimbursementClaimAuthorized"
+			class="com.logica.ngph.web.action.ReimbursementClaimAction" method="getReimbursementClaimAuthorization">
+			<result name="success" type="tiles">displayReimbursmentClaim</result>
+			<result name="input" type="tiles">displayReimbursmentClaim</result>
+		</action>
+		<action name="*authorisToPay"
+			class="com.logica.ngph.web.action.AuthorisationToPayAction" method="{1}">
+			<result name="success" type="tiles">displayAuthoriseTopay</result>
+			<result name="input" type="tiles">displayAuthoriseTopay</result>
+			<result name="viewAuthorisationToPayRepair" type="tiles">displayAuthoriseTopay
+			</result>
+			<result name="failure" type="tiles">paymentStatusForward</result>
+		</action>
+
+		<action name="displayAuthrisToPayData"
+			class="com.logica.ngph.web.action.AuthorisationToPayAction" method="displayAuthoriToPayData">
+			<result name="success" type="tiles">displayAuthoriseTopay</result>
+			<result name="input" type="tiles">displayAuthoriseTopay</result>
+		</action>
+
+		<action name="getAuthorisetoPaySubmit"
+			class="com.logica.ngph.web.action.AuthorisationToPayAction" method="getAuthorisToPaySubmit">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayAuthoriseTopay</result>
+		</action>
+
+		<action name="saveAuthorisationToPay"
+			class="com.logica.ngph.web.action.AuthorisationToPayAction" method="getObjectForAuthoToPaySave">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAuthoriseTopay</result>
+		</action>
+
+		<action name="getAuthorisationToPayAuthorization"
+			class="com.logica.ngph.web.action.AuthorisationToPayAction" method="getAuthoToPayAuthorization">
+			<result name="success" type="tiles">displayAuthoriseTopay</result>
+			<result name="input" type="tiles">displayAuthoriseTopay</result>
+		</action>
+		<!-- Advise OF Discharge -->
+		<action name="*adviseOfDischarges"
+			class="com.logica.ngph.web.action.AdviseOfDischargeAction" method="{1}">
+			<result name="success" type="tiles">displayAdviseOfDischarge</result>
+			<result name="input" type="tiles">displayAdviseOfDischarge</result>
+			<result name="viewAdviceOfDischargePayment" type="tiles">displayAdviseOfDischarge
+			</result>
+			<result name="failure" type="tiles">paymentStatusForward</result>
+		</action>
+		<action name="displayAdviseOfDischargeDate"
+			class="com.logica.ngph.web.action.AdviseOfDischargeAction" method="displayAdviseOfDischargeDate">
+			<result name="success" type="tiles">displayAdviseOfDischarge</result>
+			<result name="input" type="tiles">displayAdviseOfDischarge</result>
+		</action>
+		<action name="getAdviseOfDischargeApproval"
+			class="com.logica.ngph.web.action.AdviseOfDischargeAction" method="getAdviseOfDischargeApproval">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayAdviseOfDischarge</result>
+		</action>
+		<action name="saveAdviceOFDischarge"
+			class="com.logica.ngph.web.action.AdviseOfDischargeAction" method="saveAdviceOFDischarge">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAdviseOfDischarge</result>
+		</action>
+		<action name="getAdviceOfDischargeAuthorized"
+			class="com.logica.ngph.web.action.AdviseOfDischargeAction" method="getAdviceOfDischargeAuthorization">
+			<result name="success" type="tiles">displayAdviseOfDischarge</result>
+			<result name="input" type="tiles">displayAdviseOfDischarge</result>
+		</action>
+		<action name="*ifscMaintain" class="com.logica.ngph.web.action.IFSCMaintainAction"
+			method="{1}">
+			<result name="success" type="tiles">getIFSCMaintain</result>
+			<result name="input" type="tiles">getIFSCMaintain</result>
+		</action>
+		<action name="ifscSendForApproval" class="com.logica.ngph.web.action.IFSCMaintainAction"
+			method="sendForApproval">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">getIFSCMaintain</result>
+		</action>
+		<action name="getIFSCDateSentForApproval" class="com.logica.ngph.web.action.IFSCMaintainAction"
+			method="getIFSCDateSentForApproval">
+			<result name="success" type="tiles">getIFSCMaintain</result>
+			<result name="input" type="tiles">getIFSCMaintain</result>
+		</action>
+
+		<action name="getIFSCApproval" class="com.logica.ngph.web.action.IFSCMaintainAction"
+			method="getIFSCApproval">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">getIFSCMaintain</result>
+			<result name="rejected" type="tiles">rejected</result>
+		</action>
+
+		<!-- Start :: DisplayIFSCCodes -->
+
+		<action name="searchIFSCListAction" class="com.logica.ngph.web.action.IFSCSearchAction"
+			method="getIFSCSearchList">
+			<result name="success" type="tiles">searchIFSCCodes</result>
+			<result name="input" type="tiles">searchIFSCCodes</result>
+		</action>
+
+		<action name="fetchDistrictNames" class="com.logica.ngph.web.action.IFSCSearchAction"
+			method="fetchDistrictNames">
+			<result name="success" type="tiles">searchIFSCCodes</result>
+			<result name="input" type="tiles">searchIFSCCodes</result>
+		</action>
+
+		<action name="fetchCityNames" class="com.logica.ngph.web.action.IFSCSearchAction"
+			method="fetchCityNames">
+			<result name="success" type="tiles">searchIFSCCodes</result>
+			<result name="input" type="tiles">searchIFSCCodes</result>
+		</action>
+
+		<action name="getIFSCDetailsData" class="com.logica.ngph.web.action.IFSCSearchAction"
+			method="getIFSCDetailsData">
+			<result name="success" type="tiles">searchIFSCCodes</result>
+			<result name="input" type="tiles">searchIFSCCodes</result>
+		</action>
+
+		<action name="resetFields" class="com.logica.ngph.web.action.IFSCSearchAction"
+			method="resetFields">
+			<result name="success" type="tiles">searchIFSCCodes</result>
+			<result name="input" type="tiles">searchIFSCCodes</result>
+		</action>
+		<!-- End :: DisplayIFSCCodes -->
+
+		<!-- Start Amend BG -->
+		<action name="*amendBGPage" class="com.logica.ngph.web.action.AmendBGAction"
+			method="{1}">
+			<result name="success" type="tiles">displayAmendBG</result>
+			<result name="input" type="tiles">displayAmendBG</result>
+		</action>
+
+		<action name="createAmendBGSubmit" class="com.logica.ngph.web.action.AmendBGAction"
+			method="createAmendBGSubmit">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayAmendBG</result>
+		</action>
+
+		<action name="getAmendBGAuthorization" class="com.logica.ngph.web.action.AmendBGAction"
+			method="getAmendBGAuthorization">
+			<result name="success" type="tiles">displayAmendBG</result>
+			<result name="input" type="tiles">displayAmendBG</result>
+		</action>
+
+		<action name="saveAmendBG" class="com.logica.ngph.web.action.AmendBGAction"
+			method="getObjectForAmendBG">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAmendBG</result>
+		</action>
+
+		<action name="displayAmendBGData" class="com.logica.ngph.web.action.AmendBGAction"
+			method="displayAmendBGData">
+			<result name="success" type="tiles">displayAmendBG</result>
+			<result name="input" type="tiles">displayAmendBG</result>
+		</action>
+
+		<action name="saveAmendBGTemplate" class="com.logica.ngph.web.action.AmendBGAction"
+			method="saveAmendBGTemplate">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAmendBG</result>
+		</action>
+		
+		<action name="resetAmendBG" class="com.logica.ngph.web.action.AmendBGAction"
+			method="reset">
+			<result name="success" type="tiles">displayAmendBG</result>
+			<result name="input" type="tiles">displayAmendBG</result>
+		</action>
+
+		<!-- End Amend BG -->
+
+		<!-- Start Acknowledge BG -->
+		<action name="*ackBGPage"
+			class="com.logica.ngph.web.action.AcknowledgementBGAction" method="{1}">
+			<result name="success" type="tiles">displayAckBG</result>
+			<result name="input" type="tiles">displayAckBG</result>
+			<result name="bgAmend" type="tiles">displayAckBG</result>
+			<result name="failure" type="tiles">paymentStatusForward</result>
+		</action>
+
+		<action name="displayAckBGData"
+			class="com.logica.ngph.web.action.AcknowledgementBGAction" method="displayAckBGData">
+			<result name="success" type="tiles">displayAckBG</result>
+			<result name="input" type="tiles">displayAckBG</result>
+		</action>
+
+		<action name="getAckBGSubmit"
+			class="com.logica.ngph.web.action.AcknowledgementBGAction" method="getAckBGSubmit">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayAckBG</result>
+		</action>
+
+		<action name="getAckBGAuthorization"
+			class="com.logica.ngph.web.action.AcknowledgementBGAction" method="getAckBGAuthorization">
+			<result name="success" type="tiles">displayAckBG</result>
+			<result name="input" type="tiles">displayAckBG</result>
+		</action>
+
+		<action name="saveAckBG"
+			class="com.logica.ngph.web.action.AcknowledgementBGAction" method="getObjectForAckBG">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAckBG</result>
+		</action>
+		
+		<action name="resetAckBG" class="com.logica.ngph.web.action.AcknowledgementBGAction" method="reset">
+		 <result name="success" type="tiles">displayAckBG</result>
+		 <result name="input" type="tiles">displayAckBG</result>
+		</action>
+
+		<!-- End Acknowledge BG -->
+
+		<!-- Start Create BG Cover -->
+
+		<action name="*covBGPage"
+			class="com.logica.ngph.web.action.CoverBankGuaranteeAction" method="{1}">
+			<result name="success" type="tiles">displaycovBG</result>
+			<result name="input" type="tiles">displaycovBG</result>
+		</action>
+
+		<action name="getBGCoverApproval"
+			class="com.logica.ngph.web.action.CoverBankGuaranteeAction" method="getBGCoverApproval">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displaycovBG</result>
+		</action>
+
+		<action name="getBGCoverAuthorization"
+			class="com.logica.ngph.web.action.CoverBankGuaranteeAction" method="getBGCoverAuthorization">
+			<result name="success" type="tiles">displaycovBG</result>
+			<result name="input" type="tiles">displaycovBG</result>
+		</action>
+
+		<action name="saveBGCoverAction"
+			class="com.logica.ngph.web.action.CoverBankGuaranteeAction" method="getObjectForBGCover">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displaycovBG</result>
+		</action>
+
+		<action name="saveBGCoverTemplate"
+			class="com.logica.ngph.web.action.CoverBankGuaranteeAction" method="saveTemplate">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displaycovBG</result>
+		</action>
+
+		<action name="resetBGCover" class="com.logica.ngph.web.action.CoverBankGuaranteeAction" method="reset">
+			<result name="success" type="tiles">displaycovBG</result>
+			<result name="input" type="tiles">displaycovBG</result>
+		</action>
+
+		<!-- End Create BG Cover -->
+
+		<!-- Start CoverAmed BG -->
+		<action name="*AmdCoverBGPage"
+			class="com.logica.ngph.web.action.AmdCoverBankGuaranteeAction"
+			method="{1}">
+			<result name="success" type="tiles">displayAmdCovBG</result>
+			<result name="input" type="tiles">displayAmdCovBG</result>
+		</action>
+
+		<action name="getAmdCoverBGApproval"
+			class="com.logica.ngph.web.action.AmdCoverBankGuaranteeAction"
+			method="getAmdCoverBGApproval">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayAmdCovBG</result>
+		</action>
+
+		<action name="getAmdCoverBGAuthorization"
+			class="com.logica.ngph.web.action.AmdCoverBankGuaranteeAction"
+			method="getAmdCoverBGAuthorization">
+			<result name="success" type="tiles">displayAmdCovBG</result>
+			<result name="input" type="tiles">displayAmdCovBG</result>
+		</action>
+
+		<action name="saveAmdCoverBGAction"
+			class="com.logica.ngph.web.action.AmdCoverBankGuaranteeAction"
+			method="getObjectForAmdCoverBG">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAmdCovBG</result>
+		</action>
+		
+		<action name="resetAmdBGCover" class="com.logica.ngph.web.action.AmdCoverBankGuaranteeAction" method="reset">
+			<result name="success" type="tiles">displayAmdCovBG</result>
+			<result name="input" type="tiles">displayAmdCovBG</result>
+		</action>
+		
+		<!-- End CoverAmed BG -->
+
+		<!-- Start Advice of Reduction -->
+		<action name="*AdviceofReduction"
+			class="com.logica.ngph.web.action.AdviceofReductionAction" method="{1}">
+			<result name="success" type="tiles">displayAdviceofReduction</result>
+			<result name="input" type="tiles">displayAdviceofReduction</result>
+			<result name="failure" type="tiles">paymentStatusForward</result>
+		</action>
+
+		<action name="adviceReducionApproval"
+			class="com.logica.ngph.web.action.AdviceofReductionAction" method="adviceReducionApproval">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayAdviceofReduction</result>
+		</action>
+
+		<action name="getReductionAuthorization"
+			class="com.logica.ngph.web.action.AdviceofReductionAction" method="getReductionAuthorization">
+			<result name="success" type="tiles">displayAdviceofReduction</result>
+			<result name="input" type="tiles">displayAdviceofReduction</result>
+		</action>
+
+		<action name="saveReduction"
+			class="com.logica.ngph.web.action.AdviceofReductionAction" method="saveReductionData">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAdviceofReduction</result>
+		</action>
+		<action name="viewAdviceofReductionAdviceofReduction"
+			class="com.logica.ngph.web.action.AdviceofReductionAction" method="viewAdviceofReduction">
+			<result name="success" type="tiles">displayAdviceofReduction</result>
+			<result name="input" type="tiles">displayAdviceofReduction</result>
+			<result name="failure" type="tiles">paymentStatusForward</result>
+		</action>
+		<action name="resetAdciveofReduction"
+			class="com.logica.ngph.web.action.AdviceofReductionAction" method="resetAdciveofReduction">
+			<result name="success" type="tiles">displayAdviceofReduction</result>
+			<result name="input" type="tiles">displayAdviceofReduction</result>
+		</action>
+
+		<!-- End Advice of Reduction -->
+
+		<!--Start Customer Details -->
+
+		<action name="*customerDetails" method="{1}"
+			class="com.logica.ngph.web.action.CustomerDetailsAction">
+			<result name="success" type="tiles">displayCustomerDetails</result>
+			<result name="input" type="tiles">displayCustomerDetails</result>
+			<result name="failure" type="tiles">paymentStatusForward</result>
+		</action>
+		
+		<action name="performCustomerAction" method="performcustomerDetailsForApproval"
+			class="com.logica.ngph.web.action.CustomerDetailsAction">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayCustomerDetails</result>
+		</action>
+
+		<action name="deleteCustomerAction" method="deleteUserAction"
+			class="com.logica.ngph.web.action.CustomerDetailsAction">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayCustomerDetails</result>
+			<result name="sendForApproval" type="tiles">sentForApproval</result>
+		</action>
+
+		<action name="getUsrDataAction" method="getUserDataAction"
+			class="com.logica.ngph.web.action.CustomerDetailsAction">
+			<result name="success" type="tiles">displayCustomerDetails</result>
+			<result name="input" type="tiles">displayCustomerDetails</result>
+		</action>
+
+		<action name="getCustomerDetailsAuthorization" method="getCustomerDetailsAuthorization"
+			class="com.logica.ngph.web.action.CustomerDetailsAction">
+			<result name="success" type="tiles">displayCustomerDetails</result>
+			<result name="input" type="tiles">displayCustomerDetails</result>
+		</action>
+
+		<action name="getCustomerMaintenanceApproval" method="getApproval"
+			class="com.logica.ngph.web.action.CustomerDetailsAction">
+			<result name="success" type="tiles">displayCustomerDetails</result>
+			<result name="input" type="tiles">displayCustomerDetails</result>
+		</action>
+
+		<action name="callSeeOldDataUserMaintenance" method="callSeeOldData"
+			class="com.logica.ngph.web.action.CustomerDetailsAction">
+			<result name="success" type="tiles">displayCustomerDetails</result>
+			<result name="input" type="tiles">displayCustomerDetails</result>
+		</action>
+
+		<!--Start Customer Details -->
+
+		<!-- Start MIZUHO Bank Changes -->
+		<!-- Start :: 730 Message -->
+		<action name="*LCAcknowledgement"
+			class="com.logica.ngph.web.action.LCAcknowledgementAction" method="{1}">
+			<result name="success" type="tiles">displayLcAcknoledgement</result>
+			<result name="input" type="tiles">displayLcAcknoledgement</result>
+		</action>
+
+		<action name="lcAcknowledgementApproval"
+			class="com.logica.ngph.web.action.LCAcknowledgementAction" method="lcAcknowledgementApproval">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayLcAcknoledgement</result>
+		</action>
+
+		<action name="getLCAcknowledgementAuthorization"
+			class="com.logica.ngph.web.action.LCAcknowledgementAction" method="getLCAcknowledgementAuthorization">
+			<result name="success" type="tiles">displayLcAcknoledgement</result>
+			<result name="input" type="tiles">displayLcAcknoledgement</result>
+		</action>
+		<action name="saveLCAcknowledgement"
+			class="com.logica.ngph.web.action.LCAcknowledgementAction" method="getObjectAckLC">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayLcAcknoledgement</result>
+		</action>
+		<action name="saveTemplateLcAck"
+			class="com.logica.ngph.web.action.LCAcknowledgementAction" method="saveTemplateLcAck">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayLcAcknoledgement</result>
+		</action>
+
+		<action name="resetLCAck"
+			class="com.logica.ngph.web.action.LCAcknowledgementAction" method="reset">
+			<result name="success" type="tiles">displayLcAcknoledgement</result>
+			<result name="input" type="tiles">displayLcAcknoledgement</result>
+		</action>
+		
+		<!-- End :: 730 Message -->
+
+		<!-- Start :: 799 Message -->
+		<action name="*FreeFormatMessage"
+			class="com.logica.ngph.web.action.FreeFormatPaymentAction" method="{1}">
+			<result name="success" type="tiles">displayFreeFormatPayment</result>
+			<result name="input" type="tiles">displayFreeFormatPayment</result>
+		</action>
+
+		<action name="getFreeFormatApproval"
+			class="com.logica.ngph.web.action.FreeFormatPaymentAction" method="getFreeFormatApproval">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayFreeFormatPayment</result>
+		</action>
+
+		<action name="getFreeFormatAuthorization"
+			class="com.logica.ngph.web.action.FreeFormatPaymentAction" method="getFreeFormatAuthorization">
+			<result name="success" type="tiles">displayFreeFormatPayment</result>
+			<result name="input" type="tiles">displayFreeFormatPayment</result>
+		</action>
+
+		<action name="saveFreeFormatAction"
+			class="com.logica.ngph.web.action.FreeFormatPaymentAction" method="getObjectForFreeFormat">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayFreeFormatPayment</result>
+		</action>
+
+		<action name="saveFreeFormatTemplate"
+			class="com.logica.ngph.web.action.FreeFormatPaymentAction" method="saveFreeFormatTemplate">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayFreeFormatPayment</result>
+		</action>
+		
+		<action name="resetFreeFormat"
+			class="com.logica.ngph.web.action.FreeFormatPaymentAction" method="reset">
+			<result name="success" type="tiles">displayFreeFormatPayment</result>
+			<result name="input" type="tiles">displayFreeFormatPayment</result>
+		</action>
+		
+		
+
+		<!-- End :: 799 Message -->
+
+		<!-- Start :: 734 Message -->
+		<action name="*AdviceofRefusalAction" class="com.logica.ngph.web.action.AdviceofRefusalAction"
+			method="{1}">
+			<result name="success" type="tiles">displayAdviceofRefusal</result>
+			<result name="input" type="tiles">displayAdviceofRefusal</result>
+		</action>
+
+		<action name="getAdviceofRefusalApproval" class="com.logica.ngph.web.action.AdviceofRefusalAction"
+			method="getAdviceofRefusalApproval">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayAdviceofRefusal</result>
+		</action>
+
+		<action name="getLCAdviseofRefusalAuthorization" class="com.logica.ngph.web.action.AdviceofRefusalAction"
+			method="getLCAdviseofRefusalAuthorization">
+			<result name="success" type="tiles">displayAdviceofRefusal</result>
+			<result name="input" type="tiles">displayAdviceofRefusal</result>
+		</action>
+
+		<action name="saveAdviceofRefusal" class="com.logica.ngph.web.action.AdviceofRefusalAction" method="getObjectAdviceofRefusal">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAdviceofRefusal</result>
+		</action>
+
+		<action name="saveAdviceofRefusalTemplate" class="com.logica.ngph.web.action.AdviceofRefusalAction"
+			method="saveAdviceofRefusalTemplate">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAdviceofRefusal</result>
+		</action>
+		
+		<action name="resetAdviceofRefusal" class="com.logica.ngph.web.action.AdviceofRefusalAction" method="reset">
+		 <result name="success" type="tiles">displayAdviceofRefusal</result>
+		 <result name="input" type="tiles">displayAdviceofRefusal</result>
+		</action>
+		<!-- End :: 734 Message -->
+
+		<!-- Start :: 750 Message -->
+		<action name="displayAdviceofDiscrepancy"
+			class="com.logica.ngph.web.action.AdviceofDiscrepancyAction" method="displayAdviceofDiscrepancy">
+			<result name="success" type="tiles">displayAdviceofDiscrepancy
+			</result>
+			<result name="input" type="tiles">displayAdviceofDiscrepancy</result>
+		</action>
+
+		<action name="getAdviceofDiscrepancyApproval"
+			class="com.logica.ngph.web.action.AdviceofDiscrepancyAction" method="getAdviceofDiscrepancyApproval">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayAdviceofDiscrepancy</result>
+		</action>
+
+		<action name="getLCAdviseofDiscrepancyAuthorization"
+			class="com.logica.ngph.web.action.AdviceofDiscrepancyAction" method="getLCAdviseofDiscrepancyAuthorization">
+			<result name="success" type="tiles">displayAdviceofDiscrepancy
+			</result>
+			<result name="input" type="tiles">displayAdviceofDiscrepancy</result>
+		</action>
+
+		<action name="saveAdviceofDiscrepancy"
+			class="com.logica.ngph.web.action.AdviceofDiscrepancyAction" method="getObjectAdviceofDiscrepancy">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAdviceofDiscrepancy</result>
+		</action>
+
+		<action name="viewAdviceofDiscrepancy"
+			class="com.logica.ngph.web.action.AdviceofDiscrepancyAction" method="viewAdviceofDiscrepancy">
+			<result name="success" type="tiles">displayAdviceofDiscrepancy
+			</result>
+			<result name="input" type="tiles">displayAdviceofDiscrepancy</result>
+		</action>
+
+		<action name="saveTemplateAdviceofDiscrepancy"
+			class="com.logica.ngph.web.action.AdviceofDiscrepancyAction" method="saveTemplateAdviceofDiscrepancy">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAdviceofDiscrepancy</result>
+		</action>
+		
+		<action name="resetAdviceofDiscrepancy" method="reset"
+			class="com.logica.ngph.web.action.AdviceofDiscrepancyAction">
+			<result name="input" type="tiles">displayAdviceofDiscrepancy</result>
+			<result name="success" type="tiles">displayAdviceofDiscrepancy</result>
+		</action>
+		
+		<!-- End :: 750 Message -->
+
+		<!-- Start :: 754 Message -->
+		<action name="displayAdviceofPayment" class="com.logica.ngph.web.action.AdviceofPaymentAction"
+			method="displayAdviceofPayment">
+			<result name="success" type="tiles">displayAdviceofPayment</result>
+			<result name="input" type="tiles">displayAdviceofPayment</result>
+		</action>
+
+		<action name="getAdviceofPaymentApproval" class="com.logica.ngph.web.action.AdviceofPaymentAction"
+			method="getAdviceofPaymentApproval">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayAdviceofPayment</result>
+		</action>
+
+		<action name="getLCAdviseofPaymentAuthorization" class="com.logica.ngph.web.action.AdviceofPaymentAction"
+			method="getLCAdviseofPaymentAuthorization">
+			<result name="success" type="tiles">displayAdviceofPayment</result>
+			<result name="input" type="tiles">displayAdviceofPayment</result>
+		</action>
+
+		<action name="saveAdviceofPayment" class="com.logica.ngph.web.action.AdviceofPaymentAction"
+			method="getObjectAdviceofPayment">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAdviceofPayment</result>
+		</action>
+
+		<action name="*adviceofPaymentAction" class="com.logica.ngph.web.action.AdviceofPaymentAction"
+			method="{1}">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAdviceofPayment</result>
+		</action>
+
+		<action name="saveTemplate" class="com.logica.ngph.web.action.AdviceofPaymentAction"
+			method="saveTemplate">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAdviceofPayment</result>
+		</action>
+		
+		<action name="resetAdviceofPayment" class="com.logica.ngph.web.action.AdviceofPaymentAction" method="reset">
+			<result name="input" type="tiles">displayAdviceofPayment</result>
+			<result name="success" type="tiles">displayAdviceofPayment</result>
+		</action>
+		<!-- End :: 754 Message -->
+
+		<!-- Start :: Template Search -->
+
+		<action name="displayTempalteData" method="fetchTempateData"
+			class="com.logica.ngph.web.action.GenericScreenManager">
+			<result name="success" type="tiles">getTempaltePage</result>
+			<result name="input" type="tiles">getTempaltePage</result>
+		</action>
+
+		<action name="displayTempalte" method="fetchTempat"
+			class="com.logica.ngph.web.action.GenericScreenManager">
+			<result name="success" type="tiles">getTempaltePage</result>
+			<result name="input" type="tiles">getTempaltePage</result>
+		</action>
+
+		<action name="saveLCOpenTemplate" class="com.logica.ngph.web.action.LcOpenAction"
+			method="saveTemplate">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayLCOpenScreen</result>
+		</action>
+
+		<action name="saveLCTemplate" class="com.logica.ngph.web.action.AdviceLCPaymentAction"
+			method="saveTemplate">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayLcAdvicing</result>
+		</action>
+
+		<action name="saveAmendLCTemplate" class="com.logica.ngph.web.action.AmendLCAction"
+			method="saveAmendLCTemplate">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAmendLC</result>
+		</action>
+
+		<action name="saveBGTemplate"
+			class="com.logica.ngph.web.action.CreateBankGuaranteeAction" method="saveTemplate">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">createBankGuarantee</result>
+		</action>
+
+		<action name="reset" method="reset"
+			class="com.logica.ngph.web.action.CreateBankGuaranteeAction">
+			<result name="input" type="tiles">createBankGuarantee</result>
+			<result name="success" type="tiles">createBankGuarantee</result>
+		</action>
+
+		<action name="saveAmendBGCovTemplate"
+			class="com.logica.ngph.web.action.AmdCoverBankGuaranteeAction"
+			method="saveTemplate">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAmdCovBG</result>
+		</action>
+
+
+
+		<action name="saveAckBGTemplate"
+			class="com.logica.ngph.web.action.AcknowledgementBGAction" method="saveTemplate">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAckBG</result>
+		</action>
+
+		<action name="saveAdviceReductionTemplate"
+			class="com.logica.ngph.web.action.AdviceofReductionAction" method="saveTemplate">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayAdviceofReduction</result>
+		</action>
+		<!-- End :: Template Search -->
+
+		<!-- Start :: Rejected by User -->
+
+		<action name="rejectedByUserOutboundAction" class="com.logica.ngph.web.action.GenericScreenManager"
+			method="fetchRejectedData">
+			<result name="success" type="tiles">displayRejectedByUserPayments</result>
+			<result name="input" type="tiles">displayRejectedByUserPayments</result>
+		</action>
+
+		<!-- End :: Rejected by User -->
+
+		<!-- Start :: IFSC Details -->
+
+		<!-- End :: IFSC Details -->
+
+		<action name="displayIFSCData" class="com.logica.ngph.web.action.IFSCMaintainAction"
+			method="displayIFSCData">
+			<result name="success" type="tiles">getIFSCMaintain</result>
+			<result name="input" type="tiles">getIFSCMaintain</result>
+		</action>
+
+		<action name="resetIFSCMaintain" class="com.logica.ngph.web.action.IFSCMaintainAction"
+			method="resetIFSCMaintain">
+			<result name="success" type="tiles">getIFSCMaintain</result>
+			<result name="input" type="tiles">getIFSCMaintain</result>
+		</action>
+
+		<!-- Archival process :: Start -->
+		
+		
+		<action name="displayArchival" class="com.logica.ngph.web.action.SOdEodTaskAction"
+			method="displayArchival">
+			<result name="success" type="tiles">forwardToSodEod</result>
+			<result name="input" type="tiles">forwardToSodEod</result>
+		</action>
+		
+
+		<action name="startArchivalAction" class="com.logica.ngph.web.action.SOdEodTaskAction"
+			method="startArchivalAction">
+			<result name="success" type="tiles">forwardToSodEod</result>
+			<result name="input" type="tiles">forwardToSodEod</result>
+		</action>
+
+		<!-- Archival process :: End -->
+
+		<!-- Start :: Completed Message Template -->
+		<action name="fetchMsgData" class="com.logica.ngph.web.action.EnquiryAction"
+			method="fetchMsgData">
+			<result name="failure">/WEB-INF/jsp/EnquiryDisplay.jsp</result>
+			<result name="PRE_ADVICE" type="chain">
+				<param name="actionName"></param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="LCOPEN" type="chain">
+				<param name="actionName">viewTeplateOpenLcPaymentlcOpen</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="AMENDLC" type="chain">
+				<param name="actionName">viewTempalteMessageadmendLCPage</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="ADVICE_PAYMENT" type="chain">
+				<param name="actionName">viewTemplateAdvicePaymentadvicePayment</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="AUTHORISEPAYMENTADVICE" type="chain">
+				<param name="actionName">viewTemplateAuthorisePaymentauthoriseLcPaymentAdvi</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="TRANSFERDOCUMENTARYCREDITS" type="chain">
+				<param name="actionName"></param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="REIMBURSMENTCLAIMS" type="chain">
+				<param name="actionName"></param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="AUTHORISATIONTOPAY" type="chain">
+				<param name="actionName"></param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="CREATE_BANK_GUARANTEE" type="chain"><!-- 760 message -->
+				<param name="actionName">viewTemplateCreateBankGuanteecreateBankGuaranteeAction</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="AMENDBG" type="chain"><!-- 767 message -->
+				<param name="actionName">viewTemplateAmendBGamendBGPage</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="BG_ACKNOWLEDGEMENT" type="chain"><!-- 768 message -->
+				<param name="actionName">viewTemplateAckBGackBGPage</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="CREATE_BG_COVER" type="chain"><!-- 760 COV message -->
+				<param name="actionName">viewTemplateCreateBankGuanteeCovercovBGPage</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="CREATE_AMEND_BG_COVER" type="chain"><!-- 767 COV message -->
+				<param name="actionName">viewTempCreateAmendBGCoverAmdCoverBGPage</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="FREE_FORMAT_MESSAGE" type="chain"> <!-- 799 message -->
+				<param name="actionName">viewTemplateFreeFormatPaymentFreeFormatMessage</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="CREATE_ADVICE_OF_REDUCTION" type="chain"><!-- 769 message -->
+				<param name="actionName">viewTemplateAdviceofReduction</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="LC_ACKNOWLEDGEMENT" type="chain"><!-- 730 message -->
+				<param name="actionName">viewTemplateLCAcknowledgement</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="ADVICEOFREFUSAL" type="chain"><!-- 734 message -->
+				<param name="actionName">viewTemplateAdviceofRefusalAdviceofRefusalAction</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="ADVICEOFDISCREPANCY" type="chain">
+				<param name="actionName">viewTemplateAdviceofDiscrepancy</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="ADVICEOFPAYMENT" type="chain">
+				<param name="actionName">viewTemplateAdviceofPayment</param>
+				<param name="namespace">/</param>
+			</result>
+		</action>
+
+		<action name="viewTemplateAdviceofDiscrepancy"
+			class="com.logica.ngph.web.action.AdviceofDiscrepancyAction" method="viewTemplateAdviceofDiscrepancy">
+			<result name="success" type="tiles">displayAdviceofDiscrepancy
+			</result>
+			<result name="input" type="tiles">displayAdviceofDiscrepancy</result>
+		</action>
+
+		<action name="viewTemplateAdviceofPayment" class="com.logica.ngph.web.action.AdviceofPaymentAction"
+			method="viewTemplateAdviceofPayment">
+			<result name="success" type="tiles">displayAdviceofPayment</result>
+			<result name="input" type="tiles">displayAdviceofPayment</result>
+		</action>
+
+		<action name="viewTemplateAdviceofReduction"
+			class="com.logica.ngph.web.action.AdviceofReductionAction" method="viewTemplateAdviceofReduction">
+			<result name="success" type="tiles">displayAdviceofReduction</result>
+			<result name="input" type="tiles">displayAdviceofReduction</result>
+		</action>
+
+		<action name="viewTemplateLCAcknowledgement"
+			class="com.logica.ngph.web.action.LCAcknowledgementAction" method="viewTemplateLCAcknowledgement">
+			<result name="success" type="tiles">displayLcAcknoledgement</result>
+			<result name="input" type="tiles">displayLcAcknoledgement</result>
+		</action>
+
+		<!-- End :: Completed Messages Template -->
+		<!-- End MIZUHO Bank Changes -->
+		
+		
+		<!--  Start :: PrintPreview Pages -->
+		
+		<action name="printPreviewFreeFormatPage"
+			class="com.logica.ngph.web.action.FreeFormatPaymentAction" method="displayPrintPreviewFreeFormatPage">
+			<result name="success" type="tiles">displayPrintPreviewFreeFormatPage</result>
+			<result name="input" type="tiles">displayFreeFormatPayment</result>
+		</action>
+		
+		<action name="printPreviewCreateBankGuarantee"
+			class="com.logica.ngph.web.action.CreateBankGuaranteeAction" method="displayPrintPreviewCreateBankGuarantee">
+			<result name="success" type="tiles">displayPrintPreviewCreateBankGuarantee</result>
+			<result name="input" type="tiles">createBankGuarantee</result>
+		</action>
+		
+		<action name="printPreviewAmendBG"
+			class="com.logica.ngph.web.action.AmendBGAction" method="displayPrintPreviewAmendBG">
+			<result name="success" type="tiles">displayPrintPreviewAmendBG</result>
+			<result name="input" type="tiles">displayAmendBG</result>
+		</action>
+		
+		<action name="printPreviewAckBG"
+			class="com.logica.ngph.web.action.AcknowledgementBGAction" method="displayPrintPreviewAckBG">
+			<result name="success" type="tiles">displayPrintPreviewAckBG</result>
+			<result name="input" type="tiles">displayAckBG</result>
+		</action>
+		
+		<action name="printPreviewAdviceofReduction"
+			class="com.logica.ngph.web.action.AdviceofReductionAction" method="displayPrintPreviewAdviceofReduction">
+			<result name="success" type="tiles">displayPrintPreviewAdviceofReduction</result>
+			<result name="input" type="tiles">displayAdviceofReduction</result>
+		</action>
+		
+		<action name="printPreviewCreateBGCover"
+			class="com.logica.ngph.web.action.CoverBankGuaranteeAction" method="displayPrintPreviewCreateBGCover">
+			<result name="success" type="tiles">displayPrintPreviewCreateBGCover</result>
+			<result name="input" type="tiles">displaycovBG</result>
+		</action>
+		
+		<action name="printPreviewAmendBGCover"
+			class="com.logica.ngph.web.action.AmdCoverBankGuaranteeAction" method="displayPrintPreviewAmendBGCover">
+			<result name="success" type="tiles">displayPrintPreviewAmendBGCover</result>
+			<result name="input" type="tiles">displayAmdCovBG</result>
+		</action>
+		
+		<action name="printPreviewAdviceLCPayment"
+			class="com.logica.ngph.web.action.AdviceLCPaymentAction" method="displayPrintPreviewAdviceLCPayment">
+			<result name="success" type="tiles">displayPrintPreviewAdviceLCPayment</result>
+			<result name="input" type="tiles">displayLcAdvicing</result>
+		</action>
+		
+		<action name="printPreviewAdviceofPayment"
+			class="com.logica.ngph.web.action.AdviceofPaymentAction" method="displayPrintPreviewAdviceofPayment">
+			<result name="success" type="tiles">displayPrintPreviewAdviceofPayment</result>
+			<result name="input" type="tiles">displayAdviceofPayment</result>
+		</action>
+		
+		<action name="printPreviewAdviceofDiscrepancy"
+			class="com.logica.ngph.web.action.AdviceofDiscrepancyAction" method="displayPrintPreviewAdviceofDiscrepancy">
+			<result name="success" type="tiles">displayPrintPreviewAdviceofDiscrepancy</result>
+			<result name="input" type="tiles">displayAdviceofDiscrepancy</result>
+		</action>
+		
+		<action name="printPreviewAuthoriseLCPaymentAdvice"
+			class="com.logica.ngph.web.action.AuthoriseLCPaymentAdviceAction" method="displayPrintPreviewAuthoriseLCPaymentAdvice">
+			<result name="success" type="tiles">displayPrintPreviewAuthoriseLCPaymentAdvice</result>
+			<result name="input" type="tiles">displayAuthoriseLcPaymentAdvice</result>
+		</action>
+		
+		<action name="printPreviewAdviceofRefusal"
+			class="com.logica.ngph.web.action.AdviceofRefusalAction" method="displayPrintPreviewAdviceofRefusal">
+			<result name="success" type="tiles">displayPrintPreviewAdviceofRefusal</result>
+			<result name="input" type="tiles">displayAdviceofRefusal</result>
+		</action>
+		
+		<action name="printPreviewLCAcknowledgement"
+			class="com.logica.ngph.web.action.LCAcknowledgementAction" method="displayPrintPreviewLCAcknowledgement">
+			<result name="success" type="tiles">displayPrintPreviewLCAcknowledgement</result>
+			<result name="input" type="tiles">displayLcAcknoledgement</result>
+		</action>
+		
+		<action name="printPreviewAmendLCPage"
+			class="com.logica.ngph.web.action.AmendLCAction" method="displayPrintPreviewAmendLCPage">
+			<result name="success" type="tiles">displayPrintPreviewAmendLCPage</result>
+			<result name="input" type="tiles">displayAmendLC</result>
+		</action>
+		
+		<action name="printPreviewLCOpenPage"
+			class="com.logica.ngph.web.action.LcOpenAction" method="displayPrintPreviewLCOpenPage">
+			<result name="success" type="tiles">displayPrintPreviewLCOpenPage</result>
+			<result name="input" type="tiles">displayLCOpenScreen</result>
+		</action>
+			
+		
+		<!--  End :: PrintPreview Pages -->
+		
+		<!--  Start :: Export to Excel  -->
+		
+			<!-- Free Format message 799 -->
+		
+		<action name="exportToExcelFreeformatPage" 
+			class="com.logica.ngph.web.action.FreeFormatPaymentAction" method="exportToExcelFreeformat">
+			<result name="success" type="stream"> 
+				<param name="contentDisposition">attachment;filename="${reportFile}"</param>
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">inputStream</param>
+				<param name="bufferSize">1024</param>
+			</result>
+		</action>
+		
+			<!-- Create Bank Guarantee 760  -->
+		
+		<action name="exportToExcelCreateBankGuaranteePage" 
+			class="com.logica.ngph.web.action.CreateBankGuaranteeAction" method="exportToExcelCreateBankGuarantee">
+			<result name="success" type="stream"> 
+				<param name="contentDisposition">attachment;filename="${reportFile}"</param>
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">inputStream</param>
+				<param name="bufferSize">1024</param>
+			</result>
+		</action>
+		
+			<!-- Amend BG 767  -->
+		
+		<action name="exportToExcelAmendBGPage" 
+			class="com.logica.ngph.web.action.AmendBGAction" method="exportToExcelAmendBG">
+			<result name="success" type="stream"> 
+				<param name="contentDisposition">attachment;filename="${reportFile}"</param>
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">inputStream</param>
+				<param name="bufferSize">1024</param>
+			</result>
+		</action>
+		
+		<!-- Ack BG 768  -->
+		
+		<action name="exportToExcelAckBGPage" 
+			class="com.logica.ngph.web.action.AcknowledgementBGAction" method="exportToExcelAckBG">
+			<result name="success" type="stream"> 
+				<param name="contentDisposition">attachment;filename="${reportFile}"</param>
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">inputStream</param>
+				<param name="bufferSize">1024</param>
+			</result>
+		</action>
+		
+		<!-- AdviceofPayment 754  -->
+		
+		<action name="exportToExcelAdviceofPaymentPage" 
+			class="com.logica.ngph.web.action.AdviceofPaymentAction" method="exportToExcelAdviceofPayment">
+			<result name="success" type="stream"> 
+				<param name="contentDisposition">attachment;filename="${reportFile}"</param>
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">inputStream</param>
+				<param name="bufferSize">1024</param>
+			</result>
+		</action>
+		
+		<!-- AdviceofDiscrepancy 750  -->
+		
+		<action name="exportToExcelAdviceofDiscrepancyPage" 
+			class="com.logica.ngph.web.action.AdviceofDiscrepancyAction" method="exportToExcelAdviceofDiscrepancy">
+			<result name="success" type="stream"> 
+				<param name="contentDisposition">attachment;filename="${reportFile}"</param>
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">inputStream</param>
+				<param name="bufferSize">1024</param>
+			</result>
+		</action>
+		
+		<!-- AdviceofRefusal 734  -->
+		
+		<action name="exportToExcelAdviceofRefusalPage" 
+			class="com.logica.ngph.web.action.AdviceofRefusalAction" method="exportToExcelAdviceofRefusal">
+			<result name="success" type="stream"> 
+				<param name="contentDisposition">attachment;filename="${reportFile}"</param>
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">inputStream</param>
+				<param name="bufferSize">1024</param>
+			</result>
+		</action>
+		
+		
+		<!-- LCAcknowledgement 730  -->
+		
+		<action name="exportToExcelLcAckPage" 
+			class="com.logica.ngph.web.action.LCAcknowledgementAction" method="exportToExcelLcAck">
+			<result name="success" type="stream"> 
+				<param name="contentDisposition">attachment;filename="${reportFile}"</param>
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">inputStream</param>
+				<param name="bufferSize">1024</param>
+			</result>
+		</action>
+		
+		<!-- Advice LC Payment 756  -->
+		
+		<action name="exportToExcelAdviceLCPaymentPage" 
+			class="com.logica.ngph.web.action.AdviceLCPaymentAction" method="exportToExcelAdviceLCPayment">
+			<result name="success" type="stream"> 
+				<param name="contentDisposition">attachment;filename="${reportFile}"</param>
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">inputStream</param>
+				<param name="bufferSize">1024</param>
+			</result>
+		</action>
+		
+		<!-- Create BG Cover 760 COV  -->
+		
+		<action name="exportToExcelCreateBGCoverPage" 
+			class="com.logica.ngph.web.action.CoverBankGuaranteeAction" method="exportToExcelCreateBGCover">
+			<result name="success" type="stream"> 
+				<param name="contentDisposition">attachment;filename="${reportFile}"</param>
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">inputStream</param>
+				<param name="bufferSize">1024</param>
+			</result>
+		</action>
+		
+		
+		<!-- Amend BG Cover 767 COV  -->
+		
+		<action name="exportToExcelAmendBGCovPage" 
+			class="com.logica.ngph.web.action.AmdCoverBankGuaranteeAction" method="exportToExcelAmendBGCov">
+			<result name="success" type="stream"> 
+				<param name="contentDisposition">attachment;filename="${reportFile}"</param>
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">inputStream</param>
+				<param name="bufferSize">1024</param>
+			</result>
+		</action>
+		
+		<!-- Authorise LC Payment Advice 740  -->
+		
+		<action name="exportToExcelAuthoriseLCPaymentAdvicePage" 
+			class="com.logica.ngph.web.action.AuthoriseLCPaymentAdviceAction" method="exportToExcelAuthoriseLCPaymentAdvice">
+			<result name="success" type="stream"> 
+				<param name="contentDisposition">attachment;filename="${reportFile}"</param>
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">inputStream</param>
+				<param name="bufferSize">1024</param>
+			</result>
+		</action>
+		
+		<!-- Authorise LC Payment Advice 740  -->
+		
+		<action name="exportToExcelAmendLCPage" 
+			class="com.logica.ngph.web.action.AmendLCAction" method="exportToExcelAmendLC">
+			<result name="success" type="stream"> 
+				<param name="contentDisposition">attachment;filename="${reportFile}"</param>
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">inputStream</param>
+				<param name="bufferSize">1024</param>
+			</result>
+		</action>
+		
+		<!-- Authorise LC Payment Advice 740  -->
+		
+		<action name="exportToExcelAdviceofReductionPage" 
+			class="com.logica.ngph.web.action.AdviceofReductionAction" method="exportToExcelAdviceofReduction">
+			<result name="success" type="stream"> 
+				<param name="contentDisposition">attachment;filename="${reportFile}"</param>
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">inputStream</param>
+				<param name="bufferSize">1024</param>
+			</result>
+		</action>
+		
+		<!-- LCOpen 700  -->
+		
+		<action name="exportToExcelLcOpenPage" 
+			class="com.logica.ngph.web.action.LcOpenAction" method="exportToExcelLcOpen">
+			<result name="success" type="stream"> 
+				<param name="contentDisposition">attachment;filename="${reportFile}"</param>
+				<param name="contentType">application/vnd.ms-excel</param>
+				<param name="inputName">inputStream</param>
+				<param name="bufferSize">1024</param>
+			</result>
+		</action>
+		<!--  End :: Export to Excel  -->
+		
+		<!-- Start :: Payment Enquiry Print Preview -->
+		
+		<action name="enquiryPrintPreview"
+			class="com.logica.ngph.web.action.EnquiryAction" method="callPrintPreview">
+			<result name="failure" type="tiles">*enquiryAction</result>
+			
+			<result name="LCOPEN" type="chain"><!-- 700 message -->
+				<param name="actionName">printPreviewLCOpenPage</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="AMENDLC" type="chain"><!-- 707 message -->
+				<param name="actionName">printPreviewAmendLCPage</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="LC_ACKNOWLEDGEMENT" type="chain"><!-- 730 message -->
+				<param name="actionName">printPreviewLCAcknowledgement</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="ADVICEOFREFUSAL" type="chain"><!-- 734 message -->
+				<param name="actionName">printPreviewAdviceofRefusal</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="AUTHORISEPAYMENTADVICE" type="chain"><!-- 740 message -->
+				<param name="actionName">printPreviewAuthoriseLCPaymentAdvice</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="ADVICEOFDISCREPANCY" type="chain"><!-- 750 message -->
+				<param name="actionName">printPreviewAdviceofDiscrepancy</param>
+				<param name="namespace">/</param>
+			</result>
+				<result name="ADVICEOFPAYMENT" type="chain"><!-- 754 message -->
+				<param name="actionName">printPreviewAdviceofPayment</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="ADVICE_PAYMENT" type="chain"><!-- 756 message -->
+				<param name="actionName">printPreviewAdviceLCPayment</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="CREATE_BANK_GUARANTEE" type="chain"><!-- 760 message -->
+				<param name="actionName">printPreviewCreateBankGuarantee</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="AMENDBG" type="chain"><!-- 767 message -->
+				<param name="actionName">printPreviewAmendBG</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="BG_ACKNOWLEDGEMENT" type="chain"><!-- 768 message -->
+				<param name="actionName">printPreviewAckBG</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="CREATE_BG_COVER" type="chain"><!-- 760 COV message -->
+				<param name="actionName">printPreviewCreateBGCover</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="CREATE_AMEND_BG_COVER" type="chain"><!-- 767 COV message -->
+				<param name="actionName">printPreviewAmendBGCover</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="CREATE_ADVICE_OF_REDUCTION" type="chain"><!-- 769 message -->
+				<param name="actionName">printPreviewAdviceofReduction</param>
+				<param name="namespace">/</param>
+			</result>
+			<result name="FREE_FORMAT_MESSAGE" type="chain"> <!-- 799 message -->
+				<param name="actionName">printPreviewFreeFormatPage</param>
+				<param name="namespace">/</param>
+			</result>
+		
+		</action>
+		<!-- End :: Payment Enquiry Print Preview -->
+		
+		
+		
+		
+		<!-- Start :: Pending Authorization  -->
+
+		<action name="pendingAuthorizationOutboundAction" class="com.logica.ngph.web.action.GenericScreenManager"
+			method="fetchpendingAuthorizationOutboundData">
+			<result name="success" type="tiles">displayPendingAuthorizationByUser</result>
+			<result name="input" type="tiles">displayPendingAuthorizationByUser</result>
+		</action>
+
+		<!-- End :: Pending Authorization  -->
+		
+		
+		<!-- Start :: Password Security Policy  -->
+
+		<action name="getSecurityPolicy" class="com.logica.ngph.web.action.PasswordPolicyAction"
+			method="getSecurityPolicy">
+			<result name="success" type="tiles">displayPasswordPolicy</result>
+			<result name="input" type="tiles">displayPasswordPolicy</result>
+		</action>
+
+		<action name="submitPassSecPolicy" class="com.logica.ngph.web.action.PasswordPolicyAction"
+			method="passwordPolicyApproval">
+			<result name="success" type="tiles">sentForApproval</result>
+			<result name="input" type="tiles">displayPasswordPolicy</result>
+		</action>
+		
+		<action name="getPassPolicyPolicysAuthorization"
+			class="com.logica.ngph.web.action.PasswordPolicyAction" method="getPassPolicyPolicysAuthorization">
+			<result name="success" type="tiles">displayPasswordPolicy</result>
+			<result name="input" type="tiles">displayPasswordPolicy</result>
+		</action>
+		
+		<action name="saveSecurityPolicy"
+			class="com.logica.ngph.web.action.PasswordPolicyAction" method="savePassPolicy">
+			<result name="success" type="tiles">successForward</result>
+			<result name="input" type="tiles">displayPasswordPolicy</result>
+		</action>
+		
+		<action name="policyReset"
+			class="com.logica.ngph.web.action.PasswordPolicyAction" method="policyReset">
+			<result name="success" type="tiles">displayPasswordPolicy</result>
+			<result name="input" type="tiles">displayPasswordPolicy</result>
+		</action>
+
+
+
+		<!-- End :: Password Security Policy  -->
+		
+		
+		<!-- Start ::  Generate PDF  -->
+		
+		<action name="generatePDFCreateBankGuarantee"
+			class="com.logica.ngph.web.action.CreateBankGuaranteeAction" method="generatePDFCreateBankGuarantee">
+			<result name="success" type="tiles">displayPrintPreviewCreateBankGuarantee</result>
+			<result name="input" type="tiles">displayPrintPreviewCreateBankGuarantee</result>
+		</action>
+		
+		<action name="generatePDFAmendBG"
+			class="com.logica.ngph.web.action.AmendBGAction" method="generatePDFAmendBG">
+			<result name="success" type="tiles">displayPrintPreviewAmendBG</result>
+			<result name="input" type="tiles">displayPrintPreviewAmendBG</result>
+		</action>
+		
+		<action name="generatePDFAckBG"
+			class="com.logica.ngph.web.action.AcknowledgementBGAction" method="generatePDFAckBG">
+			<result name="success" type="tiles">displayPrintPreviewAckBG</result>
+			<result name="input" type="tiles">displayPrintPreviewAckBG</result>
+		</action>
+		
+		<action name="generatePDFAdviceofReduction"
+			class="com.logica.ngph.web.action.AdviceofReductionAction" method="generatePDFAdviceofReduction">
+			<result name="success" type="tiles">displayPrintPreviewAdviceofReduction</result>
+			<result name="input" type="tiles">displayPrintPreviewAdviceofReduction</result>
+		</action>
+		
+		<action name="generatePDFFreeFormat" class="com.logica.ngph.web.action.FreeFormatPaymentAction"
+			method="generatePDFFreeFormat">
+			<result name="success" type="tiles">displayPrintPreviewFreeFormatPage</result>
+			<result name="input" type="tiles">displayPrintPreviewFreeFormatPage</result>
+		</action>
+				
+		<action name="generatePDFLcOpen"
+			class="com.logica.ngph.web.action.LcOpenAction" method="generatePDFLcOpen">
+			<result name="success" type="tiles">displayPrintPreviewLCOpenPage</result>
+			<result name="input" type="tiles">displayPrintPreviewLCOpenPage</result>
+		</action>
+		
+		<action name="generatePDFAmendLC"
+			class="com.logica.ngph.web.action.AmendLCAction" method="generatePDFAmendLC">
+			<result name="success" type="tiles">displayPrintPreviewAmendLCPage</result>
+			<result name="input" type="tiles">displayPrintPreviewAmendLCPage</result>
+		</action>
+		
+		<action name="generatePDFLCAck"
+			class="com.logica.ngph.web.action.LCAcknowledgementAction" method="generatePDFLCAck">
+			<result name="success" type="tiles">displayPrintPreviewLCAcknowledgement</result>
+			<result name="input" type="tiles">displayPrintPreviewLCAcknowledgement</result>
+		</action>
+		
+		<action name="generatePDFAdviceofRefusal"
+			class="com.logica.ngph.web.action.AdviceofRefusalAction" method="generatePDFAdviceofRefusal">
+			<result name="success" type="tiles">displayPrintPreviewAdviceofRefusal</result>
+			<result name="input" type="tiles">displayPrintPreviewAdviceofRefusal</result>
+		</action>
+		
+		<action name="generatePDFAuthoriseLCPaymentAdvice"
+			class="com.logica.ngph.web.action.AuthoriseLCPaymentAdviceAction" method="generatePDFAuthoriseLCPaymentAdvice">
+			<result name="success" type="tiles">displayPrintPreviewAuthoriseLCPaymentAdvice</result>
+			<result name="input" type="tiles">displayPrintPreviewAuthoriseLCPaymentAdvice</result>
+		</action>
+		
+		<action name="generatePDFAdviceofDiscrepancy"
+			class="com.logica.ngph.web.action.AdviceofDiscrepancyAction" method="generatePDFAdviceofDiscrepancy">
+			<result name="success" type="tiles">displayPrintPreviewAdviceofDiscrepancy</result>
+			<result name="input" type="tiles">displayPrintPreviewAdviceofDiscrepancy</result>
+		</action>
+		
+		<action name="generatePDFAdviceofPayment"
+			class="com.logica.ngph.web.action.AdviceofPaymentAction" method="generatePDFAdviceofPayment">
+			<result name="success" type="tiles">displayPrintPreviewAdviceofPayment</result>
+			<result name="input" type="tiles">displayPrintPreviewAdviceofPayment</result>
+		</action>
+		
+		<action name="generatePDFAdviceLCPayment"
+			class="com.logica.ngph.web.action.AdviceLCPaymentAction" method="generatePDFAdviceLCPayment">
+			<result name="success" type="tiles">displayPrintPreviewAdviceLCPayment</result>
+			<result name="input" type="tiles">displayPrintPreviewAdviceLCPayment</result>
+		</action>
+		
+		<action name="generatePDFCreateBGCover"
+			class="com.logica.ngph.web.action.CoverBankGuaranteeAction" method="generatePDFCreateBGCover">
+			<result name="success" type="tiles">displayPrintPreviewCreateBGCover</result>
+			<result name="input" type="tiles">displayPrintPreviewCreateBGCover</result>
+		</action>
+		
+		<action name="generatePDFAmendBGCover"
+			class="com.logica.ngph.web.action.AmdCoverBankGuaranteeAction" method="generatePDFAmendBGCover">
+			<result name="success" type="tiles">displayPrintPreviewAmendBGCover</result>
+			<result name="input" type="tiles">displayPrintPreviewAmendBGCover</result>
+		</action>
+		
+		
+		<!-- End ::  Generate PDF  -->
+		
+		<!-- Start :: Idle Session Timeout  -->
+			<action name="callSessionTimeOut"
+				class="com.logica.ngph.web.action.UserLoginAction" method="callIdleSessionTimeout">
+				<result name="success" type="tiles">displayPrintPreviewAmendBGCover</result>
+				<result name="input" type="tiles">displayPrintPreviewAmendBGCover</result>
+			</action>
+		<!-- End :: Idle Session Timeout  -->
+		
+
+		
+		
+		
+
+		
+	</package>
+
+	<package name="AJAXPackage" extends="json-default">
+		<action name="fetchDistrictNames" class="com.logica.ngph.web.action"
+			method="fetchDistrictNames">
+			<result type="json"></result>
+		</action>
+	</package>
+</struts>

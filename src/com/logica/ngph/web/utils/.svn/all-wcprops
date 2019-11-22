@@ -1,0 +1,185 @@
+K 25
+svn:wc:ra_dav:version-url
+V 85
+/svn/NGPH/!svn/ver/4427/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils
+END
+PieGraph.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/PieGraph.java
+END
+ConfigManager.java
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/ConfigManager.java
+END
+GenerateDiscripancyReports.java
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/NGPH/!svn/ver/4181/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/GenerateDiscripancyReports.java
+END
+WindowUtilities.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/WindowUtilities.java
+END
+CreateFile.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/CreateFile.java
+END
+UserRolesAccess.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/NGPH/!svn/ver/4427/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/UserRolesAccess.java
+END
+PrintExample.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/PrintExample.java
+END
+WebConstants.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/WebConstants.java
+END
+DrawingPanel.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/DrawingPanel.java
+END
+Speedometer.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/Speedometer.java
+END
+DisplayEnquiryData.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/NGPH/!svn/ver/4157/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/DisplayEnquiryData.java
+END
+DeleteNodeFormXML.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/DeleteNodeFormXML.java
+END
+FileUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/FileUtil.java
+END
+test.java
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/test.java
+END
+ExitListener.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/ExitListener.java
+END
+SerializeManager.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/SerializeManager.java
+END
+ChangeDate.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/ChangeDate.java
+END
+ApplicationContextProvider.java
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/ApplicationContextProvider.java
+END
+Bulb.java
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/Bulb.java
+END
+ReportGenerationUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/NGPH/!svn/ver/4312/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/ReportGenerationUtil.java
+END
+BarGraph.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/BarGraph.java
+END
+EventLogging.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/NGPH/!svn/ver/4290/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/EventLogging.java
+END
+JbossEsbWEbCreator.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/JbossEsbWEbCreator.java
+END
+PrintUtilities.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/PrintUtilities.java
+END
+AreaChart.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/AreaChart.java
+END
+XYLineGraph.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/XYLineGraph.java
+END
+ModifyXmlFiles.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/ModifyXmlFiles.java
+END
+MMIDReportGenerationUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/NGPH/!svn/ver/4181/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/MMIDReportGenerationUtil.java
+END
+GenerateBgReportUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/NGPH/!svn/ver/4313/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/GenerateBgReportUtil.java
+END
+GenrateLcReportUtil.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/NGPH/!svn/ver/4312/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/web/utils/GenrateLcReportUtil.java
+END

@@ -1,0 +1,606 @@
+package com.logica.ngph.daoImpl;
+
+import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.logica.ngph.Entity.LcCommodity;
+import com.logica.ngph.Entity.LcMast;
+import com.logica.ngph.Entity.MsgPolled;
+import com.logica.ngph.Entity.NgphCanonical;
+import com.logica.ngph.dao.AdviceLCPaymentDao;
+import com.logica.ngph.dtos.AuthoriseLCPaymentAdviceDto;
+import com.logica.ngph.dtos.LCAdvicePaymentDto;
+import com.logica.ngph.dtos.LCCanonicalDto;
+
+public class AdviceLCPaymentDaoImpl extends HibernateDaoSupport implements AdviceLCPaymentDao{
+	private static Logger logger = Logger.getLogger(AdviceLCPaymentDaoImpl.class);
+	
+	public LCCanonicalDto getLcScreenData(String lcNumber){
+		
+		
+		try{	
+			
+			/*SessionFactory fact=getHibernateTemplate().getSessionFactory();
+			Session sess=fact.openSession();
+			sess.beginTransaction();
+			Connection con=sess.connection();*/
+			LCCanonicalDto lcAdvicePaymentDto =null;
+			String sql = "select lm.lcType, lm.lcAdvisingBank, lm.lcIssueDate, lm.lcExpireDate, lm.lcAppicant, lm.lcBenificiary, lm.lcCurrency, lm.lcAmount, lm.lcNarrative, lm.compositeKeyForLcMast.lcNo,"
+				+" nc.relReference, nc.lcToAmtClaimed, nc.lcAmtPaid, nc.senderCorrespondentId, nc.senderCorrespondentAcct, nc.senderCorrespondent, nc.senderCorrespondentLoc, nc.senderCorrespondentName,"
+				+" nc.receiverCorrespondentId, nc.receiverCorrespondentAcct, nc.receiverCorrespondent, nc.receiverCorrespondentLoc, nc.receiverCorrespondentName, nc.instructionsForNextAgtText, nc.msgRef"  //25
+				
+				+" , nc.lcExpPlace, nc.lcPositiveTolerance, nc.lcNegativeTolerance, nc.lcMaxCrAmt, nc.lcAddlAmts, nc.lcAuthBankCode, nc.lcAuthBankAddr," + //7
+				" nc.lcAuthMode, nc.lcDispatchPlace, nc.lcDstn, nc.lcLstShipDt, nc.lcShipPeriod, nc.lcShipTerms, nc.lcDraftsAt, nc.lcDraweeBnkPid," + //8
+				" nc.lcDraweeBnkCode, nc.lcDraweeBnkAddr, nc.lcMixedPymtDet, nc.lcDefPymtDet, nc.lcPartialShipment, nc.lcTransShipment, concat(nc.lcDocsReq1, nc.lcDocsReq2)," + //7
+				" concat(nc.lcAddnlCndt1, nc.lcAddnlCndt2), nc.lcCharges, nc.lcPrsntnPrd, nc.lcConfrmInstrns, nc.lcInstrnTopay, nc.accountWithInstitutionId, " + //6
+				" nc.accountWithInstitutionAccount, nc.accountWithInstitutionLoc, nc.accountWithInstitutionName, nc.senderCorrespondentId, nc.senderCorrespondent, nc.senderCorrespondentName, " + //6
+				" nc.sendingInstNameAdd, nc.beneficiaryCustAcct, nc.beneficiaryCustomerName, nc.orderingCustomerName, nc.sendingInstId, nc.sendingInst, nc.sendingInstNameAddress, nc.lcChgsClaimed, nc.accountWithInstitutionAcct, nc.lcDraweeBnkAcct, " +//8
+				"nc.initialDispatchPlace, nc.finalDeliveryPlace, nc.lcAppRulesCode, nc.msgValueDate,nc.lcAmndmntIncAmt,nc.lcAmndmntDecAmt,nc.lcAmndmntDt,nc.lcAmndmntNo,nc.lcAppRulesDesc,nc.lcOldExpDt,nc.lcAmndmntOldAmt,nc.seqNo,nc.msgHost "				
+				+" from LcMast lm, NgphCanonical nc where lm.compositeKeyForLcMast.lcNo = nc.lcNo and lm.compositeKeyForLcMast.lcNo=? and lm.msgRef = nc.msgRef";
+			/*String sql = "select lm.lcType, lm.lcAdvisingBank, lm.lcIssueDate, lm.lcExpireDate, lm.lcAppicant, lm.lcBenificiary, lm.lcCurrency, lm.lcAmount, lm.lcNarrative, lm.lcNo "
+				+"from LcMast lm where lm.lcNo = ? and lm.lcStatus in (4, 6)";
+			*/
+			List list= getHibernateTemplate().find(sql,lcNumber);
+		//	Query query =	sess.createSQLQuery(sql).setParameter(0, lcNumber);
+			//		List list = query.list();				
+			if(list!=null && list.size()>0)
+			{
+				lcAdvicePaymentDto = new LCCanonicalDto();
+				Object[] obj = (Object[]) list.get(0);
+				
+				lcAdvicePaymentDto.setLcType((String) obj[0]);
+				lcAdvicePaymentDto.setAdvisingBank((String) obj[1]);
+				lcAdvicePaymentDto.setIssueDate((Date)obj[2]);
+				lcAdvicePaymentDto.setLcExpiryDate((Date) obj[3]);
+				lcAdvicePaymentDto.setApplicantNameAddress((String) obj[4]);
+				lcAdvicePaymentDto.setBeneficiaryNameAddress((String) obj[5]);
+				lcAdvicePaymentDto.setLcCurrency((String) obj[6]);
+				lcAdvicePaymentDto.setLcAmount((BigDecimal) obj[7]);
+				lcAdvicePaymentDto.setNarrative((String) obj[8]);
+				lcAdvicePaymentDto.setLcNumber((String) obj[9]);
+				lcAdvicePaymentDto.setSenderBankReference((String) obj[10]);
+				lcAdvicePaymentDto.setPresentingBanksReference((String) obj[10]);
+				lcAdvicePaymentDto.setTotalAmountClaimed((BigDecimal) obj[11]);
+				lcAdvicePaymentDto.setPaidAmount((BigDecimal) obj[12]);
+				lcAdvicePaymentDto.setSendersCorrespondentPartyIdentifier((String) obj[13]);
+				lcAdvicePaymentDto.setSenderCorrespontAcount((String) obj[14]);
+				lcAdvicePaymentDto.setSendersCorrespondentCode((String) obj[15]);
+				lcAdvicePaymentDto.setSendersCorrespondentLocation((String) obj[16]);
+				lcAdvicePaymentDto.setSendersCorrespondentNameandAddress((String) obj[17]);
+				lcAdvicePaymentDto.setReceiversCorrespondentPartyIdentifier((String) obj[18]);
+				lcAdvicePaymentDto.setReceiverCorrespontAcount((String) obj[19]);
+				lcAdvicePaymentDto.setReceiversCorrespondentCode((String) obj[20]);
+				lcAdvicePaymentDto.setReceiversCorrespondentLocation((String) obj[21]);
+				lcAdvicePaymentDto.setReceiversCorrespondentNameandAddress((String) obj[22]);
+			//	lcAdvicePaymentDto.setSendertoReceiverInformation((String) obj[23]);
+				lcAdvicePaymentDto.setMsgRef((String) obj[24]);
+			//	
+				lcAdvicePaymentDto.setLcExpirePlace((String)obj[25]);
+		        lcAdvicePaymentDto.setPositiveTolerance(obj[26]+"");
+		        lcAdvicePaymentDto.setNegativeTolerance(obj[27]+"");
+		        lcAdvicePaymentDto.setMaximumCreditAmount((String)obj[28]);
+		        lcAdvicePaymentDto.setAdditionalAmounts((String)obj[29]);
+		        lcAdvicePaymentDto.setAuthorisedBankCode((String)obj[30]);
+		        lcAdvicePaymentDto.setAuthorisedAndAddress((String)obj[31]);		        
+		        lcAdvicePaymentDto.setAuthorisationMode((String)obj[32]);
+		        lcAdvicePaymentDto.setInitialDispatchPlace((String)obj[33]);
+		        lcAdvicePaymentDto.setGoodsDestination((String) obj[34]);
+		        lcAdvicePaymentDto.setLatestDateofShipment((Date) obj[35]);
+		        lcAdvicePaymentDto.setShipmentPeriod((String) obj[36]);
+		        lcAdvicePaymentDto.setShipmentTerms((String) obj[37]);
+		        lcAdvicePaymentDto.setDraftsAt((String) obj[38]);
+		        lcAdvicePaymentDto.setDraweeBankpartyidentifier((String) obj[39]);		        
+		        lcAdvicePaymentDto.setDraweeBankCode((String) obj[40]);
+		        lcAdvicePaymentDto.setDraweeBankNameAddress((String) obj[41]);
+		        lcAdvicePaymentDto.setMixedPaymentDetails((String) obj[42]);
+		        lcAdvicePaymentDto.setDeferredPaymentDetails((String) obj[43]);
+		        lcAdvicePaymentDto.setPartialShipments((String) obj[44]);
+		        lcAdvicePaymentDto.setTranshipment((String) obj[45]);
+		        lcAdvicePaymentDto.setDocumentsRequired((String) obj[46]);		        
+		        lcAdvicePaymentDto.setAdditionalConditions((String) obj[47]);
+		        lcAdvicePaymentDto.setChargeDetails((String) obj[48]);
+		        lcAdvicePaymentDto.setPeriodforPresentation((String) obj[49]);
+		        lcAdvicePaymentDto.setConfirmationCode((String) obj[50]);
+		        lcAdvicePaymentDto.setInstructionstoPayingBank((String) obj[51]);		        
+		        lcAdvicePaymentDto.setAdviseThroughBankpartyidentifier((String) obj[52]);		        
+		        lcAdvicePaymentDto.setAdviseThroughBankCode((String) obj[53]);
+		        lcAdvicePaymentDto.setAdviseThroughBankLocation((String) obj[54]);
+		        lcAdvicePaymentDto.setAdviseThroughBankName((String) obj[55]);				
+		        lcAdvicePaymentDto.setPartyIdentifier((String) obj[56]);
+				lcAdvicePaymentDto.setReimbursingBankCode((String) obj[57]);
+		        lcAdvicePaymentDto.setReimbursingBankNameAddress((String) obj[58]);	
+				lcAdvicePaymentDto.setApplicantAccount((String) obj[59]);
+		        lcAdvicePaymentDto.setBeneficiaryAccount((String) obj[60]);
+		        lcAdvicePaymentDto.setBeneficiaryNameAddress((String) obj[61]);	
+				lcAdvicePaymentDto.setApplicantNameAddress((String) obj[62]);						
+				lcAdvicePaymentDto.setApplicantBankpartyidentifier((String) obj[63]);
+		        lcAdvicePaymentDto.setApplicantBankCode((String) obj[64]);
+		        lcAdvicePaymentDto.setApplicantBankNameAddress((String) obj[65]);	
+		        lcAdvicePaymentDto.setNetChargeAmount((BigDecimal)obj[66]);		
+		        lcAdvicePaymentDto.setAdviseThroughBankAcc((String)obj[67]);	
+		        lcAdvicePaymentDto.setDraweeBankAccount((String)obj[68]);
+		        lcAdvicePaymentDto.setGoodsLoadingDispatchPlace((String)obj[69]);
+		        lcAdvicePaymentDto.setFinalDeliveryPlace((String)obj[70]);
+		        lcAdvicePaymentDto.setApplicableRule((String)obj[71]);
+		        lcAdvicePaymentDto.setAmountPaidDate((Date)obj[72]);
+		        lcAdvicePaymentDto.setIncreaseAmendAmount((BigDecimal) obj[73]);
+		        lcAdvicePaymentDto.setDecreaseAmendAmount((BigDecimal) obj[74]);
+		        lcAdvicePaymentDto.setAmendmentDate((Date)obj[75]);
+		        if(obj[76]!=null){
+		        	 BigDecimal bd = (BigDecimal) obj[76];
+		        lcAdvicePaymentDto.setLcAmndmntNo(new Integer(bd.intValue()));
+		        }
+		        lcAdvicePaymentDto.setApplicableNarrative((String)obj[77]);
+		        lcAdvicePaymentDto.setOldAmendExpiryDate((Date)obj[78]);
+		        lcAdvicePaymentDto.setOldLcAmount((BigDecimal) obj[79]);
+		        lcAdvicePaymentDto.setSeqNo((String)obj[80]);
+		        lcAdvicePaymentDto.setMsgHost((String) obj[81]);
+		        
+			}
+		/*	sess.close();
+			fact.close();
+			con.close();*/
+			return lcAdvicePaymentDto;
+			
+		}
+		catch (Exception e)
+		{e.printStackTrace();
+		return null;
+		}
+	}
+	
+	public void changeStatus(String msgRef){
+		try{
+			SessionFactory fact=getHibernateTemplate().getSessionFactory();
+			Session sess=fact.openSession();
+			sess.beginTransaction();
+			Connection con=sess.connection();
+	
+			String query="update  TA_LC_MAST set LC_STATUS = 7 where MSGS_MSGREF ='"+msgRef+"'";
+			Query q = sess.createSQLQuery(query);
+	
+			int result=q.executeUpdate();	
+			sess.getTransaction().commit();
+			sess.close();
+			fact.close();
+			con.close();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public List<LCCanonicalDto> getLcAdvicePaymentData(String lcNumber) {
+		try{
+			List<LCCanonicalDto> searchList = new ArrayList<LCCanonicalDto>();
+			if(lcNumber == null){
+				lcNumber = "%";
+			}else{
+				lcNumber = "%"+lcNumber+"%";
+			}
+			
+			@SuppressWarnings("rawtypes")
+			List list= getHibernateTemplate().find("select lc.compositeKeyForLcMast.lcNo,lc.msgRef from LcMast lc,NgphCanonical nc where lc.compositeKeyForLcMast.lcNo=nc.lcNo and lc.msgRef=nc.msgRef and lc.compositeKeyForLcMast.lcNo like ? ",lcNumber);
+			for (int i = 0; i < list.size(); i++) {
+				LCCanonicalDto lcAdvicePaymentDto = new LCCanonicalDto();
+	            Object[] obj = (Object[]) list.get(i);
+	            lcAdvicePaymentDto.setLcNumber(obj[0].toString());
+	            lcAdvicePaymentDto.setMsgRef((String) obj[0]);
+	            searchList.add(lcAdvicePaymentDto);
+	        }
+		return searchList;		
+		}catch (Exception e) {
+			e.printStackTrace();
+			
+			return null;
+		}
+
+	}
+	
+	public LCCanonicalDto getAuthriseLcScreenData(String lcNumber, String status){
+try{	
+			
+		
+		LCCanonicalDto aurhAuthoriseLCPaymentAdviceDto =null;			
+		String sql = "";
+		if(status.equals("740")){	
+			sql = "select lm.compositeKeyForLcMast.lcNo, nc.lcAccId, lm.lcExpireDate, nc.lcExpPlace, nc.beneficiaryInstitution, nc.beneficiaryInstitutionName, nc.beneficiaryInstitutionAcct,  nc.beneficiaryCustAcct, nc.beneficiaryCustomerAddress, "+
+				
+				"nc.lcPositiveTolerance,nc.lcNegativeTolerance, nc.lcMaxCrAmt, nc.lcAddlAmts, nc.lcAuthBankCode, nc.lcAuthBankAddr, nc.lcAuthMode, " +//8
+				"  nc.lcDraftsAt, nc.lcDraweeBnkPid, nc.lcDraweeBnkAcct, nc.lcDraweeBnkCode, nc.lcDraweeBnkAddr, nc.lcMixedPymtDet, nc.lcDefPymtDet, nc.chargeBearer , nc.lcCharges, nc.instructionsForNextAgtText, nc.msgRef, nc.msgAmount, lm.lcType, lm.lcCurrency, " +//8
+				"lm.lcAdvisingBank, lm.lcIssueDate, lm.lcAppicant, lm.lcBenificiary, lm.lcAmount, lm.lcNarrative, nc.beneficiaryInstitutionPID, "+ //36				
+				" nc.lcAddlAmts, nc.lcDispatchPlace, nc.lcDstn, nc.lcLstShipDt, nc.lcShipPeriod, nc.lcShipTerms, nc.lcPartialShipment, nc.lcTransShipment," + //8
+				" concat(nc.lcDocsReq1, nc.lcDocsReq2), concat(nc.lcAddnlCndt1, nc.lcAddnlCndt2), nc.lcCharges, nc.lcPrsntnPrd, nc.lcConfrmInstrns,"+	//5			 
+				 " nc.lcInstrnTopay, nc.accountWithInstitutionId, nc.accountWithInstitutionAccount, nc.accountWithInstitutionLoc, nc.accountWithInstitutionName, " + //5
+				 " nc.orderingCustomerName, nc.sendingInstId, nc.sendingInst, nc.sendingInstNameAddress, nc.sendingInstNameAdd, nc.beneficiaryCustAcct, nc.beneficiaryCustomerName, " + //7
+				 " nc.senderCorrespondentId, nc.senderCorrespondent, nc.senderCorrespondentName, "+ //3
+				 " nc.relReference, nc.lcToAmtClaimed, nc.lcAmtPaid, nc.senderCorrespondentId, nc.senderCorrespondentAcct, nc.senderCorrespondent, nc.senderCorrespondentLoc, nc.senderCorrespondentName, "+ //8
+				" nc.receiverCorrespondentId, nc.receiverCorrespondentAcct, nc.receiverCorrespondent, nc.receiverCorrespondentLoc, nc.receiverCorrespondentName, nc.lcChgsClaimed, nc.accountWithInstitutionAcct, nc.lcAppRulesCode, nc.initialDispatchPlace, nc.finalDeliveryPlace, nc.msgValueDate,nc.lcAmndmntIncAmt,nc.lcAmndmntDecAmt,nc.lcAmndmntDt,nc.lcAmndmntNo,nc.lcAppRulesDesc,nc.lcOldExpDt,nc.lcAmndmntOldAmt,nc.seqNo,nc.msgHost, "+ //7
+				" nc.lcNetAmtClaimed  "+
+				"from LcMast lm, NgphCanonical nc where lm.compositeKeyForLcMast.lcNo = nc.lcNo and lm.compositeKeyForLcMast.lcNo=? and lm.msgRef = nc.msgRef";
+		}else if(status.equals("752")){
+			sql = "select lm.compositeKeyForLcMast.lcNo, nc.lcAccId, lm.lcExpireDate, nc.lcExpPlace, nc.beneficiaryInstitution, nc.beneficiaryInstitutionName, nc.beneficiaryInstitutionAcct,  nc.beneficiaryCustAcct, nc.beneficiaryCustomerAddress, "+
+			
+			"nc.lcPositiveTolerance,nc.lcNegativeTolerance, nc.lcMaxCrAmt, nc.lcAddlAmts, nc.lcAuthBankCode, nc.lcAuthBankAddr, nc.lcAuthMode, " +//8
+			"  nc.lcDraftsAt, nc.lcDraweeBnkPid, nc.lcDraweeBnkAcct, nc.lcDraweeBnkCode, nc.lcDraweeBnkAddr, nc.lcMixedPymtDet, nc.lcDefPymtDet, nc.chargeBearer , nc.lcCharges, nc.instructionsForNextAgtText, nc.msgRef, nc.msgAmount, lm.lcType, lm.lcCurrency, " +//8
+			"lm.lcAdvisingBank, lm.lcIssueDate, lm.lcAppicant, lm.lcBenificiary, lm.lcAmount, lm.lcNarrative, nc.beneficiaryInstitutionPID, "+ //36				
+			" nc.lcAddlAmts, nc.lcDispatchPlace, nc.lcDstn, nc.lcLstShipDt, nc.lcShipPeriod, nc.lcShipTerms, nc.lcPartialShipment, nc.lcTransShipment," + //8
+			" concat(nc.lcDocsReq1, nc.lcDocsReq2), concat(nc.lcAddnlCndt1, nc.lcAddnlCndt2), nc.lcCharges, nc.lcPrsntnPrd, nc.lcConfrmInstrns,"+	//5			 
+			 " nc.lcInstrnTopay, nc.accountWithInstitutionId, nc.accountWithInstitutionAccount, nc.accountWithInstitutionLoc, nc.accountWithInstitutionName, " + //5
+			 " nc.orderingCustomerName, nc.sendingInstId, nc.sendingInst, nc.sendingInstNameAddress, nc.sendingInstNameAdd, nc.beneficiaryCustAcct, nc.beneficiaryCustomerName, " + //7
+			 " nc.senderCorrespondentId, nc.senderCorrespondent, nc.senderCorrespondentName, "+ //3
+			 " nc.relReference, nc.lcToAmtClaimed, nc.lcAmtPaid, nc.senderCorrespondentId, nc.senderCorrespondentAcct, nc.senderCorrespondent, nc.senderCorrespondentLoc, nc.senderCorrespondentName, "+ //8
+			" nc.receiverCorrespondentId, nc.receiverCorrespondentAcct, nc.receiverCorrespondent, nc.receiverCorrespondentLoc, nc.receiverCorrespondentName, nc.lcChgsClaimed, nc.accountWithInstitutionAcct, nc.lcAppRulesCode, nc.initialDispatchPlace, nc.finalDeliveryPlace, nc.msgValueDate,nc.lcAmndmntIncAmt,nc.lcAmndmntDecAmt,nc.lcAmndmntDt,nc.lcAmndmntNo,nc.lcAppRulesDesc,nc.lcOldExpDt,nc.lcAmndmntOldAmt,nc.seqNo,nc.msgHost, "+ //7
+			" nc.lcNetAmtClaimed  "+
+			"from LcMast lm, NgphCanonical nc where lm.compositeKeyForLcMast.lcNo = nc.lcNo and lm.compositeKeyForLcMast.lcNo=? and lm.lcStatus = 10 and lm.msgRef = nc.msgRef and lm.compositeKeyForLcMast.lcDirection='I'";
+		}
+			List list= getHibernateTemplate().find(sql,lcNumber);
+						
+			if(list !=null && list.size()>0)
+			{
+				aurhAuthoriseLCPaymentAdviceDto = new LCCanonicalDto();
+				Object[] obj = (Object[]) list.get(0);
+				
+				aurhAuthoriseLCPaymentAdviceDto.setLcNumber((String) obj[0]);
+				aurhAuthoriseLCPaymentAdviceDto.setAcountID((String) obj[1]);
+				aurhAuthoriseLCPaymentAdviceDto.setLcExpiryDate((Date) obj[2]);
+				aurhAuthoriseLCPaymentAdviceDto.setLcExpirePlace((String) obj[3]);
+				aurhAuthoriseLCPaymentAdviceDto.setNegotiatingBankCode((String) obj[4]);
+				aurhAuthoriseLCPaymentAdviceDto.setNegotiatingBankAccount((String) obj[5]);
+				aurhAuthoriseLCPaymentAdviceDto.setNegotiatingBankNameAndAddress((String) obj[6]);
+				aurhAuthoriseLCPaymentAdviceDto.setBeneficiaryAccount((String) obj[7]);
+				aurhAuthoriseLCPaymentAdviceDto.setBeneficiaryNameAddress((String) obj[8]);
+				if(obj[9]!=null && obj[10]!=null )
+		        {
+		        	if(Integer.parseInt(obj[9]+"")==0 || Integer.parseInt(obj[10]+"")==0){
+		        		aurhAuthoriseLCPaymentAdviceDto.setPositiveTolerance(null);
+		        		aurhAuthoriseLCPaymentAdviceDto.setNegativeTolerance( null);
+		        	}else
+		        	{
+		        		aurhAuthoriseLCPaymentAdviceDto.setPositiveTolerance(obj[9]+"");
+		        		aurhAuthoriseLCPaymentAdviceDto.setNegativeTolerance( obj[10]+"");
+		        	}
+		        }
+				aurhAuthoriseLCPaymentAdviceDto.setMaximumCreditAmount((String) obj[11]);
+				aurhAuthoriseLCPaymentAdviceDto.setAdditionalAmountsCovered((String) obj[12]);
+				aurhAuthoriseLCPaymentAdviceDto.setAuthorisedBankCode((String) obj[13]);
+				aurhAuthoriseLCPaymentAdviceDto.setAuthorisedAndAddress((String) obj[14]);
+				aurhAuthoriseLCPaymentAdviceDto.setAuthorisationMode((String) obj[15]);
+				aurhAuthoriseLCPaymentAdviceDto.setDraftsAt((String) obj[16]);
+				aurhAuthoriseLCPaymentAdviceDto.setDraweeBankpartyidentifier((String) obj[17]);
+				aurhAuthoriseLCPaymentAdviceDto.setDraweeBankAccount((String) obj[18]);
+				aurhAuthoriseLCPaymentAdviceDto.setDraweeBankCode((String) obj[19]);
+				aurhAuthoriseLCPaymentAdviceDto.setDraweeBankNameAddress((String) obj[20]);
+				aurhAuthoriseLCPaymentAdviceDto.setMixedPaymentDetails((String) obj[21]);
+				aurhAuthoriseLCPaymentAdviceDto.setDeferredPaymentDetails((String) obj[22]);
+				aurhAuthoriseLCPaymentAdviceDto.setReimbursingBanksCharges((String) obj[23]);
+				aurhAuthoriseLCPaymentAdviceDto.setOtherCharges((String) obj[24]);
+				//aurhAuthoriseLCPaymentAdviceDto.setSendertoReceiverInformation((String) obj[25]);
+				aurhAuthoriseLCPaymentAdviceDto.setMsgRef((String) obj[26]);
+				aurhAuthoriseLCPaymentAdviceDto.setCreditAmount((BigDecimal) obj[27]);
+				aurhAuthoriseLCPaymentAdviceDto.setLcType((String) obj[28]);
+				aurhAuthoriseLCPaymentAdviceDto.setLcCurrency((String) obj[29]);
+				aurhAuthoriseLCPaymentAdviceDto.setAdvisingBank((String) obj[30]);
+				aurhAuthoriseLCPaymentAdviceDto.setIssueDate((Date)obj[31]);				
+				aurhAuthoriseLCPaymentAdviceDto.setApplicantNameAddress((String) obj[32]);
+				aurhAuthoriseLCPaymentAdviceDto.setBeneficiary((String) obj[33]);				
+				aurhAuthoriseLCPaymentAdviceDto.setLcAmount((BigDecimal) obj[34]);
+				aurhAuthoriseLCPaymentAdviceDto.setNarrative((String) obj[35]);
+				aurhAuthoriseLCPaymentAdviceDto.setNegotiatingBankPartyIdentifier((String) obj[36]);
+				
+				aurhAuthoriseLCPaymentAdviceDto.setAdditionalAmounts((String)obj[37]);
+				aurhAuthoriseLCPaymentAdviceDto.setInitialDispatchPlace((String)obj[38]);
+				aurhAuthoriseLCPaymentAdviceDto.setGoodsDestination((String) obj[39]);
+				aurhAuthoriseLCPaymentAdviceDto.setLatestDateofShipment((Date) obj[40]);
+				aurhAuthoriseLCPaymentAdviceDto.setShipmentPeriod((String) obj[41]);
+				aurhAuthoriseLCPaymentAdviceDto.setShipmentTerms((String) obj[42]);						
+				aurhAuthoriseLCPaymentAdviceDto.setPartialShipments((String) obj[43]);
+				aurhAuthoriseLCPaymentAdviceDto.setTranshipment((String) obj[44]);
+				aurhAuthoriseLCPaymentAdviceDto.setDocumentsRequired((String) obj[45]);				
+				aurhAuthoriseLCPaymentAdviceDto.setAdditionalConditions((String) obj[46]);
+				aurhAuthoriseLCPaymentAdviceDto.setChargeDetails((String) obj[47]);
+				aurhAuthoriseLCPaymentAdviceDto.setPeriodforPresentation((String) obj[48]);
+				aurhAuthoriseLCPaymentAdviceDto.setConfirmationCode((String) obj[49]);
+				aurhAuthoriseLCPaymentAdviceDto.setInstructionstoPayingBank((String) obj[50]);		     
+				aurhAuthoriseLCPaymentAdviceDto.setAdviseThroughBankpartyidentifier((String) obj[51]);
+				aurhAuthoriseLCPaymentAdviceDto.setAdviseThroughBankCode((String) obj[52]);
+				aurhAuthoriseLCPaymentAdviceDto.setAdviseThroughBankLocation((String) obj[53]);
+				aurhAuthoriseLCPaymentAdviceDto.setAdviseThroughBankName((String) obj[54]);					
+				aurhAuthoriseLCPaymentAdviceDto.setApplicantNameAddress((String) obj[55]);
+				aurhAuthoriseLCPaymentAdviceDto.setApplicantBankpartyidentifier((String) obj[56]);
+				aurhAuthoriseLCPaymentAdviceDto.setApplicantBankCode((String) obj[57]);
+				aurhAuthoriseLCPaymentAdviceDto.setApplicantBankNameAddress((String) obj[58]);
+		        aurhAuthoriseLCPaymentAdviceDto.setApplicantAccount((String) obj[59]);
+		        aurhAuthoriseLCPaymentAdviceDto.setBeneficiaryAccount((String) obj[60]);
+		        aurhAuthoriseLCPaymentAdviceDto.setBeneficiaryNameAddress((String) obj[61]);
+		        aurhAuthoriseLCPaymentAdviceDto.setPartyIdentifier((String) obj[62]);
+		        aurhAuthoriseLCPaymentAdviceDto.setReimbursingBankCode((String) obj[63]);
+		        aurhAuthoriseLCPaymentAdviceDto.setReimbursingBankNameAddress((String) obj[64]);
+		        
+		        aurhAuthoriseLCPaymentAdviceDto.setPresentingBanksReference((String) obj[65]);
+		        aurhAuthoriseLCPaymentAdviceDto.setSenderBankReference((String) obj[65]);
+		        aurhAuthoriseLCPaymentAdviceDto.setTotalAmountClaimed((BigDecimal) obj[66]);
+		        aurhAuthoriseLCPaymentAdviceDto.setPaidAmount((BigDecimal) obj[67]);
+		        aurhAuthoriseLCPaymentAdviceDto.setSendersCorrespondentPartyIdentifier((String) obj[68]);
+		        aurhAuthoriseLCPaymentAdviceDto.setSenderCorrespontAcount((String) obj[69]);
+		        aurhAuthoriseLCPaymentAdviceDto.setSendersCorrespondentCode((String) obj[70]);
+		        aurhAuthoriseLCPaymentAdviceDto.setSendersCorrespondentLocation((String) obj[71]);
+		        aurhAuthoriseLCPaymentAdviceDto.setSendersCorrespondentNameandAddress((String) obj[72]);
+		        aurhAuthoriseLCPaymentAdviceDto.setReceiversCorrespondentPartyIdentifier((String) obj[73]);
+		        aurhAuthoriseLCPaymentAdviceDto.setReceiverCorrespontAcount((String) obj[74]);
+		        aurhAuthoriseLCPaymentAdviceDto.setReceiversCorrespondentCode((String) obj[75]);
+		        aurhAuthoriseLCPaymentAdviceDto.setReceiversCorrespondentLocation((String) obj[76]);
+		        aurhAuthoriseLCPaymentAdviceDto.setReceiversCorrespondentNameandAddress((String) obj[77]);
+		        aurhAuthoriseLCPaymentAdviceDto.setNetChargeAmount((BigDecimal)obj[78]);
+		        aurhAuthoriseLCPaymentAdviceDto.setAdviseThroughBankAcc((String)obj[79]);	
+		        aurhAuthoriseLCPaymentAdviceDto.setApplicableRule((String)obj[80]);
+		        aurhAuthoriseLCPaymentAdviceDto.setGoodsLoadingDispatchPlace((String)obj[81]);
+		        aurhAuthoriseLCPaymentAdviceDto.setFinalDeliveryPlace((String)obj[82]);
+		        aurhAuthoriseLCPaymentAdviceDto.setAmountPaidDate((Date)obj[83]);
+		        aurhAuthoriseLCPaymentAdviceDto.setMsgValueDate((Date)obj[83]);
+		        aurhAuthoriseLCPaymentAdviceDto.setIncreaseAmendAmount((BigDecimal) obj[84]);
+		        aurhAuthoriseLCPaymentAdviceDto.setDecreaseAmendAmount((BigDecimal) obj[85]);
+		        aurhAuthoriseLCPaymentAdviceDto.setAmendmentDate((Date)obj[86]);
+		        if(obj[87]!=null){
+		        	 BigDecimal bd = (BigDecimal) obj[87];
+		        	 aurhAuthoriseLCPaymentAdviceDto.setLcAmndmntNo(new Integer(bd.intValue()));
+		        }
+		        aurhAuthoriseLCPaymentAdviceDto.setApplicableNarrative((String)obj[88]);
+		        aurhAuthoriseLCPaymentAdviceDto.setOldAmendExpiryDate((Date)obj[89]);
+		        aurhAuthoriseLCPaymentAdviceDto.setOldLcAmount((BigDecimal) obj[90]);
+		        aurhAuthoriseLCPaymentAdviceDto.setSeqNo((String)obj[91]);
+		        aurhAuthoriseLCPaymentAdviceDto.setMsgHost((String) obj[92]);
+		        aurhAuthoriseLCPaymentAdviceDto.setLcNetAmtClaimed((BigDecimal) obj[93]);
+			}
+				
+			return aurhAuthoriseLCPaymentAdviceDto;
+			
+		}
+		catch (Exception e)
+		{e.printStackTrace();
+		return null;
+		}
+	}
+	
+	public void changeStatusToAuth(String msgRef){
+		try{
+			SessionFactory fact=getHibernateTemplate().getSessionFactory();
+			Session sess=fact.openSession();
+			sess.beginTransaction();
+			Connection con=sess.connection();
+	
+			String query="update  TA_LC_MAST set LC_STATUS = 9 where MSGS_MSGREF ='"+msgRef+"'";
+			Query q = sess.createSQLQuery(query);
+	
+			int result=q.executeUpdate();	
+			sess.getTransaction().commit();
+			sess.close();
+			fact.close();
+			con.close();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public List<LCCanonicalDto> getAuthoriseLcAdvicePaymentData(String lcNumber){
+		try{
+			List<LCCanonicalDto> searchList = new ArrayList<LCCanonicalDto>();
+			if(lcNumber == null){
+				lcNumber = "%";
+			}else{
+				lcNumber = "%"+lcNumber+"%";
+			}
+			
+			@SuppressWarnings("rawtypes")
+			List list= getHibernateTemplate().find("select lc.compositeKeyForLcMast.lcNo,lc.msgRef from LcMast lc,  NgphCanonical nc where lc.compositeKeyForLcMast.lcNo=nc.lcNo and lc.msgRef = nc.msgRef and lc.compositeKeyForLcMast.lcNo like ? ",lcNumber);
+			for (int i = 0; i < list.size(); i++) {
+				LCCanonicalDto authoriseLCPaymentAdviceDto = new LCCanonicalDto();
+	            Object[] obj = (Object[]) list.get(i);
+	            authoriseLCPaymentAdviceDto.setLcNumber(obj[0].toString());
+	            authoriseLCPaymentAdviceDto.setMsgRef((String) obj[1]);
+	            searchList.add(authoriseLCPaymentAdviceDto);
+	        }
+		return searchList;		
+		}catch (Exception e) {
+			e.printStackTrace();
+			
+			return null;
+		}
+	}
+	
+	public LCCanonicalDto getAmendLCScreenData(String lcNumber){
+		
+		
+		try{	
+			
+			LCCanonicalDto lcAdmendDto =null;
+			String sql = "select lm.compositeKeyForLcMast.lcNo, lm.lcNoofAmndment, lm.lcIssueDate, nc.msgRef, nc.sendingInstId, nc.sendingInst, nc.sendingInstNameAddress, nc.sendingInstNameAdd,   "+
+			" nc.lcType, nc.lcDraweeBnkAcct, nc.lcExpPlace, nc.lcAuthBankCode, nc.lcAuthBankAddr, nc.lcAuthMode,lm.lcCurrency,lm.lcAdvisingBank, nc.lcShipTerms, nc.lcDraftsAt, nc.lcDraweeBnkPid, "+
+			" nc.lcDraweeBnkCode, nc.lcDraweeBnkAddr, nc.lcMixedPymtDet,nc.lcDefPymtDet, nc.lcPartialShipment, nc.lcTransShipment, concat(nc.lcDocsReq1, nc.lcDocsReq2), "+
+			" concat(nc.lcAddnlCndt1, nc.lcAddnlCndt2),nc.lcCharges, nc.lcPrsntnPrd, nc.lcConfrmInstrns, nc.lcInstrnTopay, nc.senderCorrespondentId,nc.senderCorrespondent, "+
+			" nc.senderCorrespondentName,nc.lcNarrative,nc.accountWithInstitutionId,nc.accountWithInstitutionAccount,nc.accountWithInstitutionLoc,nc.accountWithInstitutionName, "+
+			" nc.accountWithInstitutionAcct,nc.lcChgsClaimed, nc.orderingCustomerName, nc.beneficiaryCustAcct, nc.beneficiaryCustomerName, nc.lcPositiveTolerance,nc.lcNegativeTolerance, "+
+			" nc.lcMaxCrAmt, nc.lcAddlAmts, nc.lcDispatchPlace, nc.lcDstn, nc.lcLstShipDt, nc.lcShipPeriod, nc.txnReference, nc.custTxnReference, nc.sndrTxnId, lm.lcAmount, nc.initialDispatchPlace, nc.finalDeliveryPlace,nc.lcAppRulesCode,nc.senderCorrespondentAcct, nc.lcAppRulesDesc,lm.lcExpireDate,nc.seqNo,nc.msgHost,nc.relReference "+ 
+			
+			
+			" from LcMast lm, NgphCanonical nc where lm.compositeKeyForLcMast.lcNo = nc.lcNo and lm.compositeKeyForLcMast.lcNo=? and lm.lcStatus in (4,6) and lm.msgRef = nc.msgRef";
+		
+		List list= getHibernateTemplate().find(sql,lcNumber);
+					
+		if(list !=null && list.size()>0)
+		{
+			lcAdmendDto = new LCCanonicalDto();
+			Object[] obj = (Object[]) list.get(0);
+			lcAdmendDto.setLcNumber((String) obj[0]);
+			lcAdmendDto.setLcAmndmntNo((Integer)obj[1]);
+			lcAdmendDto.setIssueDate((Date) obj[2]);
+			lcAdmendDto.setMsgRef((String) obj[3]);
+			lcAdmendDto.setApplicantBankpartyidentifier((String) obj[4]);
+			lcAdmendDto.setApplicantBankCode((String) obj[5]);
+			lcAdmendDto.setApplicantBankNameAddress((String) obj[6]);
+	        lcAdmendDto.setApplicantAccount((String) obj[7]);
+	       
+	        lcAdmendDto.setLcType((String)obj[8]);
+	        lcAdmendDto.setDraweeBankAccount((String)obj[9]);    
+	        lcAdmendDto.setLcExpirePlace((String)obj[10]);       
+	        lcAdmendDto.setAuthorisedBankCode((String)obj[11]);
+	        lcAdmendDto.setAuthorisedAndAddress((String)obj[12]);
+	        lcAdmendDto.setAuthorisationMode((String)obj[13]); 
+			lcAdmendDto.setLcCurrency((String) obj[14]);
+			lcAdmendDto.setAdvisingBank((String) obj[15]);
+			lcAdmendDto.setShipmentTerms((String) obj[16]);
+			lcAdmendDto.setDraftsAt((String) obj[17]);
+			lcAdmendDto.setDraweeBankpartyidentifier((String) obj[18]);
+	        lcAdmendDto.setDraweeBankCode((String) obj[19]);
+	        lcAdmendDto.setDraweeBankNameAddress((String) obj[20]);
+	        lcAdmendDto.setMixedPaymentDetails((String) obj[21]);
+	        lcAdmendDto.setDeferredPaymentDetails((String) obj[22]);
+	        lcAdmendDto.setPartialShipments((String) obj[23]);
+			lcAdmendDto.setTranshipment((String) obj[24]);
+	        lcAdmendDto.setDocumentsRequired((String) obj[25]);
+	        lcAdmendDto.setAdditionalConditions((String) obj[26]);
+	        lcAdmendDto.setChargeDetails((String) obj[27]);
+	        lcAdmendDto.setPeriodforPresentation((String) obj[28]);
+	        lcAdmendDto.setConfirmationCode((String) obj[29]);
+	        lcAdmendDto.setInstructionstoPayingBank((String) obj[30]);
+			lcAdmendDto.setPartyIdentifier((String) obj[31]);
+	        lcAdmendDto.setReimbursingBankCode((String) obj[32]);
+	        lcAdmendDto.setReimbursingBankNameAddress((String) obj[33]);
+			lcAdmendDto.setNarrative((String) obj[34]);		 
+			lcAdmendDto.setAdviseThroughBankpartyidentifier((String) obj[35]);
+	        lcAdmendDto.setAdviseThroughBankCode((String) obj[36]);
+	        lcAdmendDto.setAdviseThroughBankLocation((String) obj[37]);
+	        lcAdmendDto.setAdviseThroughBankName((String) obj[38]);
+		    lcAdmendDto.setAdviseThroughBankAcc((String) obj[39]);
+			lcAdmendDto.setNetChargeAmount((BigDecimal)obj[40]);
+			lcAdmendDto.setApplicantNameAddress((String) obj[41]);	
+			lcAdmendDto.setBeneficiaryAccount((String) obj[42]);
+			lcAdmendDto.setBeneficiaryNameAddress((String) obj[43]);
+			
+			if(obj[44]!=null && obj[45]!=null )
+	        {
+	        	if(Integer.parseInt(obj[44]+"")==0 || Integer.parseInt(obj[45]+"")==0){
+	        			lcAdmendDto.setPositiveTolerance(null);
+	        			lcAdmendDto.setNegativeTolerance( null);
+	        	}else
+	        	{
+	        		lcAdmendDto.setPositiveTolerance(obj[44]+"");
+        			lcAdmendDto.setNegativeTolerance( obj[45]+"");
+	        	}
+	        }
+			
+			lcAdmendDto.setMaximumCreditAmount((String) obj[46]);
+			lcAdmendDto.setAdditionalAmountsCovered((String) obj[47]);
+			lcAdmendDto.setInitialDispatchPlace((String)obj[48]);
+			lcAdmendDto.setGoodsDestination((String) obj[49]);
+			lcAdmendDto.setLatestDateofShipment((Date) obj[50]);
+			lcAdmendDto.setShipmentPeriod((String) obj[51]);
+			lcAdmendDto.setTxnReference((String) obj[52]);
+			lcAdmendDto.setCustTxnReference((String) obj[53]);
+			lcAdmendDto.setSndrTxnId((String) obj[54]);
+			lcAdmendDto.setLcAmount((BigDecimal) obj[55]);
+			lcAdmendDto.setOldLcAmount((BigDecimal) obj[55]);
+			lcAdmendDto.setGoodsLoadingDispatchPlace((String) obj[56]);
+			lcAdmendDto.setFinalDeliveryPlace((String) obj[57]);
+			lcAdmendDto.setApplicableRule((String)obj[58]);
+			lcAdmendDto.setSenderCorrespontAcount((String)obj[59]);
+			lcAdmendDto.setApplicableNarrative((String)obj[60]);
+			lcAdmendDto.setOldAmendExpiryDate((Date) obj[61]);
+			lcAdmendDto.setSeqNo((String)obj[62]);
+			lcAdmendDto.setMsgHost((String) obj[63]);
+			lcAdmendDto.setSenderBankReference((String) obj[64]);
+			
+			
+		}
+			return lcAdmendDto;
+			
+		}
+		catch (Exception e)
+		{e.printStackTrace();
+		return null;
+		}
+	}
+	public List<LCCanonicalDto> getAmendLCData(String lcNumber){
+		try{
+			List<LCCanonicalDto> searchList = new ArrayList<LCCanonicalDto>();
+			if(lcNumber == null){
+				lcNumber = "%";
+			}else{
+				lcNumber = "%"+lcNumber+"%";
+			}
+			
+			@SuppressWarnings("rawtypes")
+			List list= getHibernateTemplate().find("select lc.compositeKeyForLcMast.lcNo,lc.msgRef from LcMast lc ,NgphCanonical nc where lc.compositeKeyForLcMast.lcNo = nc.lcNo and lc.msgRef = nc.msgRef and lc.compositeKeyForLcMast.lcNo like ? and lc.lcStatus in (4,6)",lcNumber);
+			for (int i = 0; i < list.size(); i++) {
+				LCCanonicalDto amendLCDto = new LCCanonicalDto();
+	            Object[] obj = (Object[]) list.get(i);
+	            amendLCDto.setLcNumber(obj[0].toString());
+	            amendLCDto.setMsgRef((String) obj[1]);
+	            searchList.add(amendLCDto);
+	        }
+		return searchList;		
+		}catch (Exception e) {
+			e.printStackTrace();
+			
+			return null;
+		}
+	}
+	public void changeStatusAmend(String msgRef){
+		try{
+			SessionFactory fact=getHibernateTemplate().getSessionFactory();
+			Session sess=fact.openSession();
+			sess.beginTransaction();
+			Connection con=sess.connection();
+	
+			String query="update  TA_LC_MAST set LC_STATUS = 5 where MSGS_MSGREF ='"+msgRef+"'";
+			Query q = sess.createSQLQuery(query);
+	
+			int result=q.executeUpdate();	
+			sess.getTransaction().commit();
+			sess.close();
+			fact.close();
+			con.close();
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public List<LCCanonicalDto> getLCAuthtoPayData(String lcNumber){
+		try{
+			List<LCCanonicalDto> searchList = new ArrayList<LCCanonicalDto>();
+			if(lcNumber == null){
+				lcNumber = "%";
+			}else{
+				lcNumber = "%"+lcNumber+"%";
+			}
+			
+			@SuppressWarnings("rawtypes")
+			List list= getHibernateTemplate().find("select lc.compositeKeyForLcMast.lcNo,lc.msgRef from LcMast lc ,NgphCanonical nc where lc.compositeKeyForLcMast.lcNo = nc.lcNo and lc.msgRef = nc.msgRef and lc.compositeKeyForLcMast.lcNo like ? and lc.lcStatus = 10 and lc.compositeKeyForLcMast.lcDirection='I' ",lcNumber);
+			for (int i = 0; i < list.size(); i++) {
+				LCCanonicalDto amendLCDto = new LCCanonicalDto();
+	            Object[] obj = (Object[]) list.get(i);
+	            amendLCDto.setLcNumber(obj[0].toString());
+	            amendLCDto.setMsgRef((String) obj[1]);
+	            searchList.add(amendLCDto);
+	        }
+		return searchList;		
+		}catch (Exception e) {
+			e.printStackTrace();
+			
+			return null;
+		}
+	}
+	
+
+}

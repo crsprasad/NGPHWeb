@@ -1,0 +1,25 @@
+package com.logica.ngph.dao;
+
+import java.sql.Date;
+import java.sql.SQLException;
+import java.util.List;
+
+import com.logica.ngph.Entity.DiscrepanciesReport;
+import com.logica.ngph.Entity.RRNDiscrepancy;
+import com.logica.ngph.dtos.PaymentMessage;
+
+public interface EnquiryDao {
+	
+	public List<String> getEnquiryMessageTypes() throws SQLException;
+	public List<String> getEnquirySubMessageTypes() throws SQLException;
+	public List<String> getEnquiryChannel() throws SQLException;
+	public List<String> getEnquiryCurrency() throws SQLException;
+	public List<PaymentMessage> getSearchResult(String stringQuery,String direction,String tableToUse);
+	public String getRawMessage(String msgRef)throws SQLException;
+	
+	public DiscrepanciesReport getDiscrepanciesReport(String date);
+	public List<RRNDiscrepancy> getRRPOutwardList(String direction,String date);
+	
+	public String generateDiscrepanciesReport(Date date);	
+	
+}

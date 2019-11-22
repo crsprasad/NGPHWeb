@@ -1,0 +1,499 @@
+package com.logica.ngph.web.action;
+
+import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.apache.struts2.interceptor.SessionAware;
+import org.apache.struts2.interceptor.validation.SkipValidation;
+import org.springframework.context.ApplicationContextException;
+
+import com.logica.ngph.Entity.EventMaster;
+import com.logica.ngph.common.ConstantUtil;
+import com.logica.ngph.common.NGPHException;
+import com.logica.ngph.dtos.EventManageDto;
+import com.logica.ngph.service.EventManagerService;
+import com.logica.ngph.service.PendingAuthorizationService;
+import com.logica.ngph.web.utils.ApplicationContextProvider;
+import com.logica.ngph.web.utils.WebConstants;
+import com.opensymphony.xwork2.ActionSupport;
+
+public class EventManagerAction extends ActionSupport implements SessionAware {
+
+	/**
+	 * Your a/c no. XXXXXXXX5124 is debited for Rs.50000.00 on dd-mm-yy and a/c linked to mobile 9xxxxxx999 credited
+	 */
+	private static final long serialVersionUID = 1L;
+	static Logger logger = Logger.getLogger(EventManagerAction.class);
+	private String eventDescription;
+	private String cursorPostion;
+	private String canonical;
+	private String eventID;
+	private Boolean isAlertable;
+	private String alertFor;
+	private String alerttype;
+	private Boolean alert_consolidate;
+	private String alertTo;
+	private List userList;
+	private List <String> cannonical;
+	private String checkForSubmit;
+	private String saveAction;
+	private String hiddenTxnRef;
+	private String txnRef;
+	private boolean validUserToApprove;
+	// Screen comparison 
+	private String flagForNewData;
+	private String old_NewScreen;
+	//Screen comparison End
+	public String getOld_NewScreen() {
+		return old_NewScreen;
+	}
+	public void setOld_NewScreen(String old_NewScreen) {
+		this.old_NewScreen = old_NewScreen;
+	}
+	public boolean isValidUserToApprove() {
+		return validUserToApprove;
+	}
+
+
+	public void setValidUserToApprove(boolean validUserToApprove) {
+		this.validUserToApprove = validUserToApprove;
+	}
+
+
+	public String getCheckForSubmit() {
+		return checkForSubmit;
+	}
+
+
+	public void setCheckForSubmit(String checkForSubmit) {
+		this.checkForSubmit = checkForSubmit;
+	}
+
+
+	public String getSaveAction() {
+		return saveAction;
+	}
+
+
+	public void setSaveAction(String saveAction) {
+		this.saveAction = saveAction;
+	}
+
+
+	public String getHiddenTxnRef() {
+		return hiddenTxnRef;
+	}
+
+
+	public void setHiddenTxnRef(String hiddenTxnRef) {
+		this.hiddenTxnRef = hiddenTxnRef;
+	}
+
+
+	public String getTxnRef() {
+		return txnRef;
+	}
+
+
+	public void setTxnRef(String txnRef) {
+		this.txnRef = txnRef;
+	}
+
+
+	public List<String> getCannonical() {
+		return cannonical;
+	}
+
+
+	public void setCannonical(List<String> cannonical) {
+		this.cannonical = cannonical;
+		this.session.put("cannonical", cannonical);
+	}
+	private Map<String, Object> session ;
+	public Map<String, Object> getSession() {
+		return session;
+	}
+
+
+	public void setSession(Map<String, Object> session) {
+		this.session = session;
+	}
+	
+	public List getUserList() {
+		return userList;
+	}
+	public void setUserList(List userList) {
+		this.userList = userList;
+		this.session.put("userList", userList);
+	}
+	public String getEventID() {
+		return eventID;
+	}
+	public void setEventID(String eventID) {
+		this.eventID = eventID;
+	}
+	public String getCursorPostion() {
+		return cursorPostion;
+	}
+	public void setCursorPostion(String cursorPostion) {
+		this.cursorPostion = cursorPostion;
+	}
+	public String getCanonical() {
+		return canonical;
+	}
+	public void setCanonical(String canonical) {
+		this.canonical = canonical;
+	}
+	public String getEventDescription() {
+		return eventDescription;
+	}
+	public void setEventDescription(String eventDescription) {
+		this.eventDescription = eventDescription;
+	}
+	
+	public String getEventScreen()
+	{
+		EventManagerService eventManagerService = (EventManagerService) ApplicationContextProvider.getBean("eventManagerServiceService");
+		try {
+			setAlertFor("U");
+			
+			setAlerttype("M");
+			setUserList(eventManagerService.getUserList());
+			setCannonical(eventManagerService.getCannonical());
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return "success";
+	}
+	public String getpostion()
+	{
+		try{
+		if(StringUtils.isNotBlank(getCursorPostion()) && StringUtils.isNotEmpty(getCursorPostion()) && StringUtils.isNotEmpty(getCanonical())&&StringUtils.isNotBlank(getCanonical()) 
+				&& StringUtils.isNotEmpty(getEventID())&&StringUtils.isNotBlank(getEventID())){
+		int curesorPostion= (Integer.parseInt(getCursorPostion()));
+		String message= getEventDescription();
+		int first =0,last=0;
+		char[] charBits= message.toCharArray();
+		String appendedString="";
+		int count=0;
+		for(int i=curesorPostion;charBits[i]!='}';i++)
+		{
+			count++;
+		}
+		System.out.println(charBits[curesorPostion+count]);
+		if(charBits[curesorPostion-1]=='{' && charBits[curesorPostion+count]=='}'){
+		try{
+			for(int i=0;i<charBits.length;i++)
+		{
+			if(i==curesorPostion)
+			{
+				appendedString=appendedString+getCanonical()+"}";
+				i=i+count;
+				
+			}
+			else
+			{
+				appendedString = appendedString+charBits[i];
+			}
+		}
+		setEventDescription(appendedString);
+		}catch(Exception e)
+		{
+			addFieldError("eventDescription", "Not A Valid Postion TO Put The Canonical");
+		}
+		}else{
+			addFieldError("eventDescription", "Not A Valid Postion TO Put The Canonical");
+			setCanonical("");
+		}
+		
+		}
+		else
+		{
+			System.out.println("getCursorPostion():-- "+getCursorPostion());
+			if(getCursorPostion().equals("") && StringUtils.isEmpty(getCursorPostion()))
+			{
+				
+				addFieldError("cursorPostion", "Please Move The Cursor Between {}");
+			}
+			else
+			{
+				addFieldError(canonical, "Please Select Canonical values");
+			}
+			if(StringUtils.isEmpty(getEventID()) && StringUtils.isBlank(getEventID()))
+				
+			{
+				addFieldError(canonical, "Event Id Is Required");
+			}
+			setCanonical("");
+		}
+		
+		
+		return "success";
+		} catch (NullPointerException  nullPointerException) {
+			AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+		}
+		catch (ApplicationContextException applicationContextException) {
+			AuditServiceUtil.logApplicationException(applicationContextException, logger);
+		}
+		catch (ClassCastException classCastException) {
+			AuditServiceUtil.logClassCastException(classCastException, logger)	;
+		}
+		catch (Exception exception) {
+			AuditServiceUtil.logException(exception,logger);
+		}
+			return "input";
+	}
+	
+	public String doProcess() throws SQLException
+	{
+		try{
+		String returntype="success";
+		String delimitedString="";
+		String status="";
+		PendingAuthorizationService pendingAuthorizationService = (PendingAuthorizationService)ApplicationContextProvider.getBean("pendingAuthorizationService");
+		
+		String txnKey="";
+		EventManagerService eventManagerService = (EventManagerService) ApplicationContextProvider.getBean("eventManagerServiceService");
+		
+		if(StringUtils.isNotBlank(getEventID())&&StringUtils.isNotEmpty(getEventID())&& !getEventID().equals("") && !getEventDescription().equals("")&& StringUtils.isNotEmpty(getEventDescription())){
+			if(!eventManagerService.checkForEventID(getEventID()).equals("success")){
+				EventMaster eventMaster =new EventMaster();
+				if(getIsAlertable()==true)
+				{
+					eventMaster.setEventAlertable(1);
+					delimitedString = delimitedString+1+ConstantUtil.delimiter;
+				}
+				else{
+					eventMaster.setEventAlertable(0);
+					delimitedString = delimitedString+0+ConstantUtil.delimiter;
+				}
+				eventMaster.setEventId(getEventID());
+				eventMaster.setEventDesc(getEventDescription());
+				eventMaster.setEventAlertFor(getAlertFor());
+				eventMaster.setEventAlertTO(getAlertTo());
+				eventMaster.setEventAlertType(getAlerttype());
+				delimitedString = delimitedString+getEventID()+ConstantUtil.delimiter+getEventDescription()+ConstantUtil.delimiter+getAlertFor()+ConstantUtil.delimiter
+				+getAlertTo()+ConstantUtil.delimiter+getAlerttype()+ConstantUtil.delimiter;
+				if(getAlert_consolidate()==true){
+			eventMaster.setEventAlertConsolidate("Y");
+			delimitedString = delimitedString+"Y";
+				}
+				else{
+					eventMaster.setEventAlertConsolidate("N");
+					delimitedString = delimitedString+"N";
+				}
+					
+				if(getSaveAction().equals("Save")){
+					String userId = (String)session.get(WebConstants.CONSTANT_USER_NAME);
+					txnKey = pendingAuthorizationService.getTranRef(delimitedString,"Event Master",userId);
+					return "auth";
+				}
+				else if(getSaveAction().equals("Approve")){
+			eventManagerService.insertValues(eventMaster);
+			status= pendingAuthorizationService.changeStatus( getSaveAction(),getHiddenTxnRef());
+			return "success";
+				}
+				else
+				{
+					status= pendingAuthorizationService.changeStatus( getSaveAction(),getHiddenTxnRef());
+					return "rejected";
+				}
+			}
+			else{
+				addFieldError("eventID", "Event Id  Is Not Avilable");
+				
+			}
+		}
+		
+		else
+		{
+			addFieldError("eventDescription", "Event ID and Event description is madatory Fields");
+			return "input";
+		}
+		session.put("screenRef", txnKey);
+		return "success";
+		} catch (NullPointerException  nullPointerException) {
+			AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+		}
+		catch (ApplicationContextException applicationContextException) {
+			AuditServiceUtil.logApplicationException(applicationContextException, logger);
+		}
+		catch (ClassCastException classCastException) {
+			AuditServiceUtil.logClassCastException(classCastException, logger)	;
+		}
+		catch (Exception exception) {
+			AuditServiceUtil.logException(exception,logger);
+		}
+			return "input";
+	}
+		
+	
+	@SkipValidation
+	public String populateDate() throws SQLException
+	{
+		try{
+		EventManagerService eventManagerService = (EventManagerService) ApplicationContextProvider.getBean("eventManagerServiceService");
+		List<EventManageDto> list = eventManagerService.eventIDSearch(getEventID());
+		setEventDescription(list.get(0).getEventDesc());
+		System.out.println(list.get(0).getAlert_consolidate()+"    "+StringUtils.isNotEmpty(list.get(0).getAlert_consolidate()));
+		if(StringUtils.isNotEmpty(list.get(0).getAlert_consolidate())){
+		if(list.get(0).getAlert_consolidate().equals("Y"))
+		setAlert_consolidate(true);
+		}
+		else
+			setAlert_consolidate(false);
+		
+		setAlertFor(list.get(0).getAlert_For());
+		setAlertTo(list.get(0).getAlert_To());
+		setAlerttype(list.get(0).getAlert_type());
+		Boolean value=true;
+		if(((Integer)list.get(0).getAlertable())!=1){
+		value=false;
+		}
+		
+		setIsAlertable(value);
+		return "success";
+		
+		} catch (NullPointerException  nullPointerException) {
+			AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+		}
+		catch (ApplicationContextException applicationContextException) {
+			AuditServiceUtil.logApplicationException(applicationContextException, logger);
+		}
+		catch (ClassCastException classCastException) {
+			AuditServiceUtil.logClassCastException(classCastException, logger)	;
+		}
+		catch (Exception exception) {
+			AuditServiceUtil.logException(exception,logger);
+		}
+			return "input";
+	}
+	@SkipValidation
+	public String getAuthorization() throws NGPHException, SQLException
+	{
+		try{
+		PendingAuthorizationService pendingAuthorizationService = (PendingAuthorizationService)ApplicationContextProvider.getBean("pendingAuthorizationService");
+		getEventScreen();
+		setHiddenTxnRef(getTxnRef());
+		setCheckForSubmit("Display_Approve_Reject");
+		String requiredString =pendingAuthorizationService.getScreenReturn(getTxnRef());
+		String[] stringBreaker = requiredString.split(ConstantUtil.delimiter);
+		String userId = pendingAuthorizationService.getCreatedUser(getTxnRef());
+		String userRole = pendingAuthorizationService.getUserType((String)session.get(WebConstants.CONSTANT_USER_NAME));
+		if((((String)session.get(WebConstants.CONSTANT_USER_NAME)).equals(userId) || userRole.equals("T"))){
+			setValidUserToApprove(false);
+		} else {
+			setValidUserToApprove(true);
+		}
+		if(StringUtils.isNotEmpty(stringBreaker[6])){
+			if(stringBreaker[6].equals("Y"))
+			setAlert_consolidate(true);
+			}
+			else
+				setAlert_consolidate(false);
+			setEventID(stringBreaker[1]);
+			setEventDescription(stringBreaker[2]);
+			setAlertFor(stringBreaker[3]);
+			setAlertTo(stringBreaker[4]);
+			setAlerttype(stringBreaker[5]);
+			Boolean value=true;
+			if((Integer.parseInt(stringBreaker[0]))!=1){
+			value=false;
+			}
+			//Screen comparison
+			setOld_NewScreen(null);
+			setIsAlertable(value);
+		
+		return "success";
+		} catch (NullPointerException  nullPointerException) {
+			AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+		}
+		catch (ApplicationContextException applicationContextException) {
+			AuditServiceUtil.logApplicationException(applicationContextException, logger);
+		}
+		catch (ClassCastException classCastException) {
+			AuditServiceUtil.logClassCastException(classCastException, logger)	;
+		}
+		catch (Exception exception) {
+			AuditServiceUtil.logException(exception,logger);
+		}
+			return "input";
+	
+	}
+	public Boolean getIsAlertable() {
+		return isAlertable;
+	}
+	public void setIsAlertable(Boolean isAlertable) {
+		this.isAlertable = isAlertable;
+	}
+	public String getAlertFor() {
+		return alertFor;
+	}
+	public void setAlertFor(String alertFor) {
+		this.alertFor = alertFor;
+	}
+	public String getAlerttype() {
+		return alerttype;
+	}
+	public void setAlerttype(String alerttype) {
+		this.alerttype = alerttype;
+	}
+	public Boolean getAlert_consolidate() {
+		return alert_consolidate;
+	}
+	public void setAlert_consolidate(Boolean alert_consolidate) {
+		this.alert_consolidate = alert_consolidate;
+	}
+	public String getAlertTo() {
+		return alertTo;
+	}
+	public void setAlertTo(String alertTo) {
+		this.alertTo = alertTo;
+	}
+	public void validate()
+	{}
+	
+	//Screen comparison
+	public String callSeeOldData()
+	{
+		try{
+			if(getOld_NewScreen().equals("OLD")){
+					populateDate();
+					setFlagForNewData("flagForNewData");
+					setCheckForSubmit("Display_Approve_Reject");
+					setValidUserToApprove(true);
+				}else if(getOld_NewScreen().equals("NEW")){
+					getAuthorization();
+					setFlagForNewData(null);
+				}			
+			
+			return SUCCESS;
+		}catch (NullPointerException  nullPointerException) {
+			AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+		}
+		catch (ApplicationContextException applicationContextException) {
+			AuditServiceUtil.logApplicationException(applicationContextException, logger);
+		}
+		catch (ClassCastException classCastException) {
+			AuditServiceUtil.logClassCastException(classCastException, logger)	;
+		}
+		catch (Exception exception) {
+			AuditServiceUtil.logException(exception,logger);
+		}
+
+		addActionError("Unable to perform the operation. Please try again");
+		return "input";
+	}
+	public String getFlagForNewData() {
+		return flagForNewData;
+	}
+	public void setFlagForNewData(String flagForNewData) {
+		this.flagForNewData = flagForNewData;
+	}
+
+
+}

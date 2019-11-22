@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+	
+	<field name="to_Amount">
+	<field-validator type="regex">
+	<param name="fieldName">to_Amount</param>
+	<param name="expression"><![CDATA[[0-9.,]+$]]></param>
+	<message> ${fieldName} is Not Valid</message>
+	</field-validator>
+	</field>
+	
+	<field name="from_Amount">
+	<field-validator type="regex">
+	<param name="fieldName">from_Amount</param>
+	<param name="expression"><![CDATA[[0-9.,]+$]]></param>
+	<message> ${fieldName} is Not Valid</message>
+	</field-validator>
+	</field>
+	
+	<field name="Branch_Name">
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator>
+	</field>
+	
+	<field name="channel_type">
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator>
+	</field>
+	
+	<field name="msg_type">
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator>
+	</field>
+	
+	<field name="subMsg_type">
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator>
+	</field>
+	
+	<field name="curreny_type">
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator>
+	</field>
+	
+	<field name="host_name">
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator>
+	</field>
+	
+	
+	<!--<field name="selectgroupIDAndName">
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator>
+	</field>
+	
+	--><field name="direction">
+	<field-validator type="required">
+	<message> ${fieldName} is required.</message>
+	</field-validator>
+	</field>
+	
+</validators>

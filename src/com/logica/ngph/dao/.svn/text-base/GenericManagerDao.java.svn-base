@@ -1,0 +1,11 @@
+package com.logica.ngph.dao;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import com.logica.ngph.dtos.GenericManagerDto;
+
+public interface GenericManagerDao {
+	public String insertString(String screenString,String destPage,String ListData) throws SQLException;
+	public List<GenericManagerDto> fetchData(String userID) throws SQLException;
+}

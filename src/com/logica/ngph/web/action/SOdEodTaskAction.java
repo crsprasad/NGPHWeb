@@ -1,0 +1,553 @@
+package com.logica.ngph.web.action;
+
+
+import java.sql.SQLException;
+
+import java.sql.Timestamp;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.apache.struts2.interceptor.SessionAware;
+import org.apache.struts2.interceptor.validation.SkipValidation;
+import org.springframework.context.ApplicationContextException;
+
+
+import com.logica.ngph.web.action.SODEODUtil;
+import com.logica.ngph.common.ConstantUtil;
+import com.logica.ngph.common.NGPHException;
+
+import com.logica.ngph.common.dtos.EventMaster;
+import com.logica.ngph.common.dtos.MsgsPolledDto;
+import com.logica.ngph.common.dtos.NgphCanonical;
+
+import com.logica.ngph.dtos.ArchivalTaskDto;
+import com.logica.ngph.dtos.SodEodTaskTDto;
+
+import com.logica.ngph.service.AuditService;
+import com.logica.ngph.service.DBPollerService;
+import com.logica.ngph.service.SodEodTaskService;
+import com.logica.ngph.web.utils.ApplicationContextProvider;
+import com.logica.ngph.web.utils.WebConstants;
+import com.opensymphony.xwork2.ActionSupport;
+
+
+
+public class SOdEodTaskAction extends ActionSupport implements SessionAware {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -962141218821814713L;
+	static Logger logger = Logger.getLogger(SOdEodTaskAction.class);
+	private String branch;
+	private String businessDate;
+	private String status;
+	private List<ArchivalTaskDto> archivalLogList;
+	
+	
+
+
+	public List<ArchivalTaskDto> getArchivalLogList() {
+		return archivalLogList;
+	}
+	public void setArchivalLogList(List<ArchivalTaskDto> archivalLogList) {
+		this.archivalLogList = archivalLogList;
+		archivalLogList.removeAll(Collections.singleton(null));
+		this.session.put("ArchivalLogList", archivalLogList);
+	}
+	List<String> taskNameList = new ArrayList<String>();
+	List<String> taskIdList = new ArrayList<String>();
+	List<String> taskIdStatusList = new ArrayList<String>();
+	private SodEodTaskService sodEodService;
+/*	
+	public void setSodEodService(SodEodTaskService sodEodService) {
+		this.sodEodService = sodEodService;
+	}*/
+	//private DBPollerService dbPollerService;
+	//private AuditService auditService;
+	/*public void setAuditService(AuditService auditService) {
+		this.auditService = auditService;
+	}
+	public void setDbPollerService(DBPollerService dbPollerService) {
+		this.dbPollerService = dbPollerService;
+	}*/
+	public List<String> getTaskIdList() {
+		return taskIdList;
+	}
+	public void setTaskIdList(List<String> taskIdList) {
+		this.taskIdList = taskIdList;
+		this.session.put("taskIdList", taskIdList);
+	}
+	private Map<String, Object> session;
+	public Map<String, Object> getSession() {
+		return session;
+	}
+	public String getStatus() {
+		return status;
+	}
+	public List<String> getTaskNameList() {
+		return taskNameList;
+	}
+	public void setTaskNameList(List<String> taskNameList) {
+		this.taskNameList = taskNameList;
+		this.session.put("taskNameList", taskNameList);
+		
+	}
+	public void setStatus(String status) {
+		this.status = status;
+	}
+	public String getBusinessDate() {
+		return businessDate;
+	}
+	public void setBusinessDate(String businessDate) {
+		this.businessDate = businessDate;
+	}
+	public String getBranch() {
+		return branch;
+	}
+	public void setBranch(String branch) {
+		this.branch = branch;
+	}
+	
+	@SuppressWarnings("unchecked")
+	/**
+	* This method is used to initial loading  of sodEod jsp
+	* @return String loadSodEod
+	*/
+	public String performSodEod(){
+		
+		//sodEodTaskService	 = 	AuditServiceUtil.getSodEodTaskService();
+	sodEodService = 	(SodEodTaskService) ApplicationContextProvider.getBean("sodEodService");
+
+	//user hard coded
+	Map<String, Object> taskMap = null;
+	try {
+		
+		String userId = (String)session.get(WebConstants.CONSTANT_USER_NAME);
+		
+		taskMap = sodEodService.getLocalBranch(userId);
+	} catch (SQLException sqlException) {
+		sqlException.printStackTrace();
+	}	
+	if(taskMap.get(ConstantUtil.BUSINESSDATE) != null){
+		setBusinessDate(taskMap.get(ConstantUtil.BUSINESSDATE).toString());
+	}
+	setBranch((String)taskMap.get(ConstantUtil.ACTION_BRANCH));
+	
+	String taskStatus = (String)taskMap.get(ConstantUtil.STATUS);
+	if(taskStatus!=null){
+		if(taskStatus.equals(SODEODUtil.SOD)){
+			setStatus(SODEODUtil.SOD_NAME)	;
+		}else if(taskStatus.equals(SODEODUtil.EOD)){
+			setStatus(SODEODUtil.EOD_NAME);
+		}else if(taskStatus.equals(SODEODUtil.SOD_EOD)){
+			setStatus(SODEODUtil.SOD_EOD_NAME);
+		}else if(taskStatus.equals(SODEODUtil.NO_TASK)){
+			setStatus(SODEODUtil.SOD_EOD_NONE);
+			
+		}
+	}
+	@SuppressWarnings("rawtypes")
+	List<String> taskIdNameList = (List)taskMap.get(ConstantUtil.TASKLIST);
+	List<String> taskIdTempList = new ArrayList<String>();
+	List<String> taskNameTempList = new ArrayList<String>();
+	if(taskIdNameList!=null && !taskIdNameList.isEmpty()){
+		for(Object taskName:taskIdNameList){
+			if(taskName != null){
+			String[] taskNameWithId = 	taskName.toString().split("-");
+			taskIdTempList.add(taskNameWithId[0]);
+			taskNameTempList.add(taskNameWithId[1]);
+			}
+			
+		}
+	}
+	
+	
+	setTaskNameList(taskNameTempList);
+	setTaskIdList(taskIdTempList);
+		return "loadSodEod";
+	}
+
+	/**
+	* This method is processing SOD task
+	* @return void
+	*/
+	private void performSod(){
+
+		@SuppressWarnings("unchecked")
+		List<String> taskIDList = (List<String>)session.get("taskIdList");
+		try {
+			if(taskIDList!= null){
+				SodEodTaskTDto sodEodTaskTDto = 	getSodEodTDto();
+				
+				for(String taskId:taskIDList){
+					sodEodTaskTDto.setTaskId(taskId);
+					
+					if(SODEODUtil.SOD_NBD.equals(taskId)){
+						sodEodService.setNextBusinessDay(sodEodTaskTDto);	
+					}else if(SODEODUtil.SOD_RWH.equals(taskId)){
+						performReleaseWarehouse(sodEodTaskTDto);
+						}else if(SODEODUtil.SOD_OINF.equals(taskId)){
+							sodEodService.openCloseInboundOutboundFeeds(sodEodTaskTDto,1);	
+					}
+					
+				}
+				sodEodService.updateBusinessDayM(sodEodTaskTDto.getBranch(),"E");
+				
+			}
+		}catch(Exception exception){
+			AuditServiceUtil.logException(exception,logger);
+		}
+		
+		
+		
+	
+	}
+	/**
+	* This method is processing EOD task
+	* @return void
+	*/
+	private void performEod() {
+		
+	
+		@SuppressWarnings("unchecked")
+		List<String> taskIDList = (List<String>)session.get("taskIdList");
+		
+		if(taskIDList != null){
+			
+			try{
+				SodEodTaskTDto sodEodTaskTDto = 	getSodEodTDto();
+				String branchCode=	getBranchCode();
+				//sodEodTaskService.moveFinalStatusToHistoryTable(branchCode,sodEodTaskTDto);
+				
+				for(String taskId:taskIDList){
+					sodEodTaskTDto.setTaskId(taskId);
+					if(SODEODUtil.EOD_VPNFS.equals(taskId)){
+						sodEodService.validatePaymentNonfinalityStatus(branchCode,sodEodTaskTDto);
+					}else if(SODEODUtil.EOD_CIOF.equals(taskId)){
+						sodEodService.openCloseInboundOutboundFeeds(sodEodTaskTDto,0);
+					}else if(SODEODUtil.EOD_MFSHT.equals(taskId)){
+						sodEodService.moveFinalStatusToHistoryTable(branchCode,sodEodTaskTDto);
+					}else if(SODEODUtil.EOD_DRPD.equals(taskId)){
+						sodEodService.deleteHistoryDataBeyond(branchCode,sodEodTaskTDto);
+					}/*else if(){
+						//generateMT940();
+					}*/
+				}
+				sodEodService.updateBusinessDayM(sodEodTaskTDto.getBranch(),"S");
+			}catch (NGPHException ngphException) {
+				AuditServiceUtil.logNgphException(ngphException,logger);
+			}
+			
+		}
+		
+	}
+	/**
+	* This method is calling while submit 
+	* @return String forwardToSame
+	 * @throws Exception 
+	*/
+/*	public String saveSodEodTask() throws Exception{
+		
+	//ApplicationContext applicationContext = AuditServiceUtil.getApplicationContext();
+	//SodEodTaskService	sodEodTaskService = (SodEodTaskService)applicationContext.getBean("sodEodService");
+		try{
+		sodEodService = 	(SodEodTaskService) ApplicationContextProvider.getBean("sodEodService");
+		List<String> taskIDList = (List<String>)session.get("taskIdList");
+		
+		if(taskIDList != null)
+		{
+			
+				SodEodTaskTDto sodEodTaskTDto = getSodEodTDto();
+				String branchCode=	getBranchCode();
+				Timestamp tempTime = sodEodTaskTDto.getBusinessDate();
+				
+				for(String taskId:taskIDList)
+				{
+					int serviceId = Integer.parseInt(taskId);
+					
+					sodEodTaskTDto.setTaskId(taskId);
+					
+					
+					switch (serviceId) 
+					{
+						case 1001: 
+							//update bussinessdayM for all branches.
+							List<String> branches = sodEodService.getbranches();
+							for(int i=0;i<branches.size();i++)
+							{
+								sodEodTaskTDto.setBranch(branches.get(i));
+								Timestamp ts = sodEodService.getCurBusDayforBranch(branches.get(i));
+								if (ts != null)
+								{
+									sodEodTaskTDto.setBusinessDate(ts);
+								}
+								else
+								{
+									sodEodTaskTDto.setBusinessDate(tempTime);
+								}
+								sodEodService.setNextBusinessDay(sodEodTaskTDto);
+							}
+							//Reset to the original branch
+							sodEodTaskTDto.setBranch(branchCode);
+							break;
+						case 1002: 
+							break;
+						case 1003: 
+							sodEodService.openCloseInboundOutboundFeeds(sodEodTaskTDto,1);	
+							break;
+						case 1004: 
+							sodEodService.validatePaymentNonfinalityStatus(branchCode,sodEodTaskTDto);
+							break;
+						case 1005: 
+							sodEodService.openCloseInboundOutboundFeeds(sodEodTaskTDto,0);
+							break;
+						case 1006: 
+							sodEodService.moveFinalStatusToHistoryTable(branchCode,sodEodTaskTDto);
+							break;
+						case 1007: 
+							sodEodService.updateTaLimits();
+							break;
+						case 1008: 
+							break;
+						default:
+							break;
+					}
+				}
+				
+				String sodOrEod = getStatus();
+				if(SODEODUtil.SOD_NAME.equals(sodOrEod))
+				{
+					sodEodService.updateBusinessDayM(sodEodTaskTDto.getBranch(),"E");
+				}
+				else if(SODEODUtil.EOD_NAME.equals(sodOrEod))
+				{
+					sodEodService.updateBusinessDayM(sodEodTaskTDto.getBranch(),"S");
+				}
+				
+		}
+		getUpdatedStatus();
+		return "forwardToSame";
+		}catch (Exception e) {
+			e.printStackTrace();
+			addActionError("Unable To process.");
+			return "input";
+		}
+	}*/
+	/**
+	* This method is processing wareHouse Task
+	* @return boolean isError
+	*/
+	private boolean performReleaseWarehouse(
+			SodEodTaskTDto sodEodTaskTDto){
+		
+		DBPollerService dbPollerService=	(DBPollerService)ApplicationContextProvider.getBean("dbPollerService");
+		AuditService auditService =	(AuditService)ApplicationContextProvider.getBean("auditService");
+		List<MsgsPolledDto> polledMessagesList = dbPollerService.getPolledMessages();
+		boolean isDbPoll = false;
+		boolean isError = false;
+		try{
+			for(MsgsPolledDto msgsPolledDto:polledMessagesList){
+				
+				 Timestamp businessDate =dbPollerService.getBusinessDate(msgsPolledDto.getBranchName());
+				
+				String msgRef =  msgsPolledDto.getMsgsRef();
+				
+				   
+					
+				  /*  DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");
+				   
+					Date businDt;*/
+					Timestamp settlementDate = msgsPolledDto.getSettlementDate();
+				
+					//	businDt = dateFormat.parse(businessDate.trim());
+						
+						//Timestamp businDtTimeStamp = new Timestamp(businDt.getTime());
+						if(settlementDate.equals(businessDate)){
+							
+							dbPollerService.perFormDbPoll(businessDate, msgsPolledDto.getMsgsPrevStatus(),msgRef,sodEodTaskTDto);
+							isDbPoll = true;
+						}else if(settlementDate.before(businessDate)){
+							dbPollerService.perFormDbPoll(businessDate, msgsPolledDto.getMsgsPrevStatus(),msgRef,sodEodTaskTDto);
+							isDbPoll = true;
+						}
+					
+					
+					if(isDbPoll){
+						String eventId = "NGPHAUTHEV0011";
+						
+							
+						auditService.saveEventMaster(getEventMaterDto(eventId));
+						NgphCanonical ngphCanonical = dbPollerService.getMessage(msgRef);
+						ngphCanonical.setServiceID(msgsPolledDto.getLastOrchServiceIdCalled());
+						com.logica.ngph.common.dtos.EventAudit audit = new com.logica.ngph.common.dtos.EventAudit();
+						audit.setAuditEventId(eventId);
+						String[] extraInformation = {msgRef,settlementDate.toString(),businessDate.toString()};
+						audit.setExtraInformation(extraInformation);
+						audit.setAuditMessageRef(msgRef);
+						audit.setAuditTransactionRef(ngphCanonical.getTxnReference());
+						audit.setAuditSource("0");
+						audit.setAuditBranch(ngphCanonical.getMsgBranch());
+						audit.setAuditDept(ngphCanonical.getMsgDept());
+						auditService.saveEventAudit(audit);
+					
+						
+					}
+					
+					// in future needs to add the code to call paymentserver service controller
+					/*serviceController serviceController = new ServiceControllerImpl();
+					serviceController.performPaymentProcessing(ngphCanonical);*/
+				
+			}
+		}catch (Exception exception) {
+			isError = true;
+			sodEodService.updateSodEodT(exception.getMessage(), sodEodTaskTDto.getTaskId());
+			AuditServiceUtil.logException(exception,logger);
+		}
+		
+		if(!isError && polledMessagesList.size() !=0){
+			sodEodService.updateSodEodTComp(sodEodTaskTDto.getTaskId());
+		}
+		return isError;
+	}
+	
+	/**
+	* This method is used to set the event details into EventMaster DTO
+	* @return EventMaster eventMaster
+	*/
+	private EventMaster getEventMaterDto(String eventId){
+		EventMaster eventMaster = new EventMaster();
+		eventMaster.setEventId(eventId);
+		
+		eventMaster.setEventDesc("Msg Ref {0} from valueDate {1} changed to current value date {2} for processing");
+		eventMaster.setEventAlertable(0);
+		eventMaster.setEventSeverity("W");
+		return eventMaster;
+	}
+	private SodEodTaskTDto getSodEodTDto(){
+		SodEodTaskTDto sodEodTaskTDto = new SodEodTaskTDto();
+		String tempBranch = getBranchCode();
+		sodEodTaskTDto.setBranch(tempBranch);
+		
+		
+		String userId = (String)session.get(WebConstants.CONSTANT_USER_NAME);
+		//  hard coded
+		sodEodTaskTDto.setUserId(userId);
+		
+		
+		/*String sodOrEod = getStatus();
+		if(SODEODUtil.SOD_NAME.equals(sodOrEod)){
+			sodEodTaskTDto.setSodOrEod(SODEODUtil.SOD);
+		}else if(SODEODUtil.EOD_NAME.equals(sodOrEod)){
+			sodEodTaskTDto.setSodOrEod(SODEODUtil.EOD);
+		}*/
+	
+		return sodEodTaskTDto;
+		
+		
+	}
+	/**
+	* This method is used to get the event details into EventMaster DTO
+	* @return String taskStatus
+	*/
+	
+	public String getUpdatedStatus(){
+		//ApplicationContext applicationContext = AuditServiceUtil.getApplicationContext();
+		//SodEodTaskService	sodEodTaskService = (SodEodTaskService)applicationContext.getBean("sodEodService");
+		
+		sodEodService = 	(SodEodTaskService) ApplicationContextProvider.getBean("sodEodService");
+	@SuppressWarnings("unchecked")
+	List<String> taskIDList = 	(List<String>) session.get("taskIdList");
+	
+	if(taskIDList != null){
+		@SuppressWarnings("unchecked")
+		List<String> tasknameList = 	(List<String>) session.get("taskNameList");	
+		List<Integer>	taskStatusList = sodEodService.getSodEodStatus(taskIDList);
+		List<String>	taskIDWithStatusList = new ArrayList<String>();
+		
+		for(int i=0;i<taskStatusList.size();i++){
+			if(taskStatusList.get(i).equals(1)){
+				taskIDWithStatusList.add(tasknameList.get(i)+SODEODUtil.TASK_PROCESSING);
+			}else if(taskStatusList.get(i).equals(2)){
+				
+				taskIDWithStatusList.add(tasknameList.get(i)+SODEODUtil.TASK_COMPLETED);
+			}else if(taskStatusList.get(i).equals(3)){
+			
+				taskIDWithStatusList.add(tasknameList.get(i)+SODEODUtil.TASK_FAILED);
+			}
+		}
+		setTaskIdStatusList(taskIDWithStatusList);
+		
+	}
+	return "taskStatus";
+	
+	
+	}
+	
+	/**
+	* This method is used to get the branchCode from branchName and branchCode string
+	* @return String tempBranch
+	*/
+	private String getBranchCode() {
+		String tempBranch = getBranch();
+		String[] tempStr =	tempBranch.split("-");
+		if(tempStr.length >0 && tempStr[0] != null){
+			tempBranch = tempStr[0];
+		}
+		return tempBranch;
+	}
+	public void setSession(Map<String, Object> session) {
+		this.session = session;
+		
+	}
+	public List<String> getTaskIdStatusList() {
+		return taskIdStatusList;
+	}
+	public void setTaskIdStatusList(List<String> taskIdStatusList) {
+		this.taskIdStatusList = taskIdStatusList;
+		this.session.put("taskIdStatusList", taskIdStatusList);
+	}
+	
+	public String startArchivalAction() throws Exception
+	{
+		SodEodTaskTDto sodEodTaskTDto = getSodEodTDto();
+		sodEodService = (SodEodTaskService) ApplicationContextProvider.getBean("sodEodService");
+		System.out.println("Business Day is "+getBusinessDate());
+		sodEodService.setNextBusinessDay(sodEodTaskTDto);
+		setArchivalLogList(sodEodService.startArchivalAction());
+		return "success";
+	}
+	
+	@SkipValidation
+	public String displayArchival()throws Exception
+	{
+		try{
+			sodEodService = (SodEodTaskService) ApplicationContextProvider.getBean("sodEodService");
+			String branchName = sodEodService.getBranchName();
+			this.session.put("branchName", branchName);
+			
+			return "success";
+		
+		}catch (NullPointerException  nullPointerException) {
+			AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+		}
+		catch (ApplicationContextException applicationContextException) {
+			AuditServiceUtil.logApplicationException(applicationContextException, logger);
+		}
+		catch (ClassCastException classCastException) {
+			AuditServiceUtil.logClassCastException(classCastException, logger)	;
+		}
+		catch (Exception exception) {
+			AuditServiceUtil.logException(exception,logger);
+		}
+	
+		return "input";
+	}
+}

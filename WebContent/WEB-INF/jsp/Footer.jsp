@@ -1,0 +1,30 @@
+<%@ page contentType="text/html; charset=UTF-8"%>
+<%@ taglib prefix="s" uri="/struts-tags"%>
+
+<div id="footer">
+    <div id="footerInternal">
+      <div class="footerContent">
+        <p class="footerLeft">&#169; Copyright 2012 QNG. All rights reserved.</p>
+        <span class="footerRight"><img src="images/CGILogo.jpg" width="100" height="20" alt="powered by logica" /></span>
+      </div>
+    </div>
+</div>
+
+
+<s:iterator value="%{#session.restrictedFunctionsList}" var="function">
+	<script>
+		var fieldId = '<s:property value="getText(#function.fieldId)" />'
+		var object = document.getElementById(fieldId);
+		if(object != null ){
+			var functionType = '<s:property value="#function.functionType"/>';
+			if(functionType =='M'){
+				object.href='#';
+				object.style.color = '#C2BFBF';
+				object.style.textDecoration = 'none';
+			}else if(functionType =='B'){
+				object.disabled="true";
+			}
+		}
+
+	</script>
+</s:iterator>

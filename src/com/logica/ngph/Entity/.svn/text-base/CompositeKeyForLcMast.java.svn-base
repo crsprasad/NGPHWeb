@@ -1,0 +1,33 @@
+package com.logica.ngph.Entity;
+
+import java.io.Serializable;
+
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+@Embeddable
+public class CompositeKeyForLcMast implements Serializable{
+
+	private String lcNo;
+	private String lcDirection;
+	
+	public CompositeKeyForLcMast(String lcNo, String lcDirection) {
+		super();
+		this.lcNo = lcNo;
+		this.lcDirection = lcDirection;
+	}
+	@Column(name="LC_NUMBER")
+	public String getLcNo() {
+		return lcNo;
+	}
+	public void setLcNo(String lcNo) {
+		this.lcNo = lcNo;
+	}
+	@Column(name="LC_DIRECTION")
+	public String getLcDirection() {
+		return lcDirection;
+	}
+	public void setLcDirection(String lcDirection) {
+		this.lcDirection = lcDirection;
+	}
+	
+}

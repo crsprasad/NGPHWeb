@@ -1,0 +1,434 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE tiles-definitions PUBLIC
+"-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+"http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+<definition name="baseLayout" template="/WEB-INF/jsp/BaseLayout.jsp">
+<put-attribute name="title" value="" />
+<put-attribute name="header" value="/WEB-INF/jsp/Header.jsp" />
+<put-attribute name="menu" value="/WEB-INF/jsp/Menu.jsp" />
+<put-attribute name="body" value="" />
+<put-attribute name="footer" value="/WEB-INF/jsp/Footer.jsp" />
+</definition>
+
+
+<definition name="welcomeForward" extends="baseLayout">
+<put-attribute name="title"  value="Welcome"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/welcome.jsp"/>     
+</definition>
+
+<definition name="showLoginPage" extends="baseLayout" >
+<put-attribute name="title"  value="Welcome"/>
+<put-attribute name="header" value=""/>
+<put-attribute name="menu" value="" />
+<put-attribute name="body"   value="/UserSessionExpire.jsp"/>
+<put-attribute name="footer" value="/WEB-INF/jsp/Footer.jsp" />   
+</definition>
+
+<definition name="viewPaymentForward" extends="baseLayout">
+<put-attribute name="title"  value="viewPayment"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/PaymentEntryView.jsp"/>     
+</definition>
+
+
+
+
+
+<definition name="performPayment" extends="baseLayout">
+<put-attribute name="title"  value="paymentStatus"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/PaymentEntry.jsp"/>     
+</definition>
+
+<definition name="successForward" extends="baseLayout">
+<put-attribute name="title"  value="process Completed"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/Success.jsp"/>     
+</definition>
+<definition name="ruleForward" extends="baseLayout">
+<put-attribute name="title"  value="rules"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/Rules.jsp"/>     
+</definition>
+
+
+
+<definition name="forwardToSodEod" extends="baseLayout">
+<put-attribute name="title"  value="sodEodTask"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/SodEodTask.jsp"/>     
+</definition>
+
+
+
+<definition name="paymentStatusForward" extends="baseLayout">
+<put-attribute name="title"  value="paymentMessageStatus"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/PaymentMessageStatus.jsp"/>     
+</definition>
+
+<definition name="fileUploadForward" extends="baseLayout">
+<put-attribute name="title"  value="fileUpload"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/FileUpload.jsp"/>     
+</definition>
+
+<definition name="ruleSearch" >
+
+<put-attribute name="title"  value="ruleSearch Screen"/>
+<put-attribute name="body"   value="Search.jsp"/>     
+</definition>
+
+
+
+<definition name="callLoadToDropDown" extends="baseLayout">
+<put-attribute name="title"  value="enquiry"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/PaymentEnquiry.jsp"/>     
+</definition>
+
+<definition name="callsearchResult" extends="baseLayout">
+<put-attribute name="title"  value="enquiry Search"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/EnquiryDisplay.jsp"/>     
+</definition>
+<definition name="generateReport" extends="baseLayout">
+<put-attribute name="title"  value="Generated Report"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/outwardQueueReports.jsp"/>     
+</definition>
+
+<definition name="callOnPrint" extends="baseLayout">
+<put-attribute name="title"  value="Display"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/view.jsp"/>     
+</definition>
+
+
+
+<definition name="getStatsValues" extends="baseLayout">
+
+<put-attribute name="title"  value="DashBoard"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/QuickStats.jsp"/>     
+</definition>
+<definition name="getPosition" extends="baseLayout">
+
+<put-attribute name="title"  value="DashBoard"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/QuickStats.jsp"/>     
+</definition>
+
+<definition name="getVariation" extends="baseLayout">
+
+<put-attribute name="title"  value="DashBoard"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/QuickStats.jsp"/>     
+</definition>
+
+<definition name="loadDataAuthorization" extends="baseLayout">
+<put-attribute name="title"  value="Authorization Maintenance"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/AuthourizationSchemaMaintenance.jsp"/>     
+</definition>
+
+<definition name="loadDataGroup" extends="baseLayout">
+<put-attribute name="title"  value="Group Maintenance"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/GroupMaintenance.jsp"/>     
+</definition>
+<definition name="loadDataOutward" extends="baseLayout">
+<put-attribute name="title"  value="Reports"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/PaymentSubmittedReport.jsp"/>     
+</definition>
+<definition name="generateReport" extends="baseLayout">
+<put-attribute name="title"  value="Generated Report"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/outwardQueueReports.jsp"/>     
+</definition>
+
+<definition name="loadDataInward" extends="baseLayout">
+<put-attribute name="title"  value="Generated Report"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/PaymentSubmittedReportInward.jsp"/>     
+</definition>
+
+<definition name="populateData" extends="baseLayout">
+<put-attribute name="title"  value="Esb Creator"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/esbCreator.jsp"/>     
+</definition>
+<definition name="getValuesForOrchestration" extends="baseLayout">
+<put-attribute name="title"  value="Esb Creator"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/MaintainingServiceOrchestration.jsp"/>     
+</definition>
+<definition name="getServlet" extends="baseLayout">
+<put-attribute name="title"  value="Generte Cheque"/>
+<put-attribute name="body"   value="/GenerateCheque.jsp"/>     
+</definition>
+<definition name="loadData" extends="baseLayout">
+<put-attribute name="title"  value="Generte eCheque"/>
+<put-attribute name="body"   value="/index.jsp"/>     
+</definition>
+
+<definition name="displayAccountMantenance" extends="baseLayout">
+<put-attribute name="title"  value="Account Maintainance"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/AccountMaintainance.jsp"/>     
+</definition>
+<definition name="displayReturnTransaction" extends="baseLayout">
+<put-attribute name="title"  value="Return IMPS Transaction"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/ReturnImpsTransaction.jsp"/>     
+</definition>
+<definition name="getPage" extends="baseLayout">
+<put-attribute name="title"  value="Generic screen Manager"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/GenericScreenManager.jsp"/>     
+</definition>
+
+<definition name="getEventScreen" extends="baseLayout">
+<put-attribute name="title"  value="Event Manager"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/EventManager.jsp"/>     
+</definition>
+
+<definition name="displayUserRegistraionPage" extends="baseLayout">
+<put-attribute name="title"  value="User Registration"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/UserMaintenance.jsp"/>     
+</definition>
+
+<definition name="displayUserRegistraionSuccessPage" extends="baseLayout">
+<put-attribute name="title"  value="User Registration Success"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/UserMaintenanceSuccess.jsp"/>     
+</definition>
+<definition name="displayRole" extends="baseLayout">
+<put-attribute name="title"  value="Role Registration"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/NewRole.jsp"/>     
+</definition>
+
+<definition name="roleForward" extends="baseLayout">
+<put-attribute name="title"  value="role"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/NewRole.jsp"/>     
+</definition>
+
+<definition name="displayRolenewSuccessPage" extends="baseLayout">
+<put-attribute name="title"  value="role"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/RoleCreationSuccess.jsp"/>     
+</definition>
+
+<definition name="roleModified" extends="baseLayout">
+<put-attribute name="title"  value="role"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/RoleModified.jsp"/>     
+</definition>
+
+<definition name="roleDeleted" extends="baseLayout">
+<put-attribute name="title"  value="role"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/RoleDeleted.jsp"/>     
+</definition>
+
+<definition name="initalActionMMID" extends="baseLayout">
+<put-attribute name="title"  value="MMID Manager"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/MMIDManager.jsp"/>     
+</definition>
+
+
+<definition name="execute" extends="baseLayout">
+<put-attribute name="title"  value="Error Messages"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/InvalidMessages.jsp"/>     
+</definition>
+
+
+<definition name="eventDisplay" extends="baseLayout">
+<put-attribute name="title"  value="Event Audit"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/EventAudit.jsp"/>     
+</definition>
+
+<definition name="eventView" extends="baseLayout">
+<put-attribute name="title"  value="Event Audit"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/ViewEventAuditDetails.jsp"/>     
+</definition>
+
+<definition name="getCreditDetails" extends="baseLayout">
+<put-attribute name="title"  value="Pre Advice"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/LetterOfCredit.jsp"/>     
+</definition>
+
+<definition name="displayLCOpenScreen" extends="baseLayout">
+<put-attribute name="title"  value="Lc Open"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/LCOpen.jsp"/>     
+</definition>
+
+<definition name="displayLCsentScreen" extends="baseLayout">
+<put-attribute name="title"  value="Lc Sent Reports"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/LCSentReport.jsp"/>     
+</definition>
+
+<definition name="generateLcReport" extends="baseLayout">
+<put-attribute name="title"  value="Generated Reports"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/LcGeneratedReport.jsp"/>     
+</definition>
+<definition name="displayLCReciveScreen" extends="baseLayout">
+<put-attribute name="title"  value="Lc Recive Reports"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/LCReciveReport.jsp"/>     
+</definition>
+
+<definition name="displayBgSentScreen" extends="baseLayout">
+<put-attribute name="title"  value="Bg Sent Reports"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/BGSentReports.jsp"/>     
+</definition>
+<definition name="displayBgReceiveScreen" extends="baseLayout">
+<put-attribute name="title"  value="Bg Receive Reports"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/BGReceiveReports.jsp"/>     
+</definition>
+
+
+
+<definition name="generateBgReport" extends="baseLayout">
+<put-attribute name="title"  value="Generated Reports"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/BgGeneratedReport.jsp"/>     
+</definition>
+
+<definition name="sentForApproval" extends="baseLayout">
+<put-attribute name="title"  value="Sent for Approval"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/SendForApproval.jsp"/>     
+</definition>
+<definition name="displayMarkAck" extends="baseLayout">
+<put-attribute name="title"  value="Mark Acknowledgement"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/MarkAcknowledge.jsp"/>     
+</definition>
+
+<definition name="createBankGuarantee" extends="baseLayout">
+<put-attribute name="title"  value="Create Bank Guarantee"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/CreateBankGuarantee.jsp"/>     
+</definition>
+
+<definition name="displayReleaseBGScreen" extends="baseLayout">
+<put-attribute name="title"  value="Release Bank Guarantee"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/ReleaseBankGuarantee.jsp"/>     
+</definition>
+
+<definition name="displayLcAdvicing" extends="baseLayout">
+<put-attribute name="title"  value="Advice LC payment"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/AdviceLCPayment.jsp"/>     
+</definition>
+
+<definition name="displayAuthoriseLcPaymentAdvice" extends="baseLayout">
+<put-attribute name="title"  value="Authorise LC payment Advice"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/AuthoriseLCPaymentAdvice.jsp"/>     
+</definition>
+
+<definition name="displayAmendLC" extends="baseLayout">
+<put-attribute name="title"  value="Amend LC"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/AmendLC.jsp"/>     
+</definition>
+
+<definition name="getAllInwardLcNumber" extends="baseLayout">
+<put-attribute name="title"  value="All Inward Lcnumber"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/LcInward.jsp"/>     
+</definition>
+
+
+<definition name="getMaintainBranchScreen" extends="baseLayout">
+<put-attribute name="title"  value="Maintain Branches"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/BranchMaintainance.jsp"/>     
+</definition>
+
+<definition name="displayFeeds" extends="baseLayout">
+<put-attribute name="title"  value="start stop feeds"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/StartStopFeeds.jsp"/>     
+</definition>
+
+
+<definition name="getReportsDetailsPage" extends="baseLayout">
+<put-attribute name="title"  value="Discrepancies Report"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/DiscrepanciesReport.jsp"/>     
+</definition>
+
+<definition name="displayMmidReportScreen" extends="baseLayout">
+<put-attribute name="title"  value="MMID Reports"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/MMIDReports.jsp"/>     
+</definition>
+<definition name="generateMMIDReport" extends="baseLayout">
+<put-attribute name="title"  value="Generated Reports"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/generateMMIDReport.jsp"/>     
+</definition>
+<definition name="callFindHistory" extends="baseLayout">
+<put-attribute name="title"  value="Payment History"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/PaymentHistory.jsp"/>     
+</definition>
+<definition name="initalizeAllLimitsFields" extends="baseLayout">
+<put-attribute name="title"  value="Member Transaction Limits"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/memberTransactionLimit.jsp"/>     
+</definition>
+
+<definition name="getChangePwd" extends="baseLayout">
+<put-attribute name="title"  value="Change Password"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/ChangePassword.jsp"/>     
+</definition>
+
+<definition name="rejected" extends="baseLayout">
+<put-attribute name="title"  value="Rejected"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/Rejected.jsp"/>     
+</definition>
+<definition name="pwdChange" extends="baseLayout">
+<put-attribute name="title"  value="Success"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/pwdChangeSuccessfully.jsp"/>     
+</definition>
+
+<definition name="displayStatusMonitor" extends="baseLayout">
+<put-attribute name="title"  value="Status Monitor"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/StatusMonitor.jsp"/>     
+</definition>
+
+<definition name="successAccountMaintenance" extends="baseLayout">
+<put-attribute name="title"  value="success"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/accountSuccess.jsp"/>     
+</definition>
+
+<definition name="displayBgRejectScreen" extends="baseLayout">
+<put-attribute name="title"  value="Bg Rejected Reports"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/BGRejectedReports.jsp"/>     
+</definition>
+<definition name="generateBgRejectReport" extends="baseLayout">
+<put-attribute name="title"  value="Generated Rejected Reports"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/BGRejectedGenReport.jsp"/>     
+</definition>
+
+
+<definition name="displayLcRejectScreen" extends="baseLayout">
+<put-attribute name="title"  value="Lc Rejected Reports"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/LCRejectedReports.jsp"/>     
+</definition>
+<definition name="generateLcRejectReport" extends="baseLayout">
+<put-attribute name="title"  value="Generated Rejected Reports"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/LCRejectedGenReport.jsp"/>     
+</definition>
+
+<definition name="displayTransferDocumentaryCreditScreen" extends="baseLayout">
+<put-attribute name="title"  value="Transfer Document Of Credit"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/transferDocumentOFCredit.jsp"/>     
+</definition>
+<definition name="displayoutboundInfoScreen" extends="baseLayout">
+<put-attribute name="title"  value="Outbound Information"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/InformationOutbound.jsp"/>     
+</definition>
+<definition name="displayReimbursmentClaim" extends="baseLayout">
+<put-attribute name="title"  value="Reimbusement Claim"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/reimbursementClaim.jsp"/>     
+</definition>
+
+
+<definition name="displayAdviseOfDischarge" extends="baseLayout">
+<put-attribute name="title"  value="Advise Of Discharge"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/AdviseOfDischarge.jsp"/>     
+</definition>
+
+<definition name="displayAuthoriseTopay" extends="baseLayout">
+<put-attribute name="title"  value="Authorisation To Pay"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/AuthorisationToPay.jsp"/>     
+</definition>
+
+<definition name="getIFSCMaintain" extends="baseLayout">
+<put-attribute name="title"  value="IFSC Maintenance"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/IFSCmaintenance.jsp"/>     
+</definition>
+<definition name="errorMsgRepair" extends="baseLayout">
+<put-attribute name="title"  value="Raw Message"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/errorMsgRepair.jsp"/>     
+</definition>
+
+<definition name="notValidUser" extends="baseLayout">
+<put-attribute name="title"  value="Access Denied"/>
+<put-attribute name="body"   value="/WEB-INF/jsp/AccessDenied.jsp"/>     
+</definition>
+
+<definition name="displayAmendBG" extends="baseLayout">
+	<put-attribute name="title"  value="Amend BG"/>
+	<put-attribute name="body"   value="/WEB-INF/jsp/AmendBG.jsp"/>     
+</definition>
+
+<definition name="displayAckBG" extends="baseLayout">
+	<put-attribute name="title"  value="Ack BG"/>
+	<put-attribute name="body"   value="/WEB-INF/jsp/AcknowledgementBG.jsp"/>     
+</definition>
+</tiles-definitions>

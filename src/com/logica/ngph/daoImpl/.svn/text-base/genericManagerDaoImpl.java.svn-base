@@ -1,0 +1,56 @@
+package com.logica.ngph.daoImpl;
+
+
+
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+import com.logica.ngph.Entity.SecUsers;
+import com.logica.ngph.common.ConstantUtil;
+import com.logica.ngph.dao.GenericManagerDao;
+import com.logica.ngph.dtos.GenericManagerDto;
+
+public class genericManagerDaoImpl extends HibernateDaoSupport implements GenericManagerDao {
+
+	
+	public String insertString(String screenString,String destPage,String ListData) throws SQLException {
+		
+		return "success";  
+	}
+
+	
+	public List<GenericManagerDto> fetchData(String userID) throws SQLException {
+		SessionFactory fact=getHibernateTemplate().getSessionFactory();
+		Session sess=fact.openSession();
+		
+		SecUsers user = (SecUsers)sess.get(SecUsers.class, userID);
+		sess.close();
+		fact.close();
+		List list = null;
+		List<GenericManagerDto> fetchedList = new  ArrayList<GenericManagerDto>();
+		if(user.getUserType().toString().equals("A")|| user.getUserBranch().equals(ConstantUtil.ALL))
+			list = getHibernateTemplate().find("select txnRef,screenID,status,crtdUserId from GenericManager where status = 'P' order by txnRef desc");
+		else
+			list = getHibernateTemplate().find("select txnRef,screenID,status,crtdUserId from GenericManager where status = 'P' and userDept=? and userBranch=? order by txnRef desc",user.getUserDept(),user.getUserBranch());
+		for(int i=0;i<list.size();i++)
+		{
+			GenericManagerDto genericManagerDto = new GenericManagerDto();
+			Object[] obj = (Object[]) list.get(i);
+			genericManagerDto.setScreenID((String)obj[0]);
+			genericManagerDto.setScreenData((String) obj[1]);
+			genericManagerDto.setActionClass((String)obj[2]);
+			genericManagerDto.setCrtdUserId((String)obj[3]);
+			fetchedList.add(genericManagerDto);
+		}
+		
+		
+		return fetchedList;
+	}
+
+}

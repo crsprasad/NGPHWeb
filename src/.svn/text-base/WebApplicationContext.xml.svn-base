@@ -1,0 +1,476 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans
+        http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<bean id="environmentVariablesConfiguration"
+     class="org.jasypt.encryption.pbe.config.EnvironmentStringPBEConfig">
+   <property name="algorithm" value="PBEWithMD5AndDES" />
+   <property name="password" value="Rajat" />
+</bean>
+  
+ <bean id="configurationEncryptor"
+     class="org.jasypt.encryption.pbe.StandardPBEStringEncryptor">
+   <property name="config" ref="environmentVariablesConfiguration" />
+</bean>
+
+<bean id="propertyConfigurer"
+     class="org.jasypt.spring3.properties.EncryptablePropertyPlaceholderConfigurer">
+   <constructor-arg ref="configurationEncryptor" />
+   <property name="locations">
+     <list>
+       <value>classpath:System.properties</value>
+     </list>
+   </property>
+   </bean>
+
+	<!--<bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  
+	 <property name="locations">  
+    <list>  
+      <value>classpath:System.properties</value>  
+    </list>  
+  	</property>  
+	</bean> 
+	
+	
+	
+	--><bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${db.driverClassName}" />
+		<property name="url" value="${db.url}" />
+		<property name="username" value="${db.username}" />
+		<property name="password" value="${db.password}" />
+		<property name="initialSize" value="${db.initialSize}" />
+		<property name="maxActive" value="${db.maxActive}" />
+	</bean>
+	
+	<!--<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
+		<property name="url" value="jdbc:Oracle:thin:@localhost:1521:QNG" />
+		<property name="username" value="QNG" />
+		<property name="password" value="QNG" />
+		<property name="initialSize" value="5" />
+		<property name="maxActive" value="10" />
+	</bean>
+	-->
+	<!-- <bean id="dataSource1" class="org.springframework.jdbc.datasource.DriverManagerDataSource" 
+		> <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" 
+		/> <property name="url" value="jdbc:Oracle:thin:@10.14.1.35:1521:NGPH" /> 
+		<property name="username" value="ngph" /> <property name="password" value="ngph" 
+		/> </bean> -->
+
+	<bean id="mySessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hbm2ddl.auto">create</prop>
+			</props>
+		</property>
+
+		<property name="annotatedClasses">
+			<list>
+				<value>com.logica.ngph.Entity.Rules</value>
+				<value>com.logica.ngph.Entity.Branches</value>
+				<value>com.logica.ngph.Entity.Department</value>
+				<value>com.logica.ngph.Entity.MsgField</value>
+				<value>com.logica.ngph.Entity.MsgSupport</value>
+				<value>com.logica.ngph.Entity.Action</value>
+				<value>com.logica.ngph.Entity.EventAudit</value>
+				<value>com.logica.ngph.Entity.NgphCanonical</value>
+				
+				<value>com.logica.ngph.Entity.EventMaster</value>
+				<value>com.logica.ngph.Entity.ModifiedMessage</value>
+
+				<value>com.logica.ngph.Entity.SecUsers</value>
+				<value>com.logica.ngph.Entity.BusinessDayM</value>
+				<value>com.logica.ngph.Entity.SODEODTASKM</value>
+				<value>com.logica.ngph.Entity.SODEODTASKT</value>
+				<value>com.logica.ngph.Entity.Parties</value>
+				<value>com.logica.ngph.Entity.Addresses</value>
+				<value>com.logica.ngph.Entity.EI</value>
+				<value>com.logica.ngph.Entity.WEEKLYHOLIDAY</value>
+				<value>com.logica.ngph.Entity.HOLIDAYM</value>
+				<value>com.logica.ngph.Entity.Initialisation</value>
+				<value>com.logica.ngph.Entity.MsgsPolled</value>
+				<value>com.logica.ngph.Entity.Host</value>
+				<value>com.logica.ngph.Entity.AuthorizationMaintenance</value>
+				<value>com.logica.ngph.Entity.AuthorizationGRPM</value>
+				<value>com.logica.ngph.Entity.ReportEntity</value>
+				<value>com.logica.ngph.Entity.ColumnDetailsEntity</value>
+				<value>com.logica.ngph.Entity.AuthUIStatusT</value>
+				<value>com.logica.ngph.Entity.AuthUIStatusD</value>
+				<value>com.logica.ngph.Entity.Liquidity</value>
+				<value>com.logica.ngph.Entity.PartyLiquidy</value>
+				<value>com.logica.ngph.Entity.ServiceOrchestartion</value>
+				<value>com.logica.ngph.Entity.Account</value>
+				<value>com.logica.ngph.Entity.CurrencyMaster</value>
+				<value>com.logica.ngph.Entity.IMPS_Consilet</value>
+				<value>com.logica.ngph.Entity.IMPSTransaction</value>
+				<value>com.logica.ngph.Entity.MsgPolled</value>
+				<value>com.logica.ngph.Entity.UserToRole</value>
+				<value>com.logica.ngph.Entity.Roles</value>
+				<value>com.logica.ngph.Entity.Functions</value>
+				<value>com.logica.ngph.Entity.RoleToFunction</value>
+				<value>com.logica.ngph.Entity.RawMessage</value>
+				<value>com.logica.ngph.Entity.GenericManager</value>
+				<value>com.logica.ngph.Entity.MulScreenData</value>
+				<value>com.logica.ngph.Entity.LcMast</value>
+				<value>com.logica.ngph.Entity.LcCommodity</value>
+				<value>com.logica.ngph.Entity.BgMast</value>
+				<value>com.logica.ngph.Entity.Limits</value>
+				<value>com.logica.ngph.Entity.DiscrepanciesReport</value>
+				<value>com.logica.ngph.Entity.RRNDiscrepancy</value>
+				<value>com.logica.ngph.Entity.EventAuditHistory</value>
+				<value>com.logica.ngph.Entity.ReportMessageHist</value>
+				<value>com.logica.ngph.Entity.BankBinMap</value>
+				<value>com.logica.ngph.Entity.ErrorCode</value>
+				<value>com.logica.ngph.Entity.Information</value>
+			</list>
+		</property>
+
+	</bean>
+
+
+	<bean id="ruleDao" class="com.logica.ngph.daoImpl.RuleDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+
+	<bean id="paymentDao" class="com.logica.ngph.daoImpl.PaymentDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+
+	<bean id="fileUploadDao" class="com.logica.ngph.daoImpl.FileUploadDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	<bean id="dbPollerDao" class="com.logica.ngph.daoImpl.DBPollerDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+
+	<bean id="auditDao" class="com.logica.ngph.daoImpl.AuditDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+
+	<bean id="searchService" class="com.logica.ngph.service.SearchService">
+		<property name="ruleDao" ref="ruleDao"></property>
+	</bean>
+	<bean id="paymentService" class="com.logica.ngph.serviceImpl.PaymentServiceImpl">
+		<property name="paymentDao" ref="paymentDao"></property>
+	</bean>
+
+	<bean id="paymentMessageService" class="com.logica.ngph.serviceImpl.PaymentMessageServiceImpl">
+		<property name="paymentDao" ref="paymentDao"></property>
+	</bean>
+
+	<bean id="auditService" class="com.logica.ngph.serviceImpl.AuditServiceImpl">
+		<property name="auditDao" ref="auditDao"></property>
+	</bean>
+	<bean id="fileUploadService" class="com.logica.ngph.serviceImpl.FileUploadServiceImpl">
+		<property name="fileUploadDao" ref="fileUploadDao"></property>
+	</bean>
+
+	<bean id="sodEodDao" class="com.logica.ngph.daoImpl.SodEodTaskDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+
+	<bean id="authUIDao" class="com.logica.ngph.daoImpl.AuthUIDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+
+	<bean id="enquiryDao" class="com.logica.ngph.daoImpl.EnquiryDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	<bean id="enquiryService" class="com.logica.ngph.service.EnquiryService">
+		<property name="enquiryDao" ref="enquiryDao"></property>
+	</bean>
+	<bean id="enquirySearch" class="com.logica.ngph.serviceImpl.EnquirySearchServiceImpl">
+		<property name="enquirydao" ref="enquiryDao"></property>
+	</bean>
+	<bean id="quickStackDao" class="com.logica.ngph.daoImpl.QuickStackDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	<bean id="quickStatsService" class="com.logica.ngph.service.QuickStatsService">
+		<property name="quickStackDao" ref="quickStackDao"></property>
+	</bean>
+	<bean id="groupMaintenanceDao" class="com.logica.ngph.daoImpl.GroupMaintenanceDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	<bean id="groupMaintenanceService" class="com.logica.ngph.service.GroupMaintenanceService">
+		<property name="groupMaintenanceDao" ref="groupMaintenanceDao"></property>
+	</bean>
+	<bean id="groupMaintenance" class="com.logica.ngph.serviceImpl.GroupMaintenanceServiceImpl">
+		<property name="groupMaintenanceDao" ref="groupMaintenanceDao"></property>
+	</bean>
+	<bean id="authorizationSchemaMaitenancedao"
+		class="com.logica.ngph.daoImpl.AuthorizationSchemaMaitenanceDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	<bean id="userLoginDao" class="com.logica.ngph.daoImpl.userLoginDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	<bean id="authorizationSchemaMaitenanceService"
+		class="com.logica.ngph.service.AuthorizationSchemaMaitenanceService">
+		<property name="authorizationSchemaMaitenancedao" ref="authorizationSchemaMaitenancedao"></property>
+	</bean>
+	<bean id="authorizationSchemaMaitenance"
+		class="com.logica.ngph.serviceImpl.AuthorizationSchemaMaitenanceImpl">
+		<property name="authorizationSchemaMaitenanceDao" ref="authorizationSchemaMaitenancedao"></property>
+	</bean>
+	<bean id="paymentSubmittedReportDao" class="com.logica.ngph.daoImpl.PaymentSubmittedReportDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+
+	<bean id="paymentSubmittedReportService" class="com.logica.ngph.service.PaymentSubmittedReportService">
+		<property name="paymentSubmittedReportDao" ref="paymentSubmittedReportDao"></property>
+	</bean>
+	<bean id="generateReportService" class="com.logica.ngph.serviceImpl.GenerateReportServiceImpl">
+		<property name="paymentSubmittedReportDao" ref="paymentSubmittedReportDao"></property>
+	</bean>
+	<bean id="ReceiverService" class="com.logica.ngph.service.ReceiverService">
+		<property name="paymentSubmittedReportDao" ref="paymentSubmittedReportDao"></property>
+	</bean>
+
+
+	<bean id="sodEodService" class="com.logica.ngph.serviceImpl.SodEodTaskServiceImpl">
+		<property name="sodEodTaskDao" ref="sodEodDao"></property>
+	</bean>
+
+	<bean id="dbPollerService" class="com.logica.ngph.serviceImpl.DBPollerServiceImpl">
+		<property name="dbPollerDao" ref="dbPollerDao"></property>
+	</bean>
+	<bean id="authUIService" class="com.logica.ngph.serviceImpl.AuthUIServiceImpl">
+		<property name="authUIDao" ref="authUIDao"></property>
+	</bean>
+
+	<bean id="authStpService" class="com.logica.ngph.serviceImpl.AuthStpServiceImpl">
+		<property name="authStpServiceDao" ref="authStpServiceDao" />
+	</bean>
+
+	<bean id="authStpServiceDao" class="com.logica.ngph.daoImpl.AuthStpServiceDaoImpl">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+	</bean>
+	<bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	<bean id="userLoginService" class="com.logica.ngph.serviceImpl.UserLoginServiceImpl">
+		<property name="userLoginDao" ref="userLoginDao"></property>
+	</bean>
+	<bean id="ESBXMLCreatorDao" class="com.logica.ngph.daoImpl.ESBXMLCreatorDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+
+	<bean id="ESBXMLCreator" class="com.logica.ngph.serviceImpl.ESBXMLCreatorServiceImpl">
+		<property name="ESBXMLCreatorDao" ref="ESBXMLCreatorDao"></property>
+	</bean>
+	
+	<bean id="maintainingServiceOrchestrationDao" class="com.logica.ngph.daoImpl.MaintainingServiceOrchestrationDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+
+	<bean id="MaintaningServiceOrchestration" class="com.logica.ngph.serviceImpl.MaintaningserviceOrchestrationServiceImpl">
+		<property name="maintainingServiceOrchestrationDao" ref="maintainingServiceOrchestrationDao"></property>
+	</bean>
+	
+	<bean id="accountDao" class="com.logica.ngph.daoImpl.AccountMaintenaceDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	<bean id="accountMaintenanceService" class="com.logica.ngph.service.AccountMaintenaceService">
+		<property name="accountMaintenaceDao" ref="accountDao"></property>
+	</bean>
+	
+	<bean id="returnIMPSTransactionDao" class="com.logica.ngph.daoImpl.ReturnIMPSTransactionDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	<bean id="returnIMPSTransactionService" class="com.logica.ngph.service.ReturnIMPSTransactionService">
+		<property name="returnIMPSTransactionDao" ref="returnIMPSTransactionDao"></property>
+	</bean>
+	
+	<bean id="eventManagerDao" class="com.logica.ngph.daoImpl.EventManagerDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	<bean id="eventManagerServiceService" class="com.logica.ngph.service.EventManagerService">
+		<property name="eventManagerDao" ref="eventManagerDao"></property>
+	</bean>
+	
+	<bean id="genericManagerDao" class="com.logica.ngph.daoImpl.genericManagerDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	<bean id="genericManagerService" class="com.logica.ngph.service.GenericManagerService">
+		<property name="genericManagerDao" ref="genericManagerDao"></property>
+	</bean>
+	<bean id="userMaintenanceDao" class="com.logica.ngph.daoImpl.UserMaintenanceDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+	</bean>
+	<bean id="userMaintenanceService" class="com.logica.ngph.serviceImpl.UserMaintenanceServiceImpl">
+		<property name="userMaintenanceDao" ref="userMaintenanceDao"></property>
+	</bean>
+	
+	<bean id="roleMaintenanceDao" class="com.logica.ngph.daoImpl.RoleMaintenanceDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	<bean id="roleMaintenanceService" class="com.logica.ngph.serviceImpl.RoleMaintenanceServiceImpl">
+		<property name="roleMaintenanceDao" ref="roleMaintenanceDao"></property>
+	</bean>
+	<bean id="pendingAuthorizationDao" class="com.logica.ngph.daoImpl.PendingAuthorizationDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory" />
+	</bean>
+	<bean id="pendingAuthorizationService" class="com.logica.ngph.service.PendingAuthorizationService">
+		<property name="pendingAuthorizationDao" ref="pendingAuthorizationDao"></property>
+	</bean>
+	
+	<bean id="mmidManagerDao" class="com.logica.ngph.daoImpl.MMIDManagerDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+	<property name="jdbcTemplate" ref="jdbcTemplate" />
+	</bean>
+	<bean id="mmidManagerService" class="com.logica.ngph.serviceImpl.MMIDManagerServiceImpl">
+		<property name="mmidManagerDao" ref="mmidManagerDao"></property>
+	</bean>
+	
+
+	<bean id="errorMsgsDao" class="com.logica.ngph.daoImpl.ErrorMsgsDao">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+	</bean>
+	<bean id="errorMsgsService" class="com.logica.ngph.serviceImpl.ErrorMsgsService">
+		<property name="errorMsgsDao" ref="errorMsgsDao"></property>
+	</bean>
+
+	<bean id="eventAuditDao" class="com.logica.ngph.daoImpl.EventAuditDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+	</bean>
+	<bean id="eventAuditService" class="com.logica.ngph.service.EventAuditService">
+		<property name="auditDao" ref="eventAuditDao"></property>
+	</bean>
+	
+	<bean id="letterOfCreditDao" class="com.logica.ngph.daoImpl.LetterOfCreditDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+	</bean>
+	<bean id="letterOfCreditService" class="com.logica.ngph.serviceImpl.LetterOfCreditServiceImpl">
+		<property name="letterOfCreditDao" ref="letterOfCreditDao"></property>
+		<property name="adviceLCPaymentDao" ref="adviceLCPaymentDao"></property>
+	</bean>
+	
+	<bean id="lcOpenDao" class="com.logica.ngph.daoImpl.LcOpenDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+	</bean>
+	<bean id="lcOpenService" class="com.logica.ngph.serviceImpl.LcOpenServiceImpl">
+		<property name="lcOpenDao" ref="lcOpenDao"></property>
+	</bean>
+	
+	<bean id="lcReportsDao" class="com.logica.ngph.daoImpl.LcReportsDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+	</bean>
+	<bean id="lcReportsService" class="com.logica.ngph.serviceImpl.LcReportsServiceImpl">
+		<property name="lcReportsDao" ref="lcReportsDao"></property>
+	</bean>
+	
+	<bean id="createBankGuaranteeDao" class="com.logica.ngph.daoImpl.CreateBankGuaranteeDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+	</bean>
+	<bean id="createBankGuaranteeService" class="com.logica.ngph.serviceImpl.CreateBankGuaranteeServiceImpl">
+		<property name="createBankGuaranteeDao" ref="createBankGuaranteeDao"></property>
+	</bean>
+
+	<bean id="adviceLCPaymentDao" class="com.logica.ngph.daoImpl.AdviceLCPaymentDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+	</bean>
+	<bean id="adviceLCPaymentService" class="com.logica.ngph.serviceImpl.AdviceLCPaymentServiceImpl">
+		<property name="adviceLCPaymentDao" ref="adviceLCPaymentDao"></property>
+		<property name="letterOfCreditDao" ref="letterOfCreditDao"></property>
+	</bean>
+	
+
+
+	<bean id="maintainBranchesDao" class="com.logica.ngph.daoImpl.MaintainBranchesDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+	</bean>
+	<bean id="maintainBranchesService" class="com.logica.ngph.serviceImpl.MaintainBranchesServiceImpl">
+		<property name="maintainBranchesDao" ref="maintainBranchesDao"></property>
+	</bean>
+
+	<bean id="feedsDao" class="com.logica.ngph.daoImpl.FeedsDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+	</bean>
+	<bean id="feedsService" class="com.logica.ngph.serviceImpl.FeedsServiceImpl">
+		<property name="feedsDao" ref="feedsDao"></property>
+	</bean>
+	
+	
+	<bean id="mmidReportDao" class="com.logica.ngph.daoImpl.MMIDReportDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+	</bean>
+	<bean id="mmidReportService" class="com.logica.ngph.serviceImpl.MMIDReportServiceImpl">
+		<property name="mmidReportDao" ref="mmidReportDao"></property>
+	</bean>
+	
+	<bean id="memberTransactionLimitDao" class="com.logica.ngph.daoImpl.MemberTransactionLimitDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+	</bean>
+	<bean id="memberTransactionLimitService" class="com.logica.ngph.serviceImpl.MemberTransactionLimitServiceImpl">
+		<property name="memberTransactionLimitDao" ref="memberTransactionLimitDao"></property>
+	</bean>
+	
+	<bean id="changePwdDao" class="com.logica.ngph.daoImpl.ChangePwdDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+	</bean>
+	<bean id="changePwdService" class="com.logica.ngph.serviceImpl.ChangePwdServiceImpl">
+		<property name="changePwdDao" ref="changePwdDao"></property>
+	</bean>
+	
+	<bean id="informationDao" class="com.logica.ngph.daoImpl.InformationDaoImpl">
+		<property name="sessionFactory" ref="mySessionFactory"/>
+	</bean>
+	<bean id="informationService" class="com.logica.ngph.serviceImpl.InformationServiceImpl">
+		<property name="informationDao" ref="informationDao"></property>
+	</bean>
+	<bean id="eventLogging" class="com.logica.ngph.web.utils.EventLogging"></bean>
+	<bean id="notValidUser" class="com.logica.ngph.web.utils.UserRolesAccess">
+	</bean>
+
+	<!--
+	
+	 <bean id="paymentAction" class="com.logica.ngph.web.action.PaymentAction"> 
+		<property name="paymentService" ref="paymentService"></property> <property 
+		name="auditService" ref="auditService"></property> <property name="authStpService" 
+		ref="authStpService"></property> </bean> <bean id="uploadFileAction" class="com.logica.ngph.web.action.UploadFileAction"> 
+		<property name="fileUploadService" ref="fileUploadService"></property> </bean> 
+		<bean id="sOdEodTaskAction" class="com.logica.ngph.web.action.SOdEodTaskAction"> 
+		<property name="sodEodService" ref="sodEodService"></property> <property 
+		name="dbPollerService" ref="dbPollerService"></property> <property name="auditService" 
+		ref="auditService"></property> </bean> <bean id="SearchAction" class="com.logica.ngph.web.action.SearchAction"> 
+		<property name="searchService" ref="searchService"></property> </bean> <bean 
+		id="ruleAction" class="com.logica.ngph.web.action.RulesAction"> <property 
+		name="searchService" ref="searchService"></property> </bean> <bean id="paymentMessageStatusAction" 
+		class="com.logica.ngph.web.action.PaymentMessageStatusAction"> <property 
+		name="paymentMessageService" ref="paymentMessageService"></property> <property 
+		name="auditService" ref="auditService"></property> <property name="authUIService" 
+		ref="authUIService"></property> </bean> <bean id="enquiryAction" class="com.logica.ngph.web.action.EnquiryAction"> 
+		<property name="enquiryService" ref="enquiryService"></property> <property 
+		name="enquirySearch" ref="enquirySearch"></property> </bean> <bean id="quickStatsAction" 
+		class="com.logica.ngph.web.action.QuickStatsAction"> <property name="quickStatsService" 
+		ref="quickStatsService"></property> </bean> <bean id="authorizationMaintenanceAction" 
+		class="com.logica.ngph.web.action.AuthorizationMaintenanceAction"> <property 
+		name="authorizationSchemaMaitenanceService" ref="authorizationSchemaMaitenanceService"></property> 
+		<property name="authorizationSchemaMaitenance" ref="authorizationSchemaMaitenance"></property> 
+		</bean> <bean id="groupMaintenanceAction" class="com.logica.ngph.web.action.GroupMaintenanceAction"> 
+		<property name="groupMaintenanceService" ref="groupMaintenanceService"></property> 
+		<property name="groupMaintenance" ref="groupMaintenance"></property> </bean> 
+		<bean id="receiverAction" class="com.logica.ngph.web.action.ReceiverAction"> 
+		<property name="ReceiverService" ref="ReceiverService"></property> </bean> 
+		<bean id="paymentSubmittedReportAction" class="com.logica.ngph.web.action.PaymentSubmittedReportAction"> 
+		<property name="paymentSubmittedReportService" ref="paymentSubmittedReportService"></property> 
+		<property name="generateReportService" ref="generateReportService"></property> 
+		</bean> 
+
+--></beans>

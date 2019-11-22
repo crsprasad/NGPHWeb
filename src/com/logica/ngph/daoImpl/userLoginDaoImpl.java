@@ -1,0 +1,203 @@
+package com.logica.ngph.daoImpl;
+
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.List;
+
+import org.hibernate.Criteria;
+import org.hibernate.HibernateException;
+import org.hibernate.Query;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
+
+import com.logica.ngph.Entity.BusinessDayM;
+import com.logica.ngph.Entity.Initialisation;
+import com.logica.ngph.Entity.SecUsers;
+import com.logica.ngph.common.ConstantUtil;
+import com.logica.ngph.common.dtos.UserMaintenanceDTO;
+import com.logica.ngph.common.utils.Base64Coder;
+import com.logica.ngph.dao.UserLoginDao;
+import com.logica.ngph.utils.StringEncrypter;
+
+public class userLoginDaoImpl extends HibernateDaoSupport implements UserLoginDao{
+
+	
+	public boolean validateUser(String secUser, String passWord) {
+		boolean isValidateUser = false;
+		List flag = getHibernateTemplate().find("select initValue from Initialisation where initEntry ='FIRSTLOGIN'");
+		if(flag!=null && !flag.isEmpty() && flag.get(0).toString().equals("Y"))
+		{
+			if(secUser.equalsIgnoreCase("sa1") && passWord.equals("sa1") || secUser.equalsIgnoreCase("sa2") && passWord.equals("sa2")){
+			List<String> securedUserList = 	getHibernateTemplate().find("select user,userPassword from SecUsers where userPassword is null");
+				if(securedUserList!=null && !securedUserList.isEmpty())
+				{
+					return true;
+				}
+			}
+			
+			
+			
+		}
+		String str1=StringEncrypter.encryptURL(secUser, passWord);
+		str1 = new String(new sun.misc.BASE64Encoder().encode(str1.getBytes()));
+				
+		List securedUserList = 	getHibernateTemplate().find("select user,userPassword from SecUsers where user=? and userPassword=?", secUser,str1);
+		
+		if( securedUserList != null && !securedUserList.isEmpty() && securedUserList.size()>0 ){
+			isValidateUser = true;
+			Object[] obj = (Object[]) securedUserList.get(0);
+			String user = (String) obj[0];
+			updateLoginTime(user);
+		}
+		
+		return isValidateUser;
+	}
+	
+	public void updateLoginTime(String user){
+		Session session = null; 
+		Transaction tx = null;
+		SecUsers secUser = null;
+		List<SecUsers> secUserList = null;
+		try{
+			session = getHibernateTemplate().getSessionFactory().openSession();
+			tx = session.beginTransaction();
+			Criteria criteria = session.createCriteria(SecUsers.class);
+			criteria.add(Restrictions.eq("user", user).ignoreCase());
+			secUserList = criteria.list();
+			if(secUserList!=null&&!secUserList.isEmpty()){
+				secUser = secUserList.get(0);
+				secUser.setLastLogin(secUser.getCurrentLogin());
+				secUser.setCurrentLogin(getCurrentTime());			
+				session.update(secUser);
+			}
+			
+			tx.commit();			
+		}catch(HibernateException exception){
+			if(tx!=null){
+				tx.rollback();
+				exception.printStackTrace();				
+			}
+		}finally{
+			session.close();
+		}
+	}
+	
+	public UserMaintenanceDTO getLogInTimeDetails(String user){
+		Session session = null; 
+		Transaction tx = null;
+		SecUsers secUser = null;
+		List<SecUsers> secUserList = null;
+		BusinessDayM businessDay = null;
+		Initialisation initialisation = null;
+		UserMaintenanceDTO userDto = new UserMaintenanceDTO(); 
+		try{
+			session = getHibernateTemplate().getSessionFactory().openSession();
+			tx = session.beginTransaction();
+			Criteria criteria = session.createCriteria(SecUsers.class);
+			criteria.add(Restrictions.eq("user", user).ignoreCase());
+			secUserList = criteria.list();
+			if(secUserList!=null&&!secUserList.isEmpty()){
+				secUser = secUserList.get(0);
+				String branch = secUser.getUserBranch();
+				if(branch.equals(ConstantUtil.ALL)){
+					String initEntry = "DEFBRANCH";
+					initialisation  = (Initialisation) session.get(Initialisation.class, initEntry);
+					/*Query query = session.createQuery("select initValue from Initialisation where initEntry =:initEntry");
+					query.setString("initEntry", initEntry);
+					List val = query.list();
+					find("select initValue from Initialisation where initEntry =?",initEntry);*/
+					if(initialisation!=null)
+					{
+						branch=initialisation.getInitValue();
+					}
+				}
+					
+				//	businessDay = (BusinessDayM)getHibernateTemplate().find("from BusinessDayM").get(0);
+				//}else{
+				businessDay = (BusinessDayM)session.get(BusinessDayM.class, branch);
+				userDto.setCurrentLogin(secUser.getCurrentLogin());
+				userDto.setLastLogin(secUser.getLastLogin());
+				userDto.setBusinessDay(businessDay.getBusinessDay());
+				
+			}			
+			tx.commit();			
+		}catch(HibernateException exception){
+			if(tx!=null){
+				tx.rollback();
+				exception.printStackTrace();				
+			}
+		}finally{
+			session.close();
+		}
+		return userDto;
+	}
+	
+	private Timestamp getCurrentTime(){
+		java.util.Date 	str_date = Calendar.getInstance().getTime();
+		java.sql.Timestamp timeStampDate = new Timestamp(str_date.getTime());
+		return timeStampDate;
+	}
+
+	public boolean validateUserId(String user) {
+		boolean isValidateUser = false;		
+		Session session = null; 
+		Transaction tx = null;		
+		List secUserList = null;
+		try{
+			session = getHibernateTemplate().getSessionFactory().openSession();
+			tx = session.beginTransaction();
+			Criteria criteria = session.createCriteria(SecUsers.class);
+			criteria.add(Restrictions.eq("user", user).ignoreCase());
+			secUserList = criteria.list();
+			//secUser = (SecUsers)session.get(SecUsers.class, user);			
+			tx.commit();			
+		}catch(HibernateException exception){
+			if(tx!=null){
+				tx.rollback();
+				exception.printStackTrace();				
+			}
+		}finally{
+			session.close();
+		}		
+		if( secUserList != null && !secUserList.isEmpty()){
+			isValidateUser = true;			
+			updateLoginTime(user);
+		}
+		
+		return isValidateUser;
+	}
+
+	public boolean isValidUser(String userId) {
+		
+		
+		boolean isValidateUser = false;		
+		Session session = null; 
+		Transaction tx = null;		
+		List secUserList = null;
+		try{
+			session = getHibernateTemplate().getSessionFactory().openSession();
+			tx = session.beginTransaction();
+			Criteria criteria = session.createCriteria(SecUsers.class);
+			criteria.add(Restrictions.eq("user", userId));
+			secUserList = criteria.list();
+			//secUser = (SecUsers)session.get(SecUsers.class, user);			
+			tx.commit();			
+		}catch(HibernateException exception){
+			if(tx!=null){
+				tx.rollback();
+				exception.printStackTrace();				
+			}
+		}finally{
+			session.close();
+		}		
+		if( secUserList != null && !secUserList.isEmpty()){
+			isValidateUser = true;			
+		}
+		return isValidateUser;
+	}
+	
+	
+
+}

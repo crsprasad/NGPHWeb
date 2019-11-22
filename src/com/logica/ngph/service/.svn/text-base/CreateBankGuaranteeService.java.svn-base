@@ -1,0 +1,12 @@
+package com.logica.ngph.service;
+
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.logica.ngph.dtos.CreateBankGuaranteeDto;
+
+public interface CreateBankGuaranteeService {
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void createBankGuarantee(CreateBankGuaranteeDto createBankGuaranteeDto, String userId) throws Exception;
+
+}

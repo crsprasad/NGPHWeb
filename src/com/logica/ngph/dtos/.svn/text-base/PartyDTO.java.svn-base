@@ -1,0 +1,54 @@
+package com.logica.ngph.dtos;
+
+import java.io.Serializable;
+
+public class PartyDTO implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private String ifsc;
+	private String partyName;
+	private String actionPerform;
+	private String partyCode;
+	private String partyBankName;
+	private String partyAddress; 
+	
+	public String getPartyCode() {
+		return partyCode;
+	}
+	public void setPartyCode(String partyCode) {
+		this.partyCode = partyCode;
+	}
+	public String getPartyBankName() {
+		return partyBankName;
+	}
+	public void setPartyBankName(String partyBankName) {
+		this.partyBankName = partyBankName;
+	}
+	public String getPartyAddress() {
+		return partyAddress;
+	}
+	public void setPartyAddress(String partyAddress) {
+		this.partyAddress = partyAddress;
+	}
+	public String getIfsc() {
+		return ifsc;
+	}
+	public void setIfsc(String ifsc) {
+		this.ifsc = ifsc;
+	}
+	public String getPartyName() {
+		return partyName;
+	}
+	public void setPartyName(String partyName) {
+		this.partyName = partyName;
+	}
+	public String getActionPerform() {
+		return actionPerform;
+	}
+	public void setActionPerform(String actionPerform) {
+		this.actionPerform = actionPerform;
+	}
+
+}

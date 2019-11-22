@@ -1,0 +1,49 @@
+package com.logica.ngph.service;
+
+import java.util.List;
+
+import com.logica.ngph.dao.PendingAuthorizationDao;
+
+public class PendingAuthorizationService {
+	
+	PendingAuthorizationDao pendingAuthorizationDao;
+	
+	
+	public PendingAuthorizationDao getPendingAuthorizationDao() {
+		return pendingAuthorizationDao;
+	}
+	public void setPendingAuthorizationDao(
+			PendingAuthorizationDao pendingAuthorizationDao) {
+		this.pendingAuthorizationDao = pendingAuthorizationDao;
+	}
+	public String delimitedStringValue(String transRef ,String sequence,String screenData)
+	{
+		return pendingAuthorizationDao.delimitedStringValue(transRef,sequence,screenData);
+	}
+	public String getTranRef(String screenData,String actionMapping, String userId)
+	{
+		System.gc();
+		return pendingAuthorizationDao.getTranRef(screenData,actionMapping, userId);
+	}
+	public String getScreenReturn(String trnRef)
+	{
+		return pendingAuthorizationDao.getScreenReturn(trnRef);
+	}
+	public String getCreatedUser(String trnRef)
+	{
+		return pendingAuthorizationDao.getCreatedUser(trnRef);
+	}
+	public String getUserType(String userId)
+	{
+		return pendingAuthorizationDao.getUserType(userId);
+	}
+	public List getMulScreenData(String trnRef)
+	{
+		return pendingAuthorizationDao.getMulScreenData(trnRef);
+	}
+	public String changeStatus(String Status,String txnRef)
+	{
+		return pendingAuthorizationDao.changeStatus(Status,txnRef);
+	}
+
+}

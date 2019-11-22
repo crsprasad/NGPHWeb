@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+	<field name="lcType">
+		<field-validator type="requiredstring">
+		<param name="fieldName">lcType</param>
+		<message>LC Type Is Required</message>	
+		</field-validator>
+	</field>
+	
+	<field name="lcNumber">
+		<field-validator type="requiredstring">
+		<param name="fieldName">lcNumber</param>
+		<message>LC Number Is Required</message>	
+		</field-validator>
+		<field-validator type="stringlength">
+	 <param name="fieldName">lcNumber</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">16</param>
+	  <param name="trim">true</param>
+	 <message>Lc Number should be less Than 16 Chars</message>
+	</field-validator>
+	</field>
+	
+	<field name="applicableRule">
+		<field-validator type="required">
+		<param name="fieldName">applicableRule</param>
+		<message>Applicable Rule Is Required</message>	
+		</field-validator>
+	</field>
+	
+	
+	
+	<field name="lcExpiryDate">
+		<field-validator type="required">
+		<param name="fieldName">lcExpiryDate</param>
+		<message>lcExpiryDate Is Required</message>	
+		</field-validator>
+	</field>
+	<field name="lcExpirePlace">
+		<field-validator type="requiredstring">
+		<param name="fieldName">lcExpirePlace</param>
+		<message>LC ExpiryPlace Is Required</message>	
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">lcExpirePlace</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Lc Expire Place is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="lcCurrency">
+		<field-validator type="requiredstring">
+		<param name="fieldName">lcCurrency</param>
+		<message>lcCurrency Is Required</message>	
+		</field-validator>
+	</field>
+	
+	<field name="authorisationMode">
+		<field-validator type="requiredstring">
+		<param name="fieldName">authorisationMode</param>
+		<message>Authorization Mode Is Required</message>	
+		</field-validator>
+	</field>
+	
+	<field name="beneficiaryNameAddress">
+		<field-validator type="requiredstring">
+		<param name="fieldName">beneficiaryNameAddress</param>
+		<message>LC beneficiaryNameAddress Is Required</message>	
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">beneficiaryNameAddress</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Beneficiary Name Address is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="advisingBank">
+		<field-validator type="requiredstring">
+		<param name="fieldName">advisingBank</param>
+		<message>Advising Bank Is Required</message>	
+		</field-validator>
+		<field-validator type="stringlength">
+		 <param name="fieldName">advisingBank</param>
+		 <param name="minLength">8</param>
+		 <param name="maxLength">11</param>
+		  <param name="trim">true</param>
+	 <message>advising Bank should be 8 to 11 Chars</message>
+	</field-validator>
+	<field-validator type="regex">
+			<param name="fieldName">advisingBank</param>
+			<param name="expression"><![CDATA[([A-Z]{4}+[0]{1}+[0-9a-zA-Z]{6})|([A-Z]{6}+[0-9A-Z]{2}+[0-9A-Z]{3})|([A-Z]{6}+[0-9A-Z]{2})+$]]></param>
+			<message>Advising Bank is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="reimbursingBankCode">
+		
+		<field-validator type="stringlength">
+		 <param name="fieldName">reimbursingBankCode</param>
+		 <param name="minLength">8</param>
+		 <param name="maxLength">11</param>
+		  <param name="trim">true</param>
+	 <message>Reimbursing Bank should be 8 to 11 Chars</message>
+	</field-validator>
+	<field-validator type="regex">
+			<param name="fieldName">reimbursingBankCode</param>
+			<param name="expression"><![CDATA[([A-Z]{4}+[0]{1}+[0-9a-zA-Z]{6})|([A-Z]{6}+[0-9A-Z]{2}+[0-9A-Z]{3})|([A-Z]{6}+[0-9A-Z]{2})+$]]></param>
+			<message>Reimbursing Bank is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="applicantBankCode">
+		
+		<field-validator type="stringlength">
+		 <param name="fieldName">applicantBankCode</param>
+		 <param name="minLength">8</param>
+		 <param name="maxLength">11</param>
+		  <param name="trim">true</param>
+	 <message>Applicant Bank should be 8 to 11 Chars</message>
+	</field-validator>
+	<field-validator type="regex">
+			<param name="fieldName">applicantBankCode</param>
+			<param name="expression"><![CDATA[([A-Z]{4}+[0]{1}+[0-9a-zA-Z]{6})|([A-Z]{6}+[0-9A-Z]{2}+[0-9A-Z]{3})|([A-Z]{6}+[0-9A-Z]{2})+$]]></param>
+			<message>Applicant Bank is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="authorisedBankCode">
+		
+		<field-validator type="stringlength">
+		 <param name="fieldName">authorisedBankCode</param>
+		 <param name="minLength">8</param>
+		 <param name="maxLength">11</param>
+		  <param name="trim">true</param>
+	 <message>Authorized Bank should be 8 to 11 Chars</message>
+	</field-validator>
+	<field-validator type="regex">
+			<param name="fieldName">authorisedBankCode</param>
+			<param name="expression"><![CDATA[([A-Z]{4}+[0]{1}+[0-9a-zA-Z]{6})|([A-Z]{6}+[0-9A-Z]{2}+[0-9A-Z]{3})|([A-Z]{6}+[0-9A-Z]{2})+$]]></param>
+			<message>Authorized Bank is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="draweeBankCode">
+		
+		<field-validator type="stringlength">
+		 <param name="fieldName">draweeBankCode</param>
+		 <param name="minLength">8</param>
+		 <param name="maxLength">11</param>
+		  <param name="trim">true</param>
+	 <message>Drawee Bank should be 8 to 11 Chars</message>
+	</field-validator>
+	<field-validator type="regex">
+			<param name="fieldName">draweeBankCode</param>
+			<param name="expression"><![CDATA[([A-Z]{4}+[0]{1}+[0-9a-zA-Z]{6})|([A-Z]{6}+[0-9A-Z]{2}+[0-9A-Z]{3})|([A-Z]{6}+[0-9A-Z]{2})+$]]></param>
+			<message>Drawee Bank is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="lcAmount">
+		<field-validator type="required">
+			<param name="fieldName">lcAmount</param>
+			<message>LC Amount Is Required</message>	
+		</field-validator>
+		
+		<field-validator type="regex">
+			<param name="fieldName">lcAmount</param>
+			<param name="expression"><![CDATA[[0-9.]+$]]></param>
+			<message>Lc Amount is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	
+	
+	
+	
+	<field name="confirmationCode">
+		<field-validator type="requiredstring">
+			<param name="fieldName">confirmationCode</param>
+			<message>Confirmation Code Is Required</message>	
+		</field-validator>
+	</field>
+	
+	
+	<field name="goodsLoadingDispatchPlace">
+		<field-validator type="regex">
+			<param name="fieldName">goodsLoadingDispatchPlace</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Dispatch Place is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="initialDispatchPlace">
+		<field-validator type="regex">
+			<param name="fieldName">initialDispatchPlace</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Initial Dispatch Place is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="finalDeliveryPlace">
+		<field-validator type="regex">
+			<param name="fieldName">finalDeliveryPlace</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Final Delivery Place is Not Valid</message>
+		</field-validator>
+	</field>
+
+	<field name="goodsDestination">
+		<field-validator type="regex">
+			<param name="fieldName">goodsDestination</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Goods Destination is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="shipmentPeriod">
+		<field-validator type="regex">
+			<param name="fieldName">shipmentPeriod</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Shipment Period is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="shipmentTerms">
+		<field-validator type="regex">
+			<param name="fieldName">shipmentTerms</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Shipment Terms is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	
+	<field name="lcCommodity">
+		<field-validator type="regex">
+			<param name="fieldName">lcCommodity</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Lc Commodity is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="senderCorrespontAcount">
+		<field-validator type="regex">
+			<param name="fieldName">senderCorrespontAcount</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Reimbursing Bank Account is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="DraftsAt">
+		<field-validator type="regex">
+			<param name="fieldName">DraftsAt</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>DraftsAt is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="chargeDetails">
+		<field-validator type="regex">
+			<param name="fieldName">chargeDetails</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Charge Details is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	
+	<field name="applicantBankNameAddress">
+		<field-validator type="regex">
+			<param name="fieldName">applicantBankNameAddress</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Applicant Bank And NameAddress is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="applicableNarrative">
+		<field-validator type="regex">
+			<param name="fieldName">applicableNarrative</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>App Rules Narration Is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="applicantAccount">
+		<field-validator type="regex">
+			<param name="fieldName">applicantAccount</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Applicant Account is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="draweeBankAccount">
+		<field-validator type="regex">
+			<param name="fieldName">draweeBankAccount</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>DraweeBankAccount is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="adviseThroughBankAcc">
+		<field-validator type="regex">
+			<param name="fieldName">adviseThroughBankAcc</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Advise Through Bank Account is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="adviseThroughBankLocation">
+		<field-validator type="regex">
+			<param name="fieldName">adviseThroughBankLocation</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Advise Through Bank Location is Not Valid</message>
+		</field-validator>
+	</field>
+
+	<field name="adviseThroughBankName">
+		<field-validator type="regex">
+			<param name="fieldName">adviseThroughBankName</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Advise Through Bank Name is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="Narrative">
+		<field-validator type="regex">
+			<param name="fieldName">Narrative</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Narrative is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="SendertoReceiverInformation">
+		<field-validator type="regex">
+			<param name="fieldName">SendertoReceiverInformation</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Sender to Receiver Information is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="additionalAmounts">
+		<field-validator type="regex">
+			<param name="fieldName">additionalAmounts</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Additional Amounts is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="beneficiaryAccount">
+		<field-validator type="regex">
+			<param name="fieldName">beneficiaryAccount</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Beneficiary Account is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="instructionstoPayingBank">
+		<field-validator type="regex">
+			<param name="fieldName">instructionstoPayingBank</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Instructions to Paying Bank is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="authorisedAndAddress">
+		<field-validator type="regex">
+			<param name="fieldName">authorisedAndAddress</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Authorised Name And Address is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="additionalAmounts">
+		<field-validator type="regex">
+			<param name="fieldName">additionalAmounts</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Additional Amounts is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="draweeBankNameAddress">
+		<field-validator type="regex">
+			<param name="fieldName">draweeBankNameAddress</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Drawee Bank Name And Address is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	
+	<field name="documentsRequired">
+		<field-validator type="stringlength">
+				 <param name="fieldName">documentsRequired</param>
+				 <param name="minLength">0</param>
+				 <param name="maxLength">6499</param>
+				 <param name="trim">true</param>
+		 <message>Documents Required should less than 6500 Chars</message>
+	</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">documentsRequired</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Documents Required is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="additionalConditions">
+		<field-validator type="stringlength">
+				 <param name="fieldName">additionalConditions</param>
+				 <param name="minLength">0</param>
+				 <param name="maxLength">6499</param>
+				 <param name="trim">true</param>
+			 <message>Additional Conditions should less than 6500 Chars</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">additionalConditions</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Additional Conditions is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	<field name="periodforPresentation">
+		<field-validator type="regex">
+			<param name="fieldName">periodforPresentation</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Period for Presentation is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	
+	<field name="mixedPaymentDetails">
+		<field-validator type="regex">
+			<param name="fieldName">mixedPaymentDetails</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Mixed Payment Details is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="deferredPaymentDetails">
+		<field-validator type="regex">
+			<param name="fieldName">deferredPaymentDetails</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Deferred Payment Details is Not Valid</message>
+		</field-validator>
+	</field>
+	<field name="reimbursingBankNameAddress">
+		<field-validator type="regex">
+			<param name="fieldName">reimbursingBankNameAddress</param>
+			<param name="expression"><![CDATA[[-0-9a-zA-Z/-?:().,+' \n`]+[^@%/\[/&/\]/*$#{}/\^/<>~;_!"=\\|]+$]]></param>
+			<message>Reimbursing Bank Name Address is Not Valid</message>
+		</field-validator>
+	</field>
+	
+	
+</validators>

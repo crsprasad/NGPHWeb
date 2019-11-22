@@ -1,0 +1,233 @@
+K 25
+svn:wc:ra_dav:version-url
+V 83
+/svn/NGPH/!svn/ver/4433/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl
+END
+EnquiryDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/NGPH/!svn/ver/4157/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/EnquiryDaoImpl.java
+END
+ErrorMsgsDao.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/NGPH/!svn/ver/4355/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/ErrorMsgsDao.java
+END
+DBPollerDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/DBPollerDaoImpl.java
+END
+MaintainBranchesDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/MaintainBranchesDaoImpl.java
+END
+AuthorizationSchemaMaitenanceDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 125
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/AuthorizationSchemaMaitenanceDaoImpl.java
+END
+RuleDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/NGPH/!svn/ver/3911/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/RuleDaoImpl.java
+END
+userLoginDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/userLoginDaoImpl.java
+END
+ReleaseBankGuaranteeDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/ReleaseBankGuaranteeDaoImpl.java
+END
+AdviceLCPaymentDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/NGPH/!svn/ver/4284/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/AdviceLCPaymentDaoImpl.java
+END
+AuthStpServiceDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/AuthStpServiceDaoImpl.java
+END
+EventManagerDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/EventManagerDaoImpl.java
+END
+PaymentDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/NGPH/!svn/ver/4429/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/PaymentDaoImpl.java
+END
+LetterOfCreditDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/NGPH/!svn/ver/4377/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/LetterOfCreditDaoImpl.java
+END
+UserMaintenanceDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/UserMaintenanceDaoImpl.java
+END
+MMIDManagerDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/MMIDManagerDaoImpl.java
+END
+AccountMaintenaceDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 113
+/svn/NGPH/!svn/ver/4130/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/AccountMaintenaceDaoImpl.java
+END
+MMIDReportDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/MMIDReportDaoImpl.java
+END
+FileUploadDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/FileUploadDaoImpl.java
+END
+InformationDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/NGPH/!svn/ver/4473/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/InformationDaoImpl.java
+END
+PaymentSubmittedReportDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/NGPH/!svn/ver/4312/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/PaymentSubmittedReportDaoImpl.java
+END
+CreateBankGuaranteeDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 115
+/svn/NGPH/!svn/ver/3997/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/CreateBankGuaranteeDaoImpl.java
+END
+GroupMaintenanceDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/GroupMaintenanceDaoImpl.java
+END
+AuthUIDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/AuthUIDaoImpl.java
+END
+ChangePwdDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/NGPH/!svn/ver/4433/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/ChangePwdDaoImpl.java
+END
+SodEodTaskDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/SodEodTaskDaoImpl.java
+END
+QuickStackDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/QuickStackDaoImpl.java
+END
+RoleMaintenanceDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 111
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/RoleMaintenanceDaoImpl.java
+END
+PendingAuthorizationDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 116
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/PendingAuthorizationDaoImpl.java
+END
+AuditDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/AuditDaoImpl.java
+END
+genericManagerDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 110
+/svn/NGPH/!svn/ver/4234/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/genericManagerDaoImpl.java
+END
+EventAuditDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 106
+/svn/NGPH/!svn/ver/4026/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/EventAuditDaoImpl.java
+END
+ESBXMLCreatorDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/ESBXMLCreatorDaoImpl.java
+END
+MemberTransactionLimitDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 118
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/MemberTransactionLimitDaoImpl.java
+END
+LcReportsDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/NGPH/!svn/ver/4312/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/LcReportsDaoImpl.java
+END
+ReturnIMPSTransactionDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 117
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/ReturnIMPSTransactionDaoImpl.java
+END
+LcOpenDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/NGPH/!svn/ver/4414/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/LcOpenDaoImpl.java
+END
+MaintainingServiceOrchestrationDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 127
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/MaintainingServiceOrchestrationDaoImpl.java
+END
+FeedsDaoImpl.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/daoImpl/FeedsDaoImpl.java
+END

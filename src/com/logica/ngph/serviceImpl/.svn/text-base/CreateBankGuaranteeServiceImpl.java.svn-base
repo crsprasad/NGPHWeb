@@ -1,0 +1,194 @@
+package com.logica.ngph.serviceImpl;
+
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.logica.ngph.Entity.MsgPolled;
+import com.logica.ngph.Entity.NgphCanonical;
+import com.logica.ngph.common.ConstantUtil;
+import com.logica.ngph.common.utils.NGPHUtil;
+import com.logica.ngph.dao.CreateBankGuaranteeDao;
+import com.logica.ngph.dtos.CreateBankGuaranteeDto;
+import com.logica.ngph.service.CreateBankGuaranteeService;
+
+public class CreateBankGuaranteeServiceImpl implements CreateBankGuaranteeService{
+	
+	static Logger logger = Logger.getLogger(CreateBankGuaranteeServiceImpl.class);
+	CreateBankGuaranteeDao createBankGuaranteeDao;
+
+	
+	@Transactional(propagation = Propagation.REQUIRED)
+	public void createBankGuarantee(CreateBankGuaranteeDto createBankGuaranteeDto, String userId) throws Exception{
+
+		int bgStatus=0;
+		String bgNumber="";
+		if(createBankGuaranteeDto.getBgCreateType().equalsIgnoreCase("ISSUE")){
+			bgNumber = createBankGuaranteeDto.getBgNumber();
+			bgStatus=getBgStatus("CREATED");
+		}else if(createBankGuaranteeDto.getBgCreateType().equalsIgnoreCase("REQUEST")){
+			bgNumber = NGPHUtil.generateUUID();
+			bgStatus=getBgStatus("REQUESTED");
+		}
+		
+		String messageReference = NGPHUtil.generateUUID();
+		String bgDirection ="O";
+		
+		try {
+			NgphCanonical ngphCanonical = setDtoToCanonicalObject(createBankGuaranteeDto, messageReference, bgNumber, userId);
+			MsgPolled msgPolled = getEntityObject(messageReference);
+			createBankGuaranteeDao.createBG(createBankGuaranteeDto, bgStatus, messageReference,bgNumber, bgDirection,ngphCanonical,msgPolled);
+			
+		} catch (Exception sqlException) {
+			logger.debug(sqlException);
+			throw new Exception(ConstantUtil.DATA_ACCESS_PROBLEM);
+		}
+		
+	}
+
+	public MsgPolled getEntityObject(String msgRef)
+	{
+		MsgPolled msgPolled = new MsgPolled();
+		msgPolled.setInTime(new Timestamp(Calendar.getInstance().getTime().getTime()));
+		msgPolled.setMsgRef(msgRef);
+		msgPolled.setPolledStatus("P");
+		return msgPolled;
+	}
+	
+	public void setCreateBankGuaranteeDao(CreateBankGuaranteeDao createBankGuaranteeDao) {
+		this.createBankGuaranteeDao = createBankGuaranteeDao;
+	}
+	
+	private Timestamp convertStringToTimestamp(Date date) {
+		if(date != null){
+			try{
+				return new Timestamp(date.getTime());
+			}catch(Exception ex){
+				ex.printStackTrace();
+				return null;
+			}
+		}else {
+			return null;
+		}
+	}	
+	
+	private int getBgStatus(String key){
+		
+		Map<String, String> bgStatusMap = new HashMap<String, String>();
+		bgStatusMap.put("CREATED", "1");
+		bgStatusMap.put("REQUESTED", "2");
+		bgStatusMap.put("CREATEDACK", "3");
+		bgStatusMap.put("AMENDED", "4");
+		bgStatusMap.put("AMENDED REGISTERED", "5");
+		bgStatusMap.put("REDUCED", "6");
+		bgStatusMap.put("REDUCED ACK", "7");
+		bgStatusMap.put("RELEASE REQUEST", "8");
+		bgStatusMap.put("RELEASED", "9");		
+		
+		int bgStatus = Integer.parseInt(bgStatusMap.get(key));
+		return bgStatus;
+		
+	}
+	
+	public NgphCanonical setDtoToCanonicalObject(CreateBankGuaranteeDto createBgDto, String messageReference, String bgNumber, String userId){
+		NgphCanonical ngphCanonical = new NgphCanonical();
+		ngphCanonical.setMsgRef(messageReference);
+		ngphCanonical.setLcPrevAdvRef(createBgDto.getBgCreateType());
+		ngphCanonical.setLcIssueDt(convertStringToTimestamp(createBgDto.getBgDate()));
+		ngphCanonical.setLcAppRulesCode(createBgDto.getBgRuleCode());
+		ngphCanonical.setLcAppRulesDesc(createBgDto.getBgRuleNarration());
+		ngphCanonical.setMsgHost("9999");
+		ngphCanonical.setMsgChnlType("SFMS");
+		ngphCanonical.setSrcMsgType("760");
+		ngphCanonical.setSrcMsgSubType("XXX");
+		ngphCanonical.setMsgStatus("1");
+		ngphCanonical.setMsgDirection("O");
+		ngphCanonical.setReceiverBank(createBgDto.getAdvisingBank());
+		ngphCanonical.setReceivedTime(getCurrentTime());
+		ngphCanonical.setLastModTime(getCurrentTime());
+		ngphCanonical.setTxnReference(bgNumber);
+		ngphCanonical.setSndrTxnId(bgNumber);
+		ngphCanonical.setClrgSysReference(bgNumber);
+		ngphCanonical.setSndrPymtPriority("12");
+		ngphCanonical.setClrgChannel("SFMS");
+		
+		String[] branchDepartmentIfsc = createBankGuaranteeDao.getDept(userId).split("~");
+		ngphCanonical.setLastModifiedUser(userId);
+		ngphCanonical.setMsgBranch(branchDepartmentIfsc[2]);
+		ngphCanonical.setMsgDept(branchDepartmentIfsc[1]);
+		ngphCanonical.setSenderBank(branchDepartmentIfsc[0]);
+				
+		String bgDetails=insertNewLine(createBgDto.getBgDetails());
+
+		String part1="";
+		String part2="";
+		String part3="";
+		String temp1="";
+		String temp2="";
+		if(bgDetails.length()>4000){
+		part1= bgDetails.substring(0, 4000);
+		temp1 = bgDetails.substring(4000,bgDetails.length());
+		}else{
+		part1=bgDetails;
+		}
+		 
+		if(temp1.length()>4000){
+		part2= temp1.substring(0,4000);
+		temp2= temp1.substring(4000, temp1.length());
+		}else{
+		part2 = temp1;
+		}
+
+		if(!temp2.isEmpty()){
+		part3 = temp2;
+		}
+		
+		
+		
+		ngphCanonical.setLcDocsReq1(part1);
+		ngphCanonical.setLcDocsReq2(part2);
+		ngphCanonical.setLcAddnlCndt1(part3);
+		
+		String senderToReciever=createBgDto.getSenderToReceiverInformation();
+		String senderToReceiverInformation="";
+		if(senderToReciever!=null && !senderToReciever.isEmpty()){
+			String [] strs = senderToReciever.split("\\/");
+			if(strs.length==3){
+				senderToReceiverInformation= strs[1];
+				ngphCanonical.setInstructionsForCrdtrAgtCode(senderToReceiverInformation);
+			}else{
+				senderToReceiverInformation=senderToReciever;
+				ngphCanonical.setInstructionsForCrdtrAgtText(senderToReceiverInformation);
+			}
+		}
+		
+		
+		return ngphCanonical;
+	}
+	
+	private Timestamp getCurrentTime(){
+		java.util.Date 	str_date = Calendar.getInstance().getTime();
+		java.sql.Timestamp timeStampDate = new Timestamp(str_date.getTime());
+		return timeStampDate;
+	}
+	
+	private String insertNewLine(String str){		 
+		StringBuilder sb = new StringBuilder();
+		String lineSeparator = System.getProperty("line.separator");
+		for (int i = 0; i < str.length(); i++) { 
+			if (i > 0 && (i % 65 == 0)) { 
+				sb.append(lineSeparator);     
+				}  
+			sb.append(str.charAt(i)); 
+			}  
+		str = sb.toString();
+		return str;
+	}
+	
+}

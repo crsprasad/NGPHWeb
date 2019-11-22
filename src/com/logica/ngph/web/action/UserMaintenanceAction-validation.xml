@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+	
+	<field name="userAction">
+		<field-validator type="requiredstring">
+			<message> User Action is required.</message>
+		</field-validator>
+	</field>
+	
+	<field name="userFirstName">
+		<field-validator type="requiredstring">
+			<message> First Name is required.</message>
+		</field-validator>
+	</field>
+	
+	<field name="userLastName">
+		<field-validator type="requiredstring">
+			<message> Last name is required.</message>
+		</field-validator>
+	</field>
+	
+	<field name="userBranch">
+		<field-validator type="requiredstring">
+			<message> Branch Id is required.</message>
+		</field-validator>
+	</field>
+	
+	<field name="userDept">
+		<field-validator type="requiredstring">
+			<message> Department Id is required.</message>
+		</field-validator>
+	</field>
+	
+	<field name="empNo">
+		<field-validator type="requiredstring">
+			<message> Employee Number is required.</message>
+		</field-validator>
+	</field>
+	
+	<field name="userType">
+		<field-validator type="requiredstring">
+			<message> User Type is required.</message>
+		</field-validator>
+	</field>
+	
+	<field name="userPassword">
+		<field-validator type="requiredstring">
+			<message> Password is required.</message>
+		</field-validator>
+	</field>
+	
+	<field name="user">
+		<field-validator type="requiredstring">
+			<message> User Id is required.</message>
+		</field-validator>
+	</field>
+	
+	<field name="effectiveDateForRole">
+		<field-validator type="required">
+			<message> Effective Date For Role is required.</message>
+		</field-validator>
+	</field>
+	
+	<field name="mobileNumber">
+		<field-validator type="required">
+			<message> Mobile Number is required.</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">mobileNumber</param>
+			<param name="expression"><![CDATA[[0-9.,]+$]]></param>
+			<message> Mobile Number is Not Valid </message>
+		</field-validator>
+	</field>
+	
+	<field name="userDailyLimit">
+		<field-validator type="required">
+			<message> User Daily Limit is required.</message>
+		</field-validator>
+		<field-validator type="regex">
+			<param name="fieldName">userDailyLimit</param>
+			<param name="expression"><![CDATA[[0-9.,]+$]]></param>
+			<message> User Daily Limit is Not Valid </message>
+		</field-validator>
+	</field>
+
+	<field name="userEmailId">
+		<field-validator type="required">
+			<message>User Email Id is  required.</message>
+  		</field-validator>
+	  	<field-validator type="email">
+	  		<message>The user email address you entered is not valid.</message>
+	  	</field-validator>
+	</field>
+
+	
+</validators>

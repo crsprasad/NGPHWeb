@@ -1,0 +1,970 @@
+package com.logica.ngph.web.action;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.apache.struts2.interceptor.SessionAware;
+import org.apache.struts2.interceptor.validation.SkipValidation;
+import org.jboss.util.Base64;
+import org.springframework.context.ApplicationContextException;
+
+import com.logica.ngph.Entity.LcCommodity;
+import com.logica.ngph.common.ConstantUtil;
+import com.logica.ngph.dtos.AuthoriseLCPaymentAdviceDto;
+import com.logica.ngph.dtos.LCAdvicePaymentDto;
+import com.logica.ngph.dtos.LCCanonicalDto;
+import com.logica.ngph.service.AdviceLCPaymentService;
+import com.logica.ngph.service.EnquiryService;
+import com.logica.ngph.service.LcOpenService;
+import com.logica.ngph.service.LetterOfCreditService;
+import com.logica.ngph.service.PaymentMessageService;
+import com.logica.ngph.service.PendingAuthorizationService;
+import com.logica.ngph.web.utils.ApplicationContextProvider;
+import com.logica.ngph.web.utils.EventLogging;
+import com.logica.ngph.web.utils.WebConstants;
+import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.ModelDriven;
+
+public class AuthoriseLCPaymentAdviceAction extends ActionSupport implements ModelDriven<LCCanonicalDto>,SessionAware{
+	private static final long serialVersionUID = 1L;
+	private static Logger logger = Logger.getLogger(AuthoriseLCPaymentAdviceAction.class);
+	private Map<String, Object> session;
+	private String saveAction;
+	private String checkForSubmit;
+	private boolean validUserToApprove;
+	private String hiddenTxnRef;
+	private String txnRef;
+	LCCanonicalDto authoriseLCPaymentAdviceDto =new LCCanonicalDto();
+	private List positiveToleranceList = new ArrayList();
+	private List negativeToleranceList  = new ArrayList();
+	public List getPositiveToleranceList() {
+		return positiveToleranceList;
+	}
+
+	public void setPositiveToleranceList(List positiveToleranceList) {
+		this.positiveToleranceList = positiveToleranceList;
+		this.session.put("positiveToleranceList", positiveToleranceList);
+	}
+
+	public List getNegativeToleranceList() {
+		return negativeToleranceList;
+	}
+
+	public void setNegativeToleranceList(List negativeToleranceList) {
+		this.negativeToleranceList = negativeToleranceList;
+		this.session.put("negativeToleranceList", negativeToleranceList);
+	}
+
+ public void initialiseTolerance(){
+	 List temp= new ArrayList();
+		for(int i=0;i<100;i++){
+			temp.add(i+"");
+		}
+		
+		session.put("positiveToleranceList", temp);
+		session.put("negativeToleranceList", temp);
+	 
+ }
+
+
+	
+
+	
+	@SkipValidation
+	public String displayAuthoLCPaymentAdviceData()
+	{
+		try{
+			String lcnumber = authoriseLCPaymentAdviceDto.getLcNumber();
+			LCCanonicalDto canonicalDto = null;
+			String status="740";
+		  boolean isValidLcNumber = false;
+		  isValidLcNumber=validateLcNumber(lcnumber);
+			if(isValidLcNumber){
+				
+			AdviceLCPaymentService adviceLCPaymentService = (AdviceLCPaymentService) ApplicationContextProvider.getBean("adviceLCPaymentService");
+			 canonicalDto=adviceLCPaymentService.getAuthriseLCScreenData(lcnumber,status);
+			 
+			 session.put("ScreenData", canonicalDto);
+			
+			 authoriseLCPaymentAdviceDto.setLcNumber(canonicalDto.getLcNumber());
+			 authoriseLCPaymentAdviceDto.setAcountID(canonicalDto.getAcountID());
+			 authoriseLCPaymentAdviceDto.setLcExpiryDate(canonicalDto.getLcExpiryDate());
+			 authoriseLCPaymentAdviceDto.setLcExpirePlace(canonicalDto.getLcExpirePlace());
+			 authoriseLCPaymentAdviceDto.setBeneficiaryAccount(canonicalDto.getBeneficiaryAccount());
+			 authoriseLCPaymentAdviceDto.setBeneficiaryNameAddress(canonicalDto.getBeneficiaryNameAddress());
+			 authoriseLCPaymentAdviceDto.setPositiveTolerance(canonicalDto.getPositiveTolerance());
+			 authoriseLCPaymentAdviceDto.setNegativeTolerance(canonicalDto.getNegativeTolerance());
+			 authoriseLCPaymentAdviceDto.setMaximumCreditAmount(canonicalDto.getMaximumCreditAmount());
+			 authoriseLCPaymentAdviceDto.setAdditionalAmountsCovered(canonicalDto.getAdditionalAmountsCovered());
+			 authoriseLCPaymentAdviceDto.setAuthorisedBankCode(canonicalDto.getAuthorisedBankCode());
+			 authoriseLCPaymentAdviceDto.setAuthorisedAndAddress(canonicalDto.getAuthorisedAndAddress());
+			 authoriseLCPaymentAdviceDto.setAuthorisationMode(canonicalDto.getAuthorisationMode());
+			 authoriseLCPaymentAdviceDto.setDraftsAt(canonicalDto.getDraftsAt());
+			 authoriseLCPaymentAdviceDto.setDraweeBankpartyidentifier(canonicalDto.getDraweeBankpartyidentifier());
+			 authoriseLCPaymentAdviceDto.setDraweeBankAccount(canonicalDto.getDraweeBankAccount());
+			 authoriseLCPaymentAdviceDto.setDraweeBankCode(canonicalDto.getDraweeBankCode());
+			 authoriseLCPaymentAdviceDto.setDraweeBankNameAddress(canonicalDto.getDraweeBankNameAddress());
+			 authoriseLCPaymentAdviceDto.setMixedPaymentDetails(canonicalDto.getMixedPaymentDetails());
+			 authoriseLCPaymentAdviceDto.setDeferredPaymentDetails(canonicalDto.getDeferredPaymentDetails());
+			 authoriseLCPaymentAdviceDto.setOtherCharges(canonicalDto.getOtherCharges());
+			 authoriseLCPaymentAdviceDto.setMsgRef(canonicalDto.getMsgRef());
+			 authoriseLCPaymentAdviceDto.setCreditAmount(canonicalDto.getCreditAmount());
+			 authoriseLCPaymentAdviceDto.setLcType(canonicalDto.getLcType());
+			 authoriseLCPaymentAdviceDto.setLcCurrency(canonicalDto.getLcCurrency());
+			 authoriseLCPaymentAdviceDto.setAdvisingBank(canonicalDto.getAdvisingBank());
+			 authoriseLCPaymentAdviceDto.setIssueDate(canonicalDto.getIssueDate());			
+			 authoriseLCPaymentAdviceDto.setApplicantNameAddress(canonicalDto.getApplicantNameAddress());
+			 authoriseLCPaymentAdviceDto.setBeneficiary(canonicalDto.getBeneficiary());			 
+			 authoriseLCPaymentAdviceDto.setLcAmount(canonicalDto.getLcAmount());
+			 authoriseLCPaymentAdviceDto.setNarrative(canonicalDto.getNarrative());	
+			 authoriseLCPaymentAdviceDto.setApplicableRule(canonicalDto.getApplicableRule());
+			 authoriseLCPaymentAdviceDto.setComment(canonicalDto.getComment());
+			 
+			 
+			
+		
+			return "success";
+		}else{
+			addFieldError("LcNumber", "LcNumber, field must not start or end with a slash '/' and must not contain two consecutive slashes '//'");
+			
+			return "input";
+			
+		}
+			
+		}catch (NullPointerException  nullPointerException) {
+			AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+		}
+		catch (ApplicationContextException applicationContextException) {
+			AuditServiceUtil.logApplicationException(applicationContextException, logger);
+		}
+		catch (ClassCastException classCastException) {
+			AuditServiceUtil.logClassCastException(classCastException, logger)	;
+		}
+		catch (Exception exception) {
+			AuditServiceUtil.logException(exception,logger);
+		}
+		addFieldError("LcNumber", "Unable Do Perform Lc Number Not In DataBase");
+	
+		return "input";
+	}
+	
+	private boolean validateLcNumber(String lcNumber){
+		boolean result = true;
+		if(lcNumber.startsWith("/")){
+			 result=false;
+		}else if(lcNumber.endsWith("/")){
+			 result=false;
+		}else if(lcNumber.contains("//")){
+			result = false;
+		}
+		
+		return result;
+	}
+	
+	private LCCanonicalDto getScreenDataFromSession(){
+		LCCanonicalDto authoriseLCPaymentAdviceDto1 = (LCCanonicalDto)session.get("ScreenData");
+		
+		authoriseLCPaymentAdviceDto1.setLcExpiryDate(authoriseLCPaymentAdviceDto.getLcExpiryDate());
+		authoriseLCPaymentAdviceDto1.setLcExpirePlace(authoriseLCPaymentAdviceDto.getLcExpirePlace());
+		authoriseLCPaymentAdviceDto1.setAdvisingBank(authoriseLCPaymentAdviceDto.getAdvisingBank());
+		authoriseLCPaymentAdviceDto1.setLcCurrency(authoriseLCPaymentAdviceDto.getLcCurrency());
+		authoriseLCPaymentAdviceDto1.setPositiveTolerance(authoriseLCPaymentAdviceDto.getPositiveTolerance());
+		authoriseLCPaymentAdviceDto1.setNegativeTolerance(authoriseLCPaymentAdviceDto.getNegativeTolerance());
+		authoriseLCPaymentAdviceDto1.setMaximumCreditAmount(authoriseLCPaymentAdviceDto.getMaximumCreditAmount());
+		authoriseLCPaymentAdviceDto1.setDraftsAt(authoriseLCPaymentAdviceDto.getDraftsAt());
+		authoriseLCPaymentAdviceDto1.setDeferredPaymentDetails(authoriseLCPaymentAdviceDto.getDeferredPaymentDetails());
+		authoriseLCPaymentAdviceDto1.setDraweeBankCode(authoriseLCPaymentAdviceDto.getDraweeBankCode());
+		authoriseLCPaymentAdviceDto1.setDraweeBankpartyidentifier(authoriseLCPaymentAdviceDto.getDraweeBankpartyidentifier());
+		authoriseLCPaymentAdviceDto1.setDraweeBankNameAddress(authoriseLCPaymentAdviceDto.getDraweeBankNameAddress());
+		authoriseLCPaymentAdviceDto1.setDraweeBankAccount(authoriseLCPaymentAdviceDto.getDraweeBankAccount());
+		authoriseLCPaymentAdviceDto1.setMixedPaymentDetails(authoriseLCPaymentAdviceDto.getMixedPaymentDetails());
+		authoriseLCPaymentAdviceDto1.setAcountID(authoriseLCPaymentAdviceDto.getAcountID());
+		 authoriseLCPaymentAdviceDto1.setAuthorisedBankCode(authoriseLCPaymentAdviceDto.getAuthorisedBankCode());
+		 authoriseLCPaymentAdviceDto1.setAuthorisedAndAddress(authoriseLCPaymentAdviceDto.getAuthorisedAndAddress());
+		 authoriseLCPaymentAdviceDto1.setAuthorisationMode(authoriseLCPaymentAdviceDto.getAuthorisationMode());		
+		 authoriseLCPaymentAdviceDto1.setNegotiatingBankCode(authoriseLCPaymentAdviceDto.getNegotiatingBankCode());
+		 authoriseLCPaymentAdviceDto1.setNegotiatingBankAccount(authoriseLCPaymentAdviceDto.getNegotiatingBankAccount());
+		 authoriseLCPaymentAdviceDto1.setNegotiatingBankNameAndAddress(authoriseLCPaymentAdviceDto.getNegotiatingBankNameAndAddress());
+		 authoriseLCPaymentAdviceDto1.setReimbursingBanksCharges(authoriseLCPaymentAdviceDto.getReimbursingBanksCharges());
+		 authoriseLCPaymentAdviceDto1.setOtherCharges(authoriseLCPaymentAdviceDto.getOtherCharges());
+		 authoriseLCPaymentAdviceDto1.setSendertoReceiverInformation(authoriseLCPaymentAdviceDto.getSendertoReceiverInformation());
+		 authoriseLCPaymentAdviceDto1.setNegotiatingBankPartyIdentifier(authoriseLCPaymentAdviceDto.getNegotiatingBankPartyIdentifier());
+		 authoriseLCPaymentAdviceDto1.setCreditAmount(authoriseLCPaymentAdviceDto.getCreditAmount());
+		 authoriseLCPaymentAdviceDto1.setBeneficiaryAccount(authoriseLCPaymentAdviceDto.getBeneficiaryAccount());
+		 authoriseLCPaymentAdviceDto1.setBeneficiaryNameAddress(authoriseLCPaymentAdviceDto.getBeneficiaryNameAddress());
+		 authoriseLCPaymentAdviceDto1.setAdditionalAmountsCovered(authoriseLCPaymentAdviceDto.getAdditionalAmountsCovered());
+		 authoriseLCPaymentAdviceDto1.setApplicableRule(authoriseLCPaymentAdviceDto.getApplicableRule());
+		 authoriseLCPaymentAdviceDto1.setRepair(authoriseLCPaymentAdviceDto.getRepair());
+		 authoriseLCPaymentAdviceDto1.setComment(authoriseLCPaymentAdviceDto.getComment());
+		 authoriseLCPaymentAdviceDto1.setSenderBank(authoriseLCPaymentAdviceDto.getSenderBank());
+		return authoriseLCPaymentAdviceDto1;
+	}
+	
+	public String serializeObject()
+	{
+		LCCanonicalDto canonicalDto = new LCCanonicalDto();
+		LCCanonicalDto canonicalDto1 = new LCCanonicalDto();
+		try{
+			String userId = (String)session.get(WebConstants.CONSTANT_USER_NAME);
+			canonicalDto1 = getScreenDataFromSession();
+			canonicalDto = canonicalDto1;
+			System.out.print("LC NUMBER :"+authoriseLCPaymentAdviceDto.getLcNumber());
+			String fileName ="serial_"+userId+".ser";
+		FileOutputStream fos = new FileOutputStream(fileName);
+        OutputStream buffer = new BufferedOutputStream( fos );
+        ObjectOutputStream oos = new ObjectOutputStream(buffer);
+        oos.writeObject(canonicalDto);
+        oos.flush();
+        oos.close();
+        File file = new File(fileName);
+        byte[] byteArray = new byte[(int) file.length()];
+        FileInputStream fis = new FileInputStream(file); 
+        fis.read(byteArray);
+        String objectString = Base64.encodeBytes(byteArray);
+        System.out.print("Object String :"+objectString);
+        
+		return objectString;
+		
+       
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+	public LCCanonicalDto getSerializedObject(String objectString)
+	{
+		try{
+			
+			byte[] decoded = Base64.decode(objectString);
+            
+            FileOutputStream foss = new FileOutputStream("targetUserObject.ser");
+            foss.write(decoded);
+            foss.close();
+            LCCanonicalDto testDTO = null;
+            
+            FileInputStream fiss = new FileInputStream("targetUserObject.ser");
+            BufferedInputStream bufferee = new BufferedInputStream( fiss );
+            ObjectInputStream oiss = new ObjectInputStream(bufferee);
+            testDTO = (LCCanonicalDto)oiss.readObject();
+            oiss.close();
+            System.out.println("object2: " + testDTO); 
+            System.out.print("User(testDTO) :"+testDTO.getLcNumber());
+          
+            return testDTO;
+
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	public String getAuthoriseLCAdvicePayment()
+	{
+		try{
+				String txnKey="";
+				PendingAuthorizationService pendingAuthorizationService = (PendingAuthorizationService)ApplicationContextProvider.getBean("pendingAuthorizationService");
+				EventLogging eventLogging = (EventLogging)ApplicationContextProvider.getBean("eventLogging");
+				String userId = (String)session.get(WebConstants.CONSTANT_USER_NAME);
+				if(StringUtils.isBlank(authoriseLCPaymentAdviceDto.getRepair()) && StringUtils.isEmpty(authoriseLCPaymentAdviceDto.getRepair())){
+					txnKey = pendingAuthorizationService.getTranRef(serializeObject(),"Authorise Lc Payment Advice",userId);
+					eventLogging.doEventLogging(userId, "Authorise Lc Payment Advice", ConstantUtil.EVENTID_LC_AUTHORIZE+ConstantUtil.EVENTID_SUBMIT, ConstantUtil.EVENTLOGGINGCOMMENTSUBMIT,authoriseLCPaymentAdviceDto.getLcNumber(),authoriseLCPaymentAdviceDto.getMsgRef());
+				}else{
+					PaymentMessageService paymentMessageService =(PaymentMessageService)ApplicationContextProvider.getBean("paymentMessageService");
+					paymentMessageService.changeMsgStatus2to99(authoriseLCPaymentAdviceDto.getMsgRef());
+					txnKey = pendingAuthorizationService.getTranRef(serializeObject(),"Authorise Lc Payment Advice",userId);
+					eventLogging.doEventLogging(userId, "Authorise Lc Payment Advice", ConstantUtil.EVENTID_LC_AUTHORIZE+ConstantUtil.EVENTID_REPAIR_SUBMIT, ConstantUtil.EVENTLOGGINGCOMMENTSUBMIT+" "+ConstantUtil.EVENTLOGGINGCOMMENTREAPIR,authoriseLCPaymentAdviceDto.getLcNumber(),authoriseLCPaymentAdviceDto.getMsgRef());
+				}
+				System.out.println("txnkey "+txnKey);	
+				session.remove("ScreenData");
+				return "success";	
+	       
+			}catch (NullPointerException  nullPointerException) {
+				AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+			}
+			catch (ApplicationContextException applicationContextException) {
+				AuditServiceUtil.logApplicationException(applicationContextException, logger);
+			}
+			catch (ClassCastException classCastException) {
+				AuditServiceUtil.logClassCastException(classCastException, logger)	;
+			}
+			catch (Exception exception) {
+				AuditServiceUtil.logException(exception,logger);
+			}
+
+			addActionError("Unable to perform the operation. Please try again");
+			session.remove("ScreenData");
+			return "input";				
+	}
+	
+	@SkipValidation
+	public String getAuthoLCPaymentAdviceAuthorization()
+	{
+	try{	
+		PendingAuthorizationService pendingAuthorizationService = (PendingAuthorizationService)ApplicationContextProvider.getBean("pendingAuthorizationService");
+		setCheckForSubmit("Display_Approve_Reject");
+		String userId = pendingAuthorizationService.getCreatedUser(getTxnRef());
+		String userRole = pendingAuthorizationService.getUserType((String)session.get(WebConstants.CONSTANT_USER_NAME));
+		if((((String)session.get(WebConstants.CONSTANT_USER_NAME)).equals(userId) || userRole.equals("T"))){
+			setValidUserToApprove(false);
+		} else {
+			setValidUserToApprove(true);
+		}
+		String tempScreenString =pendingAuthorizationService.getScreenReturn(getTxnRef());
+		LCCanonicalDto temp= getSerializedObject(tempScreenString);
+		 authoriseLCPaymentAdviceDto.setLcNumber(temp.getLcNumber());
+		 authoriseLCPaymentAdviceDto.setAcountID(temp.getAcountID());
+		 authoriseLCPaymentAdviceDto.setLcExpiryDate(temp.getLcExpiryDate());
+		 authoriseLCPaymentAdviceDto.setLcExpirePlace(temp.getLcExpirePlace());
+		 authoriseLCPaymentAdviceDto.setNegotiatingBankPartyIdentifier(temp.getNegotiatingBankPartyIdentifier());
+		 authoriseLCPaymentAdviceDto.setNegotiatingBankAccount(temp.getNegotiatingBankAccount());
+		 authoriseLCPaymentAdviceDto.setNegotiatingBankCode(temp.getNegotiatingBankCode());
+		 authoriseLCPaymentAdviceDto.setNegotiatingBankNameAndAddress(temp.getNegotiatingBankNameAndAddress());
+		 authoriseLCPaymentAdviceDto.setBeneficiaryAccount(temp.getBeneficiaryAccount());
+		 authoriseLCPaymentAdviceDto.setBeneficiaryNameAddress(temp.getBeneficiaryNameAddress());
+		 authoriseLCPaymentAdviceDto.setPositiveTolerance(temp.getPositiveTolerance());
+		 authoriseLCPaymentAdviceDto.setNegativeTolerance(temp.getNegativeTolerance());
+		 authoriseLCPaymentAdviceDto.setMaximumCreditAmount(temp.getMaximumCreditAmount());
+		 authoriseLCPaymentAdviceDto.setAdditionalAmountsCovered(temp.getAdditionalAmountsCovered());
+		 authoriseLCPaymentAdviceDto.setAuthorisedBankCode(temp.getAuthorisedBankCode());
+		 authoriseLCPaymentAdviceDto.setAuthorisedAndAddress(temp.getAuthorisedAndAddress());
+		 authoriseLCPaymentAdviceDto.setAuthorisationMode(temp.getAuthorisationMode());
+		 authoriseLCPaymentAdviceDto.setDraftsAt(temp.getDraftsAt());
+		 authoriseLCPaymentAdviceDto.setDraweeBankpartyidentifier(temp.getDraweeBankpartyidentifier());
+		 authoriseLCPaymentAdviceDto.setDraweeBankAccount(temp.getDraweeBankAccount());
+		 authoriseLCPaymentAdviceDto.setDraweeBankCode(temp.getDraweeBankCode());
+		 authoriseLCPaymentAdviceDto.setDraweeBankNameAddress(temp.getDraweeBankNameAddress());
+		 authoriseLCPaymentAdviceDto.setMixedPaymentDetails(temp.getMixedPaymentDetails());
+		 authoriseLCPaymentAdviceDto.setDeferredPaymentDetails(temp.getDeferredPaymentDetails());
+		 authoriseLCPaymentAdviceDto.setReimbursingBanksCharges(temp.getReimbursingBanksCharges());
+		 authoriseLCPaymentAdviceDto.setOtherCharges(temp.getOtherCharges());
+		 authoriseLCPaymentAdviceDto.setSendertoReceiverInformation(temp.getSendertoReceiverInformation());
+		 authoriseLCPaymentAdviceDto.setMsgRef(temp.getMsgRef());
+		 authoriseLCPaymentAdviceDto.setCreditAmount(temp.getCreditAmount());
+		 authoriseLCPaymentAdviceDto.setLcType(temp.getLcType());
+		 authoriseLCPaymentAdviceDto.setLcCurrency(temp.getLcCurrency());
+		 authoriseLCPaymentAdviceDto.setAdvisingBank(temp.getAdvisingBank());
+		 authoriseLCPaymentAdviceDto.setLcAmount(temp.getLcAmount());
+		 authoriseLCPaymentAdviceDto.setApplicantNameAddress(temp.getApplicantNameAddress());
+		 authoriseLCPaymentAdviceDto.setBeneficiary(temp.getBeneficiary());			 
+		 authoriseLCPaymentAdviceDto.setIssueDate(temp.getIssueDate());
+		 authoriseLCPaymentAdviceDto.setNarrative(temp.getNarrative());
+		 authoriseLCPaymentAdviceDto.setNegotiatingBankPartyIdentifier(temp.getNegotiatingBankPartyIdentifier());
+		 authoriseLCPaymentAdviceDto.setApplicableRule(temp.getApplicableRule());
+		 authoriseLCPaymentAdviceDto.setApplicableNarrative(temp.getApplicableNarrative());		 
+			        
+	        authoriseLCPaymentAdviceDto.setAdditionalAmounts(temp.getAdditionalAmounts());	      
+	        authoriseLCPaymentAdviceDto.setInitialDispatchPlace(temp.getInitialDispatchPlace());
+	        authoriseLCPaymentAdviceDto.setGoodsDestination(temp.getGoodsDestination());
+	        authoriseLCPaymentAdviceDto.setLatestDateofShipment(temp.getLatestDateofShipment());
+	        authoriseLCPaymentAdviceDto.setShipmentPeriod(temp.getShipmentPeriod());
+	        authoriseLCPaymentAdviceDto.setShipmentTerms(temp.getShipmentTerms());	      
+	        authoriseLCPaymentAdviceDto.setPartialShipments(temp.getPartialShipments());
+	        authoriseLCPaymentAdviceDto.setTranshipment(temp.getTranshipment());
+	        authoriseLCPaymentAdviceDto.setDocumentsRequired(temp.getDocumentsRequired());
+	        authoriseLCPaymentAdviceDto.setAdditionalConditions(temp.getAdditionalConditions());
+	        authoriseLCPaymentAdviceDto.setChargeDetails(temp.getChargeDetails());
+	        authoriseLCPaymentAdviceDto.setPeriodforPresentation(temp.getPeriodforPresentation());
+	        authoriseLCPaymentAdviceDto.setConfirmationCode(temp.getConfirmationCode());
+	        authoriseLCPaymentAdviceDto.setInstructionstoPayingBank(temp.getInstructionstoPayingBank());		
+	        authoriseLCPaymentAdviceDto.setAdviseThroughBankpartyidentifier(temp.getAdviseThroughBankpartyidentifier());
+	        authoriseLCPaymentAdviceDto.setAdviseThroughBankCode(temp.getAdviseThroughBankCode());
+	        authoriseLCPaymentAdviceDto.setAdviseThroughBankLocation(temp.getAdviseThroughBankLocation());
+	        authoriseLCPaymentAdviceDto.setAdviseThroughBankAcc(temp.getAdviseThroughBankAcc());
+	        authoriseLCPaymentAdviceDto.setAdviseThroughBankName(temp.getAdviseThroughBankName());
+			authoriseLCPaymentAdviceDto.setPartyIdentifier(temp.getPartyIdentifier());
+			authoriseLCPaymentAdviceDto.setReimbursingBankCode(temp.getReimbursingBankCode());
+	        authoriseLCPaymentAdviceDto.setReimbursingBankNameAddress(temp.getReimbursingBankNameAddress());
+			authoriseLCPaymentAdviceDto.setApplicantAccount(temp.getApplicantAccount());   
+			authoriseLCPaymentAdviceDto.setApplicantBankpartyidentifier(temp.getApplicantBankpartyidentifier());
+	        authoriseLCPaymentAdviceDto.setApplicantBankCode(temp.getApplicantBankCode());
+	        authoriseLCPaymentAdviceDto.setApplicantBankNameAddress(temp.getApplicantBankNameAddress()); 
+	      
+	        
+	        
+	        authoriseLCPaymentAdviceDto.setPresentingBanksReference(temp.getPresentingBanksReference());
+	        authoriseLCPaymentAdviceDto.setTotalAmountClaimed(temp.getTotalAmountClaimed());
+	        authoriseLCPaymentAdviceDto.setPaidAmount(temp.getPaidAmount());		
+	        authoriseLCPaymentAdviceDto.setSendersCorrespondentPartyIdentifier(temp.getSendersCorrespondentPartyIdentifier());
+	        authoriseLCPaymentAdviceDto.setSenderCorrespontAcount(temp.getSenderCorrespontAcount());		
+	        authoriseLCPaymentAdviceDto.setSendersCorrespondentCode(temp.getSendersCorrespondentCode());
+	        authoriseLCPaymentAdviceDto.setSendersCorrespondentLocation(temp.getSendersCorrespondentLocation());
+	        authoriseLCPaymentAdviceDto.setSendersCorrespondentNameandAddress(temp.getSendersCorrespondentNameandAddress());
+	        authoriseLCPaymentAdviceDto.setReceiversCorrespondentPartyIdentifier(temp.getReceiversCorrespondentPartyIdentifier());
+	        authoriseLCPaymentAdviceDto.setReceiverCorrespontAcount(temp.getReceiverCorrespontAcount());		
+	        authoriseLCPaymentAdviceDto.setReceiversCorrespondentCode(temp.getReceiversCorrespondentCode());
+	        authoriseLCPaymentAdviceDto.setReceiversCorrespondentLocation(temp.getReceiversCorrespondentLocation());
+	        authoriseLCPaymentAdviceDto.setReceiversCorrespondentNameandAddress(temp.getReceiversCorrespondentNameandAddress());
+	        authoriseLCPaymentAdviceDto.setNetChargeAmount(temp.getNetChargeAmount());
+	        authoriseLCPaymentAdviceDto.setGoodsLoadingDispatchPlace(temp.getGoodsLoadingDispatchPlace());
+	        authoriseLCPaymentAdviceDto.setFinalDeliveryPlace(temp.getFinalDeliveryPlace());
+	        authoriseLCPaymentAdviceDto.setAmountPaidDate(temp.getAmountPaidDate());
+	        authoriseLCPaymentAdviceDto.setIncreaseAmendAmount(temp.getIncreaseAmendAmount());
+	        authoriseLCPaymentAdviceDto.setDecreaseAmendAmount(temp.getDecreaseAmendAmount());
+	        authoriseLCPaymentAdviceDto.setAmendmentDate(temp.getAmendmentDate());
+	        authoriseLCPaymentAdviceDto.setLcAmndmntNo(temp.getLcAmndmntNo());
+	        authoriseLCPaymentAdviceDto.setOldAmendExpiryDate(temp.getOldAmendExpiryDate());
+	        authoriseLCPaymentAdviceDto.setOldLcAmount(temp.getOldLcAmount());
+	        authoriseLCPaymentAdviceDto.setSeqNo(temp.getSeqNo());
+	        authoriseLCPaymentAdviceDto.setMsgHost(temp.getMsgHost());
+	        authoriseLCPaymentAdviceDto.setRepair(temp.getRepair());
+	        authoriseLCPaymentAdviceDto.setComment(temp.getComment());
+	        authoriseLCPaymentAdviceDto.setServiceID(temp.getServiceID());
+	        authoriseLCPaymentAdviceDto.setMesgIsReturn(temp.getMesgIsReturn());
+	        authoriseLCPaymentAdviceDto.setMsgPDECount(temp.getMsgPDECount());
+	        authoriseLCPaymentAdviceDto.setMsgGRPSeq(temp.getMsgGRPSeq());
+	        authoriseLCPaymentAdviceDto.setMsgValueDate(temp.getMsgValueDate());
+	        authoriseLCPaymentAdviceDto.setPymntAcceptedTime(temp.getPymntAcceptedTime());
+	        authoriseLCPaymentAdviceDto.setIssuingBankCode(temp.getIssuingBankCode());
+	        authoriseLCPaymentAdviceDto.setSenderBank(temp.getSenderBank());
+	        authoriseLCPaymentAdviceDto.setSenderBankReference(temp.getSenderBankReference());
+	        if(getPositiveToleranceList().isEmpty() && getNegativeToleranceList().isEmpty()){
+	        	initialiseTolerance();
+	        }
+	        session.put("APPROVE_DATA", authoriseLCPaymentAdviceDto);
+		 
+		 
+		 
+				
+		setHiddenTxnRef(getTxnRef());
+	
+		return "success";
+	}	
+	catch (NullPointerException  nullPointerException) {
+		AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+	}
+	catch (ApplicationContextException applicationContextException) {
+		AuditServiceUtil.logApplicationException(applicationContextException, logger);
+	}
+	catch (ClassCastException classCastException) {
+		AuditServiceUtil.logClassCastException(classCastException, logger)	;
+	}
+	catch (Exception exception) {
+		AuditServiceUtil.logException(exception,logger);
+	}
+
+	addActionError("Unable to perform the operation. Please try again");
+	return "input";
+	}
+	
+	private String RepairData;
+
+	public String getRepairData() {
+		return RepairData;
+	}
+
+	public void setRepairData(String repairData) {
+		RepairData = repairData;
+	}
+	public String getObjectForAuthoLCPaymentAdvice()
+	{
+		try{
+			LCCanonicalDto authoriseLCPaymentAdviceDto1 = (LCCanonicalDto)session.get("APPROVE_DATA");
+			String userId = (String)session.get(WebConstants.CONSTANT_USER_NAME);
+			PendingAuthorizationService pendingAuthorizationService = (PendingAuthorizationService)ApplicationContextProvider.getBean("pendingAuthorizationService");
+			EventLogging eventLogging = (EventLogging)ApplicationContextProvider.getBean("eventLogging");
+			LetterOfCreditService letterOfCreditService =  (LetterOfCreditService)  ApplicationContextProvider.getBean("letterOfCreditService");
+			if(getSaveAction().equals("Approve")){
+				 String returnString =letterOfCreditService.saveLC(authoriseLCPaymentAdviceDto1,null,"AuthPaymentAdvice",userId,authoriseLCPaymentAdviceDto1.getRepair());
+				if(returnString!=null && !returnString.equals("") ){
+					pendingAuthorizationService.changeStatus(getSaveAction(), getHiddenTxnRef());
+					if(StringUtils.isBlank(authoriseLCPaymentAdviceDto1.getRepair()) && StringUtils.isEmpty(authoriseLCPaymentAdviceDto1.getRepair())){
+						eventLogging.doEventLogging(userId," Authorise Lc Payment Advice ",ConstantUtil.EVENTID_LC_AUTHORIZE+ConstantUtil.EVENTID_APPROVE,ConstantUtil.EVENTLOGGINGCOMMENTAPPROVAL,authoriseLCPaymentAdviceDto1.getLcNumber(),authoriseLCPaymentAdviceDto1.getMsgRef());
+					}else{
+						eventLogging.doEventLogging(userId,"Authorise Lc Payment Advice",ConstantUtil.EVENTID_LC_AUTHORIZE +ConstantUtil.EVENTID_REPAIR_APPROVE,ConstantUtil.EVENTLOGGINGCOMMENTAPPROVAL+" "+ConstantUtil.EVENTLOGGINGCOMMENTREAPIR,authoriseLCPaymentAdviceDto1.getLcNumber(),authoriseLCPaymentAdviceDto1.getMsgRef());
+					}
+					session.remove("APPROVE_DATA");
+					return "success";	
+				}else{
+					addActionError("Unable to perform the operation. Please try again");
+					session.remove("APPROVE_DATA");
+					return "input";
+					}
+				}else{
+					if(StringUtils.isBlank(authoriseLCPaymentAdviceDto1.getRepair()) && StringUtils.isEmpty(authoriseLCPaymentAdviceDto1.getRepair())){
+						pendingAuthorizationService.changeStatus(getSaveAction(), getHiddenTxnRef());
+						eventLogging.doEventLogging(userId, "AuthPaymentAdvice", ConstantUtil.EVENTID_LC_AUTHORIZE+ConstantUtil.EVENTID_REJECT, ConstantUtil.EVENTLOGGINGCOMMENTREJECT,authoriseLCPaymentAdviceDto1.getLcNumber(),authoriseLCPaymentAdviceDto1.getMsgRef());
+					}else{
+						PaymentMessageService paymentMessageService =(PaymentMessageService)ApplicationContextProvider.getBean("paymentMessageService");
+						paymentMessageService.changeMsgStatus99to2(authoriseLCPaymentAdviceDto1.getMsgRef());
+						pendingAuthorizationService.changeStatus(getSaveAction(), getHiddenTxnRef());
+						eventLogging.doEventLogging(userId, "AuthPaymentAdvice", ConstantUtil.EVENTID_LC_AUTHORIZE+ConstantUtil.EVENTID_REPAIR_REJECT, ConstantUtil.EVENTLOGGINGCOMMENTREJECT+" "+ConstantUtil.EVENTLOGGINGCOMMENTREAPIR,authoriseLCPaymentAdviceDto1.getLcNumber(),authoriseLCPaymentAdviceDto1.getMsgRef());
+					}
+					session.remove("APPROVE_DATA");
+					return "success";
+			}
+		}catch (NullPointerException  nullPointerException) {
+			AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+		}
+		catch (ApplicationContextException applicationContextException) {
+			AuditServiceUtil.logApplicationException(applicationContextException, logger);
+		}
+		catch (ClassCastException classCastException) {
+			AuditServiceUtil.logClassCastException(classCastException, logger)	;
+		}
+		catch (Exception exception) {
+			AuditServiceUtil.logException(exception,logger);
+		}
+	
+		addActionError("Unable to perform the operation. Please try again");
+		session.remove("APPROVE_DATA");
+		return "input";
+	}
+	
+
+	
+	@SkipValidation
+	public String viewAuthorisePayment()
+	{
+		try{
+		displayAuthoriseLcPaymentAdvice();
+		String msgRef = (String) session.get("messageIndex");
+		LetterOfCreditService letterOfCreditService =  (LetterOfCreditService)  ApplicationContextProvider.getBean("letterOfCreditService");
+		LCCanonicalDto canonicalDto = letterOfCreditService.getPreAdviceRepair(msgRef);
+		if(canonicalDto.getLcNumber()!=null && StringUtils.isNotBlank(canonicalDto.getLcNumber()) && StringUtils.isNotEmpty(canonicalDto.getLcNumber()))
+			{canonicalDto.setRepair(ConstantUtil.REPAIR);
+			setALLValueTODTO(canonicalDto);
+			}
+		else
+		{
+			addFieldError("paymentMessageType",ConstantUtil.ERRORMESSAGE);
+			return "failure";
+		}
+		return INPUT;
+		}catch(Exception exception)
+		{
+			addFieldError("paymentMessageType",ConstantUtil.ERRORMESSAGE);
+			return "failure";
+		}
+	}
+	
+	private void setALLValueTODTO(LCCanonicalDto obj)
+	{
+		
+		LCCanonicalDto temp = obj;
+		 authoriseLCPaymentAdviceDto.setLcNumber(temp.getLcNumber());
+		 authoriseLCPaymentAdviceDto.setAcountID(temp.getAcountID());
+		 authoriseLCPaymentAdviceDto.setLcExpiryDate(temp.getLcExpiryDate());
+		 authoriseLCPaymentAdviceDto.setLcExpirePlace(temp.getLcExpirePlace());
+		 authoriseLCPaymentAdviceDto.setNegotiatingBankPartyIdentifier(temp.getNegotiatingBankPartyIdentifier());
+		 authoriseLCPaymentAdviceDto.setNegotiatingBankAccount(temp.getNegotiatingBankAccount());
+		 authoriseLCPaymentAdviceDto.setNegotiatingBankCode(temp.getNegotiatingBankCode());
+		 authoriseLCPaymentAdviceDto.setNegotiatingBankNameAndAddress(temp.getNegotiatingBankNameAndAddress());
+		 authoriseLCPaymentAdviceDto.setBeneficiaryAccount(temp.getBeneficiaryAccount());
+		 authoriseLCPaymentAdviceDto.setBeneficiaryNameAddress(temp.getBeneficiaryNameAddress());
+		 authoriseLCPaymentAdviceDto.setPositiveTolerance(temp.getPositiveTolerance());
+		 authoriseLCPaymentAdviceDto.setNegativeTolerance(temp.getNegativeTolerance());
+		 authoriseLCPaymentAdviceDto.setMaximumCreditAmount(temp.getMaximumCreditAmount());
+		 authoriseLCPaymentAdviceDto.setAdditionalAmountsCovered(temp.getAdditionalAmountsCovered());
+		 authoriseLCPaymentAdviceDto.setAuthorisedBankCode(temp.getAuthorisedBankCode());
+		 authoriseLCPaymentAdviceDto.setAuthorisedAndAddress(temp.getAuthorisedAndAddress());
+		 authoriseLCPaymentAdviceDto.setAuthorisationMode(temp.getAuthorisationMode());
+		 authoriseLCPaymentAdviceDto.setDraftsAt(temp.getDraftsAt());
+		 authoriseLCPaymentAdviceDto.setDraweeBankpartyidentifier(temp.getDraweeBankpartyidentifier());
+		 authoriseLCPaymentAdviceDto.setDraweeBankAccount(temp.getDraweeBankAccount());
+		 authoriseLCPaymentAdviceDto.setDraweeBankCode(temp.getDraweeBankCode());
+		 authoriseLCPaymentAdviceDto.setDraweeBankNameAddress(temp.getDraweeBankNameAddress());
+		 authoriseLCPaymentAdviceDto.setMixedPaymentDetails(temp.getMixedPaymentDetails());
+		 authoriseLCPaymentAdviceDto.setDeferredPaymentDetails(temp.getDeferredPaymentDetails());
+		 authoriseLCPaymentAdviceDto.setReimbursingBanksCharges(temp.getReimbursingBanksCharges());
+		 authoriseLCPaymentAdviceDto.setOtherCharges(temp.getChargeDetails());
+		 authoriseLCPaymentAdviceDto.setSendertoReceiverInformation(temp.getSendertoReceiverInformation());
+		 authoriseLCPaymentAdviceDto.setMsgRef(temp.getMsgRef());
+		 authoriseLCPaymentAdviceDto.setCreditAmount(temp.getCreditAmount());
+		 authoriseLCPaymentAdviceDto.setLcType(temp.getLcType());
+		 authoriseLCPaymentAdviceDto.setLcCurrency(temp.getLcCurrency());
+		 authoriseLCPaymentAdviceDto.setAdvisingBank(temp.getAdvisingBank());
+		 authoriseLCPaymentAdviceDto.setLcAmount(temp.getLcAmount());
+		 authoriseLCPaymentAdviceDto.setApplicantNameAddress(temp.getApplicantNameAddress());
+		 authoriseLCPaymentAdviceDto.setBeneficiary(temp.getBeneficiary());			 
+		 authoriseLCPaymentAdviceDto.setIssueDate(temp.getIssueDate());
+		 authoriseLCPaymentAdviceDto.setNarrative(temp.getNarrative());
+		 authoriseLCPaymentAdviceDto.setNegotiatingBankPartyIdentifier(temp.getNegotiatingBankPartyIdentifier());
+		  authoriseLCPaymentAdviceDto.setApplicableRule(temp.getApplicableRule());
+			        
+	        authoriseLCPaymentAdviceDto.setAdditionalAmounts(temp.getAdditionalAmounts());	      
+	        authoriseLCPaymentAdviceDto.setInitialDispatchPlace(temp.getInitialDispatchPlace());
+	        authoriseLCPaymentAdviceDto.setGoodsDestination(temp.getGoodsDestination());
+	        authoriseLCPaymentAdviceDto.setLatestDateofShipment(temp.getLatestDateofShipment());
+	        authoriseLCPaymentAdviceDto.setShipmentPeriod(temp.getShipmentPeriod());
+	        authoriseLCPaymentAdviceDto.setShipmentTerms(temp.getShipmentTerms());	      
+	        authoriseLCPaymentAdviceDto.setPartialShipments(temp.getPartialShipments());
+	        authoriseLCPaymentAdviceDto.setTranshipment(temp.getTranshipment());
+	        authoriseLCPaymentAdviceDto.setDocumentsRequired(temp.getDocumentsRequired());
+	        authoriseLCPaymentAdviceDto.setAdditionalConditions(temp.getAdditionalConditions());
+	        authoriseLCPaymentAdviceDto.setChargeDetails(temp.getChargeDetails());
+	        authoriseLCPaymentAdviceDto.setPeriodforPresentation(temp.getPeriodforPresentation());
+	        authoriseLCPaymentAdviceDto.setConfirmationCode(temp.getConfirmationCode());
+	        authoriseLCPaymentAdviceDto.setInstructionstoPayingBank(temp.getInstructionstoPayingBank());		
+	        authoriseLCPaymentAdviceDto.setAdviseThroughBankpartyidentifier(temp.getAdviseThroughBankpartyidentifier());
+	        authoriseLCPaymentAdviceDto.setAdviseThroughBankCode(temp.getAdviseThroughBankCode());
+	        authoriseLCPaymentAdviceDto.setAdviseThroughBankLocation(temp.getAdviseThroughBankLocation());
+	        authoriseLCPaymentAdviceDto.setAdviseThroughBankAcc(temp.getAdviseThroughBankAcc());
+	        authoriseLCPaymentAdviceDto.setAdviseThroughBankName(temp.getAdviseThroughBankName());
+			authoriseLCPaymentAdviceDto.setPartyIdentifier(temp.getPartyIdentifier());
+			authoriseLCPaymentAdviceDto.setReimbursingBankCode(temp.getReimbursingBankCode());
+	        authoriseLCPaymentAdviceDto.setReimbursingBankNameAddress(temp.getReimbursingBankNameAddress());
+			authoriseLCPaymentAdviceDto.setApplicantAccount(temp.getApplicantAccount());   
+			authoriseLCPaymentAdviceDto.setApplicantBankpartyidentifier(temp.getApplicantBankpartyidentifier());
+	        authoriseLCPaymentAdviceDto.setApplicantBankCode(temp.getApplicantBankCode());
+	        authoriseLCPaymentAdviceDto.setApplicantBankNameAddress(temp.getApplicantBankNameAddress());     
+	        
+	        
+	        authoriseLCPaymentAdviceDto.setPresentingBanksReference(temp.getPresentingBanksReference());
+	        authoriseLCPaymentAdviceDto.setTotalAmountClaimed(temp.getTotalAmountClaimed());
+	        authoriseLCPaymentAdviceDto.setPaidAmount(temp.getPaidAmount());		
+	        authoriseLCPaymentAdviceDto.setSendersCorrespondentPartyIdentifier(temp.getSendersCorrespondentPartyIdentifier());
+	        authoriseLCPaymentAdviceDto.setSenderCorrespontAcount(temp.getSenderCorrespontAcount());		
+	        authoriseLCPaymentAdviceDto.setSendersCorrespondentCode(temp.getSendersCorrespondentCode());
+	        authoriseLCPaymentAdviceDto.setSendersCorrespondentLocation(temp.getSendersCorrespondentLocation());
+	        authoriseLCPaymentAdviceDto.setSendersCorrespondentNameandAddress(temp.getSendersCorrespondentNameandAddress());
+	        authoriseLCPaymentAdviceDto.setReceiversCorrespondentPartyIdentifier(temp.getReceiversCorrespondentPartyIdentifier());
+	        authoriseLCPaymentAdviceDto.setReceiverCorrespontAcount(temp.getReceiverCorrespontAcount());		
+	        authoriseLCPaymentAdviceDto.setReceiversCorrespondentCode(temp.getReceiversCorrespondentCode());
+	        authoriseLCPaymentAdviceDto.setReceiversCorrespondentLocation(temp.getReceiversCorrespondentLocation());
+	        authoriseLCPaymentAdviceDto.setReceiversCorrespondentNameandAddress(temp.getReceiversCorrespondentNameandAddress());
+	        authoriseLCPaymentAdviceDto.setNetChargeAmount(temp.getNetChargeAmount());	
+	        authoriseLCPaymentAdviceDto.setGoodsLoadingDispatchPlace(temp.getGoodsLoadingDispatchPlace());
+	        authoriseLCPaymentAdviceDto.setFinalDeliveryPlace(temp.getFinalDeliveryPlace());
+	        authoriseLCPaymentAdviceDto.setAmountPaidDate(temp.getAmountPaidDate());
+	        authoriseLCPaymentAdviceDto.setRepair(temp.getRepair());
+	        authoriseLCPaymentAdviceDto.setIncreaseAmendAmount(temp.getIncreaseAmendAmount());
+	        authoriseLCPaymentAdviceDto.setDecreaseAmendAmount(temp.getDecreaseAmendAmount());
+	        authoriseLCPaymentAdviceDto.setAmendmentDate(temp.getAmendmentDate());
+	        authoriseLCPaymentAdviceDto.setLcAmndmntNo(temp.getLcAmndmntNo());
+	        authoriseLCPaymentAdviceDto.setIssueDate(temp.getIssueDate());
+	        authoriseLCPaymentAdviceDto.setApplicableNarrative(temp.getApplicableNarrative());
+	        authoriseLCPaymentAdviceDto.setOldAmendExpiryDate(temp.getOldAmendExpiryDate());
+	        authoriseLCPaymentAdviceDto.setOldLcAmount(temp.getOldLcAmount());
+	        authoriseLCPaymentAdviceDto.setSeqNo(temp.getSeqNo()); 
+	        authoriseLCPaymentAdviceDto.setMsgHost(temp.getMsgHost());
+	        authoriseLCPaymentAdviceDto.setDraweeBankAccount(temp.getDraweeBankAccount());
+	        authoriseLCPaymentAdviceDto.setServiceID(temp.getServiceID());
+	        authoriseLCPaymentAdviceDto.setMesgIsReturn(temp.getMesgIsReturn());
+	        authoriseLCPaymentAdviceDto.setMsgPDECount(temp.getMsgPDECount());
+	        authoriseLCPaymentAdviceDto.setSenderBankReference(temp.getSenderBankReference());
+	        authoriseLCPaymentAdviceDto.setMsgGRPSeq(temp.getMsgGRPSeq());
+	        authoriseLCPaymentAdviceDto.setMsgValueDate(temp.getMsgValueDate());
+	        authoriseLCPaymentAdviceDto.setPymntAcceptedTime(temp.getPymntAcceptedTime());
+	        authoriseLCPaymentAdviceDto.setIssuingBankCode(temp.getIssuingBankCode());
+	        authoriseLCPaymentAdviceDto.setSenderBank(temp.getSenderBank());
+			if(temp.getTxnReference()!= null && !temp.getTxnReference().equals("")){
+				authoriseLCPaymentAdviceDto.setReceiverBankReference(temp.getTxnReference());
+				 }else if(temp.getCustTxnReference()!= null && !temp.getCustTxnReference().equals("")){
+					 authoriseLCPaymentAdviceDto.setReceiverBankReference(temp.getCustTxnReference());
+				 }else if(temp.getSndrTxnId()!=null && !temp.getSndrTxnId().equals("")){
+					 authoriseLCPaymentAdviceDto.setReceiverBankReference(temp.getSndrTxnId());
+				 }
+	        
+	        session.put("ScreenData", authoriseLCPaymentAdviceDto);
+		
+	}
+
+	private String lcNumber;
+	public Map<String, Object> getSession() {
+		return session;
+	}
+
+	public void setSession(Map<String, Object> session) {
+		this.session = session;
+	}
+
+	public String getSaveAction() {
+		return saveAction;
+	}
+
+	public void setSaveAction(String saveAction) {
+		this.saveAction = saveAction;
+	}
+
+	public String getCheckForSubmit() {
+		return checkForSubmit;
+	}
+
+	public void setCheckForSubmit(String checkForSubmit) {
+		this.checkForSubmit = checkForSubmit;
+	}
+
+	public boolean isValidUserToApprove() {
+		return validUserToApprove;
+	}
+
+	public void setValidUserToApprove(boolean validUserToApprove) {
+		this.validUserToApprove = validUserToApprove;
+	}
+
+	public String getHiddenTxnRef() {
+		return hiddenTxnRef;
+	}
+
+	public void setHiddenTxnRef(String hiddenTxnRef) {
+		this.hiddenTxnRef = hiddenTxnRef;
+	}
+
+	public String getTxnRef() {
+		return txnRef;
+	}
+
+	public void setTxnRef(String txnRef) {
+		this.txnRef = txnRef;
+	}
+
+	public String getLcNumber() {
+		return lcNumber;
+	}
+
+	public void setLcNumber(String lcNumber) {
+		this.lcNumber = lcNumber;
+	}
+	public void setMobel(LCCanonicalDto connionicalDto)
+	{
+		 this.authoriseLCPaymentAdviceDto=connionicalDto;
+	}
+	public LCCanonicalDto getModel() {
+		
+		return authoriseLCPaymentAdviceDto;
+	}
+
+	
+	@SkipValidation
+	public String displayAuthoriseLcPaymentAdvice()
+	{	
+		
+			try{
+				
+				List temp= new ArrayList();
+				for(int i=0;i<100;i++){
+					temp.add(i+"");
+				}
+				
+				session.put("positiveToleranceList", temp);
+				session.put("negativeToleranceList", temp);
+				authoriseLCPaymentAdviceDto.setRepair("");
+				
+				return "success";
+			
+			}catch (NullPointerException  nullPointerException) {
+				AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+			}
+			catch (ApplicationContextException applicationContextException) {
+				AuditServiceUtil.logApplicationException(applicationContextException, logger);
+			}
+			catch (ClassCastException classCastException) {
+				AuditServiceUtil.logClassCastException(classCastException, logger)	;
+			}
+			catch (Exception exception) {
+				AuditServiceUtil.logException(exception,logger);
+			}
+		
+			return "input";
+		}		
+	
+	public void validate()
+	{
+		try{
+			LetterOfCreditService letterOfCreditService =  (LetterOfCreditService)  ApplicationContextProvider.getBean("letterOfCreditService");
+			//if(StringUtils.isBlank(authoriseLCPaymentAdviceDto.getRepair()) && StringUtils.isEmpty(authoriseLCPaymentAdviceDto.getRepair())){
+			String senderBank = letterOfCreditService.getDept((String)session.get(WebConstants.CONSTANT_USER_NAME));
+			if(StringUtils.isBlank(authoriseLCPaymentAdviceDto.getRepair()) && StringUtils.isEmpty(authoriseLCPaymentAdviceDto.getRepair())){
+				if(senderBank!=null &&  authoriseLCPaymentAdviceDto.getAdvisingBank()!=null)
+				{
+					if(senderBank.trim().equalsIgnoreCase(authoriseLCPaymentAdviceDto.getAdvisingBank().trim()))
+							{
+								addFieldError("advisingBank", "Advising Bank Should Not Be Sender Bank");
+							}
+				}
+				}else
+				{
+					if(StringUtils.isNotBlank(authoriseLCPaymentAdviceDto.getSenderBank())&&StringUtils.isNotEmpty(authoriseLCPaymentAdviceDto.getSenderBank()) &&  authoriseLCPaymentAdviceDto.getAdvisingBank()!=null)
+					{
+						if(authoriseLCPaymentAdviceDto.getSenderBank().trim().equalsIgnoreCase(authoriseLCPaymentAdviceDto.getAdvisingBank().trim()))
+								{
+									addFieldError("advisingBank", "Advising Bank Should Not Be Sender Bank");
+								}
+					}	
+				}	
+			
+			if(letterOfCreditService.isLcNumberExist(authoriseLCPaymentAdviceDto.getLcNumber())==false)
+				{
+					addFieldError("LcNumber","Lc Number Not Available In DataBase");
+				}else{
+					if(authoriseLCPaymentAdviceDto.getLcNumber().startsWith("/")){
+						 addFieldError("lcNumber", "Lc Number must not start with /");
+					}else if(authoriseLCPaymentAdviceDto.getLcNumber().endsWith("/")){
+						addFieldError("lcNumber", "Lc Number must not End with /");;
+					}else if(authoriseLCPaymentAdviceDto.getLcNumber().contains("//")){
+						addFieldError("lcNumber", "Lc Number must not contain two consecutive slashes '//'");
+					}
+				}
+				
+				if(!StringUtils.isBlank(authoriseLCPaymentAdviceDto.getRepair()) && !StringUtils.isEmpty(authoriseLCPaymentAdviceDto.getRepair())){
+					PaymentMessageService paymentMessageService =(PaymentMessageService)ApplicationContextProvider.getBean("paymentMessageService");
+					if(!paymentMessageService.checkInRptStatusIs2(authoriseLCPaymentAdviceDto.getMsgRef()))
+					{
+						if(!(getSaveAction().equals("Approve") || getSaveAction().equals("Reject")))
+							addFieldError("LcNumber", "Message Is Not In Valid State");
+					}
+				
+				}
+				
+			/*//}else{
+					if(letterOfCreditService.isLcNumberExist(authoriseLCPaymentAdviceDto.getLcNumber())==false)
+					{
+						addFieldError("LcNumber","Lc Number Not Available In DataBase");
+					}
+					PaymentMessageService paymentMessageService =(PaymentMessageService)ApplicationContextProvider.getBean("paymentMessageService");
+					if(!paymentMessageService.checkInRptStatusIs2(authoriseLCPaymentAdviceDto.getMsgRef()))
+					{
+						if(!(getSaveAction().equals("Approve") || getSaveAction().equals("Reject")))
+							addFieldError("LcNumber", "Message Is Not In Valid State");
+					}else{
+						if(authoriseLCPaymentAdviceDto.getLcNumber().startsWith("/")){
+							 addFieldError("lcNumber", "Lc Number must not start with /");
+						}else if(authoriseLCPaymentAdviceDto.getLcNumber().endsWith("/")){
+							addFieldError("lcNumber", "Lc Number must not End with /");;
+						}else if(authoriseLCPaymentAdviceDto.getLcNumber().contains("//")){
+							addFieldError("lcNumber", "Lc Number must not contain two consecutive slashes '//'");
+						}
+					}*/
+		//	}
+			if(StringUtils.isNotBlank(authoriseLCPaymentAdviceDto.getNegotiatingBankCode()) && StringUtils.isNotEmpty(authoriseLCPaymentAdviceDto.getNegotiatingBankCode()) && authoriseLCPaymentAdviceDto.getNegotiatingBankCode()!=null){
+				if(letterOfCreditService.checkIFSC(authoriseLCPaymentAdviceDto.getNegotiatingBankCode())==false){
+					addFieldError("negotiatingBankCode", "Negotiating Bank Code Is Not Available In System");
+				}
+			}
+		checkLcDraftsAtAndLCDrwbnkRule();
+		negotiating58aOr59Networkvalidation();
+		validateTolerance();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			addActionError("Unable To process");
+		}
+	}
+	public void validateTolerance()
+	{
+		String tolerance = null;
+		String mxdCrdAmt = null;
+		tolerance = authoriseLCPaymentAdviceDto.getPositiveTolerance()+authoriseLCPaymentAdviceDto.getNegativeTolerance();
+		mxdCrdAmt  = authoriseLCPaymentAdviceDto.getMaximumCreditAmount();
+		if(StringUtils.isNotBlank(tolerance) && StringUtils.isNotEmpty(tolerance) && tolerance!=null)
+		{
+			if(StringUtils.isNotBlank(mxdCrdAmt) && StringUtils.isNotEmpty(mxdCrdAmt) && mxdCrdAmt!=null)
+			{
+				addFieldError("maximumCreditAmount", "maximumCreditAmount must not present");
+			}
+		}
+		if(StringUtils.isNotBlank(mxdCrdAmt) && StringUtils.isNotEmpty(mxdCrdAmt) && mxdCrdAmt!=null)
+		{
+			if(StringUtils.isNotBlank(tolerance) && StringUtils.isNotEmpty(tolerance) && tolerance!=null)
+			{
+				addFieldError("positiveTolerance", "positiveTolerance/negative Tolerance must not present");
+			}
+		}
+		
+		
+	}
+	private void negotiating58aOr59Networkvalidation()
+	{
+		String negotiatingBank58a = null;
+		String benificary59 = null;
+		negotiatingBank58a  = authoriseLCPaymentAdviceDto.getNegotiatingBankAccount()+authoriseLCPaymentAdviceDto.getNegotiatingBankCode()+authoriseLCPaymentAdviceDto.getNegotiatingBankNameAndAddress()+
+		authoriseLCPaymentAdviceDto.getNegotiatingBankPartyIdentifier();
+		benificary59 = authoriseLCPaymentAdviceDto.getBeneficiaryAccount()+authoriseLCPaymentAdviceDto.getBeneficiaryNameAddress();
+		if(StringUtils.isNotBlank(negotiatingBank58a) && StringUtils.isNotEmpty(negotiatingBank58a) && negotiatingBank58a!=null)
+		{
+			if(StringUtils.isNotBlank(benificary59) && StringUtils.isNotEmpty(benificary59) && benificary59!=null)
+			{
+				addFieldError("beneficiaryAccount", "Benificary Account/Name & Address must Not Be Present");
+			}
+		}
+		else if(StringUtils.isNotBlank(benificary59) && StringUtils.isNotEmpty(benificary59) && benificary59!=null)
+		{
+			if(StringUtils.isNotBlank(negotiatingBank58a) && StringUtils.isNotEmpty(negotiatingBank58a)&& negotiatingBank58a!=null)
+			{
+				addFieldError("negotiatingBankAccount", "NegotiatingBankAccount/Party Identifier/Bank Name and Address must Not Be Present");
+			}
+		}
+		
+	}
+	private void checkLcDraftsAtAndLCDrwbnkRule()
+	{
+		logger.info("checkLcDraftsAtAndLCDrwbnkRule START");
+		boolean is42Cprsnt = false;
+		boolean is42aprsnt = false;
+		boolean is42Mprsnt = false;
+		boolean is42Pprsnt = false;
+		
+		if (StringUtils.isNotBlank(authoriseLCPaymentAdviceDto.getDraftsAt())) 
+		{
+			is42Cprsnt = true;
+		}
+		if(StringUtils.isNotBlank(authoriseLCPaymentAdviceDto.getDraweeBankpartyidentifier()+authoriseLCPaymentAdviceDto.getDraweeBankAccount()+ authoriseLCPaymentAdviceDto.getDraweeBankNameAddress()+ authoriseLCPaymentAdviceDto.getDraweeBankCode()))
+		{
+			is42aprsnt = true;
+		}
+		if(StringUtils.isNotBlank(authoriseLCPaymentAdviceDto.getMixedPaymentDetails()))
+		{
+			is42Mprsnt = true;
+		}
+		if(StringUtils.isNotBlank(authoriseLCPaymentAdviceDto.getDeferredPaymentDetails()))
+		{
+			is42Pprsnt = true;
+		}
+		
+		/*
+		 * check if both the fields are not present. Since these are optional fields it may not come in message
+		 * In that case the validation will fail.
+		 * The rule says if one is present only then second should be present
+		 * 
+		 * Case 2
+		 */
+		if(StringUtils.isNotBlank(authoriseLCPaymentAdviceDto.getDraftsAt()) || StringUtils.isNotBlank(authoriseLCPaymentAdviceDto.getDraweeBankpartyidentifier()+authoriseLCPaymentAdviceDto.getDraweeBankAccount()+ authoriseLCPaymentAdviceDto.getDraweeBankNameAddress()+ authoriseLCPaymentAdviceDto.getDraweeBankCode()))
+		{
+			if(is42Cprsnt ==false || is42aprsnt ==false)
+			{
+				addFieldError("DraftsAt", "If Drafts At Is Present Then Drawee Bank Details Should Also Be Present");
+				logger.info("checkLcDraftsAtAndLCDrwbnkRule Validation Failed");
+			}
+		}
+		
+		//Case 3
+		if(StringUtils.isNotBlank(authoriseLCPaymentAdviceDto.getMixedPaymentDetails()))
+		{
+			if(is42Cprsnt ==true && is42aprsnt ==true && is42Mprsnt==true)
+			{
+				addFieldError("DraftsAt", "Drawee Bank details And DeferredPaymentDetails Should Not Be Present");
+				logger.info("checkLcDraftsAtAndLCDrwbnkRule Validation Failed");
+			}
+		}	
+		
+		if(StringUtils.isNotBlank(authoriseLCPaymentAdviceDto.getDeferredPaymentDetails()))
+		{
+			if((is42Cprsnt ==true && is42aprsnt ==true && is42Pprsnt==true) || (is42Mprsnt ==true && is42Pprsnt ==true))
+			{
+				addFieldError("DraftsAt", "Drawee Bank details And MixedPaymentDetails Should Not Be Present");
+				logger.info("checkLcDraftsAtAndLCDrwbnkRule Validation Failed");
+			}
+		}
+		
+	
+		logger.info("checkLcDraftsAtAndLCDrwbnkRule END");
+	}
+	
+	
+}

@@ -1,0 +1,601 @@
+package com.logica.ngph.serviceImpl;
+
+import java.math.BigDecimal;
+import java.sql.Timestamp;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.logica.ngph.Entity.CompositeKeyForLcMast;
+import com.logica.ngph.Entity.LcCommodity;
+import com.logica.ngph.Entity.LcMast;
+import com.logica.ngph.Entity.MsgPolled;
+import com.logica.ngph.Entity.NgphCanonical;
+import com.logica.ngph.Entity.Parties;
+import com.logica.ngph.common.utils.NGPHUtil;
+import com.logica.ngph.dao.AdviceLCPaymentDao;
+import com.logica.ngph.dao.LetterOfCreditDao;
+import com.logica.ngph.dtos.LCCanonicalDto;
+import com.logica.ngph.dtos.PartyDTO;
+import com.logica.ngph.service.LetterOfCreditService;
+import com.logica.ngph.utils.ReportEntityUtil;
+import com.logica.ngph.web.action.LetterOfCreditAction;
+
+public class LetterOfCreditServiceImpl implements LetterOfCreditService{
+	LetterOfCreditDao letterOfCreditDao;
+	
+	AdviceLCPaymentDao adviceLCPaymentDao;
+	private static Logger logger = Logger.getLogger(LetterOfCreditAction.class);
+	public AdviceLCPaymentDao getAdviceLCPaymentDao() {
+		return adviceLCPaymentDao;
+	}
+
+	public void setAdviceLCPaymentDao(AdviceLCPaymentDao adviceLCPaymentDao) {
+		this.adviceLCPaymentDao = adviceLCPaymentDao;
+	}
+
+	public LetterOfCreditDao getLetterOfCreditDao() {
+		return letterOfCreditDao;
+	}
+
+	public void setLetterOfCreditDao(LetterOfCreditDao letterOfCreditDao) {
+		this.letterOfCreditDao = letterOfCreditDao;
+	}
+
+	
+	@Transactional(propagation=Propagation.REQUIRED)
+	public String saveLC(LCCanonicalDto canonicalDto,List <LcCommodity> commodityList,String status,String userID,String repair) {
+		try{
+			logger.info("Inside saveLC() in LetterOfCreditServiceImpl ");
+			
+		String msgRef = NGPHUtil.generateUUID();
+		String lcNumber = canonicalDto.getLcNumber();
+			logger.info("Generated Message Reference :- "+msgRef +" LCNumber : -  "+lcNumber +" OLD Message Reference For This Lc Number :- "+canonicalDto.getMsgRef());
+		
+		//String getIssuingIFSC = letterOfCreditDao.getIssuingIFSC(canonicalDto.getLcNumber());
+		// put null check By Prasanna
+	/*	if(commodityList!=null && commodityList.size()!=0 ){
+		for(int i =0 ;i<commodityList.size();i++)
+			letterOfCreditDao.saveLCCommodity(commodityList.get(i),msgRef,canonicalDto.getLcNumber());
+		}
+		System.gc();
+		letterOfCreditDao.saveLCMast(changeDtoToLCMast(canonicalDto,msgRef,status,userID));
+		letterOfCreditDao.saveLCCanonical(changeDtoToCanonical(canonicalDto, msgRef,status,userID));
+		letterOfCreditDao.saveINPolled(getEntityObject(msgRef));
+		
+		if(status.equals("LcOpen")){
+		changeStatus(canonicalDto.getMsgRef());
+		}else if(status.equals("AuthPaymentAdvice")){
+			adviceLCPaymentDao.changeStatusToAuth(canonicalDto.getMsgRef());		
+		}else if(status.equals("PaymentAdvice")){
+			adviceLCPaymentDao.changeStatus(canonicalDto.getMsgRef());
+		}else if(status.equals("Amend_LC")){
+			adviceLCPaymentDao.changeStatusAmend(canonicalDto.getMsgRef());
+		}
+			System.gc();*/		
+	
+		NgphCanonical canonical =  changeDtoToCanonical(canonicalDto, msgRef,status,userID,repair);
+		logger.info("End saveLC() in LetterOfCreditServiceImpl ");
+		return letterOfCreditDao.doCompleteTransaction(commodityList,changeDtoToLCMast(canonicalDto,msgRef,status,userID,repair),canonical
+					,getEntityObject(msgRef),canonicalDto.getMsgRef(),status,msgRef,lcNumber, canonicalDto.getRepairMsgref(),repair,ReportEntityUtil.getReportEntityFromCanonical(canonical));
+			
+			
+		}
+		catch (Exception e) {
+			logger.error("Exception Occured AT saveLC() In LetterOfcreditServiceImpl  :-  "+e);
+			e.printStackTrace();
+		}
+		return null;
+	} 
+	public LcMast changeDtoToLCMast(LCCanonicalDto canonicalDto,String msgRef,String status,String userID,String repair)
+	{
+		logger.info("Inside changeDtoToLCMast() in LetterOfCreditServiceImpl ");
+		LcMast lcMast = new LcMast();
+		CompositeKeyForLcMast compKeyLcMast = new CompositeKeyForLcMast(canonicalDto.getLcNumber(),"O");
+		lcMast.setLcType(canonicalDto.getLcType());
+		lcMast.setCompositeKeyForLcMast(compKeyLcMast);
+		/*lcMast.setLcNo(canonicalDto.getLcNumber());
+		lcMast.setLcDirection("O");*/
+		lcMast.setLcIssueDate(getCurrentTime());
+		lcMast.setLcExpireDate(convertStringToTimestamp(canonicalDto.getLcExpiryDate()));
+		lcMast.setLcAppicant(canonicalDto.getApplicantNameAddress());
+		if(canonicalDto.getBeneficiary() !=null && canonicalDto.getBeneficiary().length()>0){
+			lcMast.setLcBenificiary(canonicalDto.getBeneficiary());
+		}else{
+			lcMast.setLcBenificiary(canonicalDto.getBeneficiaryNameAddress());
+		}
+		lcMast.setLcNoofMsg(0);
+		lcMast.setLcCurrency(canonicalDto.getLcCurrency());
+		lcMast.setLcAmount(canonicalDto.getLcAmount());
+		lcMast.setLcNarrative(canonicalDto.getNarrative());
+		lcMast.setMsgRef(msgRef);
+		//lcMast.setLcNo(canonicalDto.getLcNumber());
+		lcMast.setLcAdvisingBank(canonicalDto.getAdvisingBank());
+		String[] getDepartmantANDIFSC = letterOfCreditDao.getDept(userID).split("~");
+		if(status.equals("TransferDocumentaryCredit")){
+			lcMast.setLcIssuingBank(canonicalDto.getIssuingBankCode());
+		}else
+		{
+			if(StringUtils.isBlank(repair) && StringUtils.isEmpty(repair)){
+			lcMast.setLcIssuingBank(getDepartmantANDIFSC[0]);
+			}
+		}
+		if(status.equals("PreAdvice"))
+		{
+			lcMast.setLcStatus(1);
+		}
+		else if(status.equals("LcOpen")){
+			lcMast.setLcStatus(3);
+		}else if(status.equals("PaymentAdvice")){
+			lcMast.setLcStatus(7);
+		}else if(status.equals("AuthPaymentAdvice")){
+			lcMast.setLcStatus(9);			
+		}else if(status.equals("Amend_LC")){
+			lcMast.setLcStatus(5);
+			
+			lcMast.setLcAmount(canonicalDto.getNewLcAmount());
+			if(canonicalDto.getLcAmndmntNo()!=null){
+				lcMast.setLcNoofAmndment(canonicalDto.getLcAmndmntNo()+1);	
+			}else{
+				lcMast.setLcNoofAmndment(new Integer(1));
+			}
+			lcMast.setLcExpireDate(convertStringToTimestamp(canonicalDto.getNewAmendExpiryDate()));			
+		}
+		else if(status.equals("TransferDocumentaryCredit")){
+			lcMast.setLcStatus(17);
+		}
+		else if(status.equals("ReimburesmentClaim")){
+			lcMast.setLcStatus(11);
+		}else if(status.equals("AdviceOfDischarge"))
+		{
+			lcMast.setLcStatus(13);
+		}
+		else if(status.equals("AuthToPay")){
+			lcMast.setLcStatus(21);
+		}
+		logger.info("End changeDtoToLCMast() in LetterOfCreditServiceImpl ");
+		return lcMast;
+	}
+	
+	private Timestamp getCurrentTime(){
+		java.util.Date 	str_date = Calendar.getInstance().getTime();
+		java.sql.Timestamp timeStampDate = new Timestamp(str_date.getTime());
+		return timeStampDate;
+	}
+	
+	public LcCommodity changeDtoTOLcCommodity(LCCanonicalDto canonicalDto ,String msgRef,String lcNumber)
+	{
+		logger.info("Inside changeDtoTOLcCommodity() in LetterOfCreditServiceImpl ");
+		LcCommodity commodity = new LcCommodity();
+		commodity.setLcCommodity(canonicalDto.getCommodity());
+		//commodity.setLcCommodityQty(canonicalDto.getQuantity());
+		//commodity.setLcCommodityRate(canonicalDto.getRate());
+		commodity.setLcNumber(canonicalDto.getLcNumber());
+		commodity.setMsgRef(msgRef);
+		logger.info("End changeDtoTOLcCommodity() in LetterOfCreditServiceImpl ");
+		return commodity;
+	}
+	public NgphCanonical changeDtoToCanonical(LCCanonicalDto lcCanonicalDto,String msgRef,String status,String userID,String repair)
+	{
+		logger.info("Inside changeDtoToCanonical() in LetterOfCreditServiceImpl ");
+		NgphCanonical canonical = new NgphCanonical();
+		Timestamp currentTimestamp= getCurrentTime();
+		canonical.setMsgRef(msgRef);
+		canonical.setLcType(lcCanonicalDto.getLcType());
+		canonical.setLcPrevAdvRef(lcCanonicalDto.getLcNumber());
+		canonical.setLcNo(lcCanonicalDto.getLcNumber());
+		canonical.setLcExpDt(convertStringToTimestamp(lcCanonicalDto.getLcExpiryDate()));
+		canonical.setLcExpPlace(lcCanonicalDto.getLcExpirePlace());
+		if(lcCanonicalDto.getPositiveTolerance()!=null && StringUtils.isNotEmpty(lcCanonicalDto.getPositiveTolerance())&&StringUtils.isNotEmpty(lcCanonicalDto.getNegativeTolerance()) && lcCanonicalDto.getNegativeTolerance()!=null)
+		{canonical.setLcPositiveTolerance(Integer.parseInt(lcCanonicalDto.getPositiveTolerance()));
+		canonical.setLcNegativeTolerance(Integer.parseInt(lcCanonicalDto.getNegativeTolerance()));
+		}
+		canonical.setLcMaxCrAmt(lcCanonicalDto.getMaximumCreditAmount());
+		canonical.setLcAddlAmts(lcCanonicalDto.getAdditionalAmounts());
+		canonical.setLcAuthBankAddr(lcCanonicalDto.getAuthorisedAndAddress());
+		canonical.setLcAuthBankCode(lcCanonicalDto.getAuthorisedBankCode());
+		canonical.setLcAuthMode(lcCanonicalDto.getAuthorisationMode());
+		canonical.setInitialDispatchPlace(lcCanonicalDto.getGoodsLoadingDispatchPlace());
+		canonical.setLcDispatchPlace(lcCanonicalDto.getInitialDispatchPlace());
+		canonical.setFinalDeliveryPlace(lcCanonicalDto.getFinalDeliveryPlace());
+		
+		canonical.setLcDstn(lcCanonicalDto.getGoodsDestination());
+		canonical.setLcLstShipDt(convertStringToTimestamp(lcCanonicalDto.getLatestDateofShipment()));
+		canonical.setLcShipPeriod(lcCanonicalDto.getShipmentPeriod());
+		canonical.setLcShipTerms(lcCanonicalDto.getShipmentTerms());
+		canonical.setLcNarrative(lcCanonicalDto.getNarrative());
+		
+		
+		canonical.setLcDraftsAt(lcCanonicalDto.getDraftsAt());
+		canonical.setLcDraweeBnkAddr(lcCanonicalDto.getDraweeBankNameAddress());
+		canonical.setLcDraweeBnkCode(lcCanonicalDto.getDraweeBankCode());
+		canonical.setLcDraweeBnkPid(lcCanonicalDto.getDraweeBankpartyidentifier());
+		canonical.setLcMixedPymtDet(lcCanonicalDto.getMixedPaymentDetails());
+		canonical.setLcPartialShipment(lcCanonicalDto.getPartialShipments());
+		canonical.setLcTransShipment(lcCanonicalDto.getTranshipment());
+		canonical.setOrderingInstitutionAcct(lcCanonicalDto.getIssuingBankAcc());
+		//Divide the Document Required Into 2 parts
+		String docsReq = lcCanonicalDto.getDocumentsRequired();
+		if(StringUtils.isNotEmpty(docsReq) && StringUtils.isNotBlank(docsReq) && docsReq!=null){
+		if (docsReq.length() >= 4000)
+		{
+			String docsReq1 = docsReq.substring(0, 4000);
+			if (docsReq.length() > 4000)
+			{
+				String docsReq2 = docsReq.substring(docsReq1.length(), docsReq.length());;
+				canonical.setLcDocsReq2(docsReq2);
+			}
+			canonical.setLcDocsReq1(docsReq1);
+		}
+		else
+		{
+			canonical.setLcDocsReq1(docsReq);
+		}
+		}
+		//Divide the Additional Condition Into 2 parts
+		String addlCndts = lcCanonicalDto.getAdditionalConditions();
+		if(StringUtils.isNotEmpty(addlCndts) && StringUtils.isNotBlank(addlCndts) && addlCndts!=null){
+		if (addlCndts.length() >= 4000)
+		{
+			String addlCndts1 = addlCndts.substring(0, 4000);
+			if (addlCndts.length() > 4000)
+			{
+				String addlCndts2 = addlCndts.substring(addlCndts1.length(), addlCndts.length());;
+				canonical.setLcAddnlCndt2(addlCndts2);
+			}
+			canonical.setLcAddnlCndt1(addlCndts1);
+		}
+		else
+		{
+			canonical.setLcAddnlCndt1(addlCndts);
+		}
+		}
+		
+		canonical.setLcCharges(lcCanonicalDto.getChargeDetails());
+		canonical.setLcChgsClaimed(lcCanonicalDto.getNetChargeAmount());
+		canonical.setLcPrsntnPrd(lcCanonicalDto.getPeriodforPresentation());
+		canonical.setLcConfrmInstrns(lcCanonicalDto.getConfirmationCode());
+		canonical.setLcInstrnTopay(lcCanonicalDto.getInstructionstoPayingBank());
+		canonical.setAccountWithInstitutionId(lcCanonicalDto.getAdviseThroughBankpartyidentifier());
+		canonical.setReceiverBank(lcCanonicalDto.getAdvisingBank());
+		canonical.setAccountWithInstitutionAccount(lcCanonicalDto.getAdviseThroughBankCode());
+		canonical.setAccountWithInstitutionLoc(lcCanonicalDto.getAdviseThroughBankLocation());
+		canonical.setAccountWithInstitutionName(lcCanonicalDto.getAdviseThroughBankName());
+		canonical.setAccountWithInstitutionAcct(lcCanonicalDto.getAdviseThroughBankAcc());
+		/*if(StringUtils.isNotBlank(lcCanonicalDto.getSendertoReceiverInformation()) && StringUtils.isNotEmpty(lcCanonicalDto.getSendertoReceiverInformation()))
+		{
+			String[] senderToReciver = lcCanonicalDto.getSendertoReceiverInformation().split("/");
+			if(senderToReciver.length>1){
+				canonical.setInstructionsForCrdtrAgtCode(senderToReciver[0]);
+				canonical.setInstructionsForCrdtrAgtText(senderToReciver[1]);	
+			}else{*/
+				canonical.setInstructionsForCrdtrAgtText(lcCanonicalDto.getSendertoReceiverInformation());
+			/*}
+			
+			
+		}*/
+		
+		
+		//Canonical mapping
+		if(StringUtils.isBlank(repair) && StringUtils.isEmpty(repair)){
+			canonical.setMsgHost("9999");
+			canonical.setLcIssueDt(getCurrentTime());
+			canonical.setSeqNo("1");
+			canonical.setMsgValueDate(currentTimestamp);
+		}else{
+			canonical.setLcIssueDt(convertStringToTimestamp(lcCanonicalDto.getIssueDate()));
+			canonical.setMsgHost(lcCanonicalDto.getMsgHost());
+			canonical.setSeqNo(lcCanonicalDto.getSeqNo());
+			canonical.setMsgValueDate(convertStringToTimestamp(lcCanonicalDto.getMsgValueDate()));
+		}
+		
+		
+		canonical.setMsgChnlType("SFMS");
+		if(status.equals("PreAdvice"))
+		{
+			canonical.setSrcMsgType("705");
+			canonical.setMsgRelStatus("1");
+		}
+		else if(status.equals("LcOpen")){
+			canonical.setSrcMsgType("700");
+			canonical.setMsgRelStatus("3");
+			canonical.setLcAppRulesDesc(lcCanonicalDto.getApplicableNarrative());
+		}else if(status.equals("PaymentAdvice")){
+			canonical.setSrcMsgType("756");
+			canonical.setMsgRelStatus("7");
+		}
+		else if(status.equals("AuthPaymentAdvice")){
+			canonical.setSrcMsgType("740");
+			canonical.setMsgRelStatus("9");
+		}
+		else if(status.equals("Amend_LC")){
+			canonical.setSrcMsgType("707");
+			canonical.setMsgRelStatus("5");
+		}
+		else if(status.equals("TransferDocumentaryCredit")){
+			canonical.setSrcMsgType("720");
+			canonical.setMsgRelStatus("17");
+		}
+		else if(status.equals("ReimburesmentClaim")){
+			canonical.setSrcMsgType("742");
+			canonical.setMsgRelStatus("11");
+		}else if(status.equals("AdviceOfDischarge"))
+		{
+			canonical.setSrcMsgType("732");
+			canonical.setMsgRelStatus("13");
+		}
+		else if(status.equals("AuthToPay")){
+			canonical.setSrcMsgType("752");
+			canonical.setMsgValueDate(convertStringToTimestamp(lcCanonicalDto.getMsgValueDate()));
+			canonical.setMsgRelStatus("21");
+		}
+		canonical.setMsgStatus("15");
+		
+		
+		canonical.setSrcMsgSubType("XXX");		
+				
+		canonical.setMsgDirection("O");
+		canonical.setReceivedTime(currentTimestamp);
+		canonical.setLastModTime(currentTimestamp);
+		canonical.setTxnReference(lcCanonicalDto.getLcNumber());
+		canonical.setSndrTxnId(lcCanonicalDto.getLcNumber());
+		canonical.setClrgSysReference(lcCanonicalDto.getLcNumber());
+		canonical.setSndrPymtPriority("99");
+		canonical.setClrgChannel("SFMS");
+		canonical.setMsgCurrency(lcCanonicalDto.getLcCurrency());
+		canonical.setMsgAmount(lcCanonicalDto.getLcAmount());
+		canonical.setPymntAcceptedTime(lcCanonicalDto.getPymntAcceptedTime());
+		
+		
+		canonical.setInstructedCurrency(lcCanonicalDto.getLcCurrency());
+	//	canonical.setReceiverBank(lcCanonicalDto.getAdvisingBank());
+		canonical.setOrderingCustomerName(lcCanonicalDto.getApplicantNameAddress());
+		canonical.setOrderingType("I");
+		
+		//canonical.setOrderingCustAccount(lcCanonicalDto.getApplicantAccount());
+		canonical.setBeneficiaryCustAcct(lcCanonicalDto.getBeneficiaryAccount());
+		canonical.setBeneficiaryCustomerName(lcCanonicalDto.getBeneficiaryNameAddress());
+		canonical.setSenderCorrespondentId(lcCanonicalDto.getPartyIdentifier());
+		canonical.setSenderCorrespondent(lcCanonicalDto.getReimbursingBankCode());
+		canonical.setSenderCorrespondentName(lcCanonicalDto.getReimbursingBankNameAddress());
+		canonical.setRelUid(lcCanonicalDto.getMsgRef());
+		String[] getDepartmantANDIFSC = letterOfCreditDao.getDept(userID).split("~");
+		canonical.setLastModifiedUser(userID);
+		canonical.setMsgBranch(getDepartmantANDIFSC[2]);
+		canonical.setMsgDept(getDepartmantANDIFSC[1]);
+		if(StringUtils.isBlank(repair) && StringUtils.isEmpty(repair)){
+		canonical.setSenderBank(getDepartmantANDIFSC[0]);
+		}else
+		{
+			canonical.setSenderBank(lcCanonicalDto.getSenderBank());
+		}
+		canonical.setSendingInstId(lcCanonicalDto.getApplicantBankpartyidentifier());
+		canonical.setSendingInst(lcCanonicalDto.getApplicantBankCode());
+		canonical.setSendingInstNameAdd(lcCanonicalDto.getApplicantAccount());
+		canonical.setSendingInstNameAddress(lcCanonicalDto.getApplicantBankNameAddress());
+		//canonical.setOrderingCustAccount(lcCanonicalDto.getApplicantAccount());
+	//	canonical.setAccountWithInstitutionAccount(lcCanonicalDto.getAdviseThroughBankAcc());
+		
+		canonical.setRelReference(lcCanonicalDto.getPresentingBanksReference());
+		canonical.setLcToAmtClaimed(lcCanonicalDto.getTotalAmountClaimed());
+		canonical.setLcAmtPaid(lcCanonicalDto.getPaidAmount());
+		if(status.equals("AuthPaymentAdvice") || status.equals("PaymentAdvice") ){
+			canonical.setMsgAmount(lcCanonicalDto.getTotalAmountClaimed());
+			canonical.setMsgValueDate(convertStringToTimestamp(lcCanonicalDto.getAmountPaidDate()));
+		canonical.setSenderCorrespondentId(lcCanonicalDto.getSendersCorrespondentPartyIdentifier());
+		canonical.setSenderCorrespondent(lcCanonicalDto.getSendersCorrespondentCode());
+		canonical.setSenderCorrespondentName(lcCanonicalDto.getSendersCorrespondentNameandAddress());
+		canonical.setReceiverCorrespondentName(lcCanonicalDto.getReceiversCorrespondentNameandAddress());
+			if(lcCanonicalDto.getAdditionalAmountsCovered()!=null){
+				canonical.setLcAddlAmts(lcCanonicalDto.getAdditionalAmountsCovered());	
+			}else{
+				canonical.setLcAddlAmts(lcCanonicalDto.getAdditionalAmounts());
+			}
+		}
+		canonical.setSenderCorrespondentAcct(lcCanonicalDto.getSenderCorrespontAcount());		
+		canonical.setSenderCorrespondentLoc(lcCanonicalDto.getSendersCorrespondentLocation());		
+		canonical.setReceiverCorrespondentId(lcCanonicalDto.getReceiversCorrespondentPartyIdentifier());
+		canonical.setReceiverCorrespondentAcct(lcCanonicalDto.getReceiverCorrespontAcount());
+		canonical.setReceiverCorrespondent(lcCanonicalDto.getReceiversCorrespondentCode());
+		canonical.setReceiverCorrespondentLoc(lcCanonicalDto.getReceiversCorrespondentLocation());
+	//	canonical.setReceiverCorrespondentName(lcCanonicalDto.getReceiversCorrespondentNameandAddress());
+		
+		
+		canonical.setLcAppRulesCode(lcCanonicalDto.getApplicableRule());
+		canonical.setLcAppRulesDesc(lcCanonicalDto.getApplicableNarrative());
+		canonical.setLcAccId(lcCanonicalDto.getAcountID());	
+		canonical.setBeneficiaryInstitution(lcCanonicalDto.getNegotiatingBankCode());
+		canonical.setBeneficiaryInstitutionName(lcCanonicalDto.getNegotiatingBankNameAndAddress());
+		canonical.setBeneficiaryInstitutionAcct(lcCanonicalDto.getNegotiatingBankAccount());		
+		canonical.setLcDraweeBnkAcct(lcCanonicalDto.getDraweeBankAccount());	
+		canonical.setLcDefPymtDet(lcCanonicalDto.getDeferredPaymentDetails());
+		canonical.setChargeBearer(lcCanonicalDto.getReimbursingBanksCharges());
+		if(status.equals("AuthPaymentAdvice")){
+			canonical.setLcCharges(lcCanonicalDto.getOtherCharges());
+			canonical.setMsgAmount(lcCanonicalDto.getCreditAmount());
+			//canonical.setLcToAmtClaimed(lcCanonicalDto.getCreditAmount());
+		}
+		canonical.setBeneficiaryInstitutionPID(lcCanonicalDto.getNegotiatingBankPartyIdentifier());
+		canonical.setLcAmndmntIncAmt(lcCanonicalDto.getIncreaseAmendAmount());
+		canonical.setLcAmndmntDecAmt(lcCanonicalDto.getDecreaseAmendAmount());
+		canonical.setLcAmndmntDt(convertStringToTimestamp(lcCanonicalDto.getAmendmentDate()));
+		canonical.setLcAmndmntOldAmt(lcCanonicalDto.getOldLcAmount());
+		canonical.setLcOldExpDt(convertStringToTimestamp(lcCanonicalDto.getOldAmendExpiryDate()));
+		if(status.equals("Amend_LC")){
+			canonical.setLcExpDt(convertStringToTimestamp(lcCanonicalDto.getNewAmendExpiryDate()));
+			//canonical.setLcTotalAmtClaimed(lcCanonicalDto.getNewLcAmount());
+			canonical.setMsgAmount(lcCanonicalDto.getNewLcAmount());
+			if(StringUtils.isBlank(repair) && StringUtils.isEmpty(repair)){			
+				if(lcCanonicalDto.getLcAmndmntNo()!=null){
+				canonical.setLcAmndmntNo(new BigDecimal((lcCanonicalDto.getLcAmndmntNo() + 1)));
+				}else{
+					canonical.setLcAmndmntNo(new BigDecimal(1));
+				}
+			}else{
+				canonical.setLcAmndmntNo(new BigDecimal(lcCanonicalDto.getLcAmndmntNo()));
+			}
+			if(lcCanonicalDto.getAdditionalAmountsCovered()!=null){
+				canonical.setLcAddlAmts(lcCanonicalDto.getAdditionalAmountsCovered());	
+			}else{
+				canonical.setLcAddlAmts(lcCanonicalDto.getAdditionalAmounts());		
+			}
+			canonical.setRelReference(lcCanonicalDto.getReceiverBankReference());
+			canonical.setRelReference(lcCanonicalDto.getSenderBankReference());
+			
+		}
+		
+		canonical.setIssuingBankPID(lcCanonicalDto.getIssuingBankPID());
+		canonical.setIssunigBankNameAndAddress(lcCanonicalDto.getIssunigBankNameAndAddress());
+		canonical.setOrderingInstitution(lcCanonicalDto.getIssuingBankCode());
+		canonical.setNonIssuingBank(lcCanonicalDto.getNonIssuingBank());
+		canonical.setComments(lcCanonicalDto.getComment());
+		canonical.setServiceID(lcCanonicalDto.getServiceID());
+		canonical.setMesgIsReturn(lcCanonicalDto.getMesgIsReturn());
+		canonical.setMsgPDECount(lcCanonicalDto.getMsgPDECount());
+		canonical.setGrpSeq(lcCanonicalDto.getMsgGRPSeq());
+		canonical.setLcNetAmtClaimed(lcCanonicalDto.getLcNetAmtClaimed());
+		logger.info("End changeDtoToCanonical() in LetterOfCreditServiceImpl ");
+		return canonical;
+		
+		
+	}	
+
+	public void changeStatus(String msgRef)
+	{
+		letterOfCreditDao.changeStatus(msgRef);
+	}
+	private java.sql.Date convertStringToDate(Date date) {
+		if(date != null){
+			try{
+				return new java.sql.Date(date.getTime());
+			}catch(Exception ex){
+				ex.printStackTrace();
+				return null;
+			}
+		}else {
+			return null;
+		}
+	}
+	private java.sql.Timestamp convertStringToTimestamp(Date date) {
+		if(date != null){
+			try{
+				return new java.sql.Timestamp(date.getTime());
+			}catch(Exception ex){
+				ex.printStackTrace();
+				return null;
+			}
+		}else {
+			return null;
+		}
+	}
+
+	
+	public List<Parties> getIFSCCodeList(String ifscCode,String userID) {
+		try{
+			return letterOfCreditDao.getIFSCCode(ifscCode,userID);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
+	public MsgPolled getEntityObject(String msgRef)
+	{
+		logger.info("Inside getEntityObject() in LetterOfCreditServiceImpl ");
+		MsgPolled msgPolled = new MsgPolled();
+		msgPolled.setInTime(new Timestamp(Calendar.getInstance().getTime().getTime()));
+		msgPolled.setMsgRef(msgRef);
+		msgPolled.setPolledStatus("P");
+		logger.info("End getEntityObject() in LetterOfCreditServiceImpl ");
+		return msgPolled;
+	}
+
+	
+	public Boolean checkIFSC(String toCheck) {
+		// TODO Auto-generated method stub
+		return letterOfCreditDao.checkIFSC(toCheck);
+	}
+
+	
+	public List<Parties> getIFSCCodeList(String ifscCode,String flag,String required) {
+		try{
+			return letterOfCreditDao.getIFSCCodeList(ifscCode,flag);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	
+	public String getLcOpenFlagForInsertOrUpdate() {
+		try{
+			return letterOfCreditDao.getLcOpenFlagForInsertOrUpdate();
+		}catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	
+	public Boolean isLcNumberExist(String lcNumber) {
+		try{
+			return letterOfCreditDao.isLcNumberExist(lcNumber);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	
+	public Boolean isLcStatusTwo(String lcNumber) {
+		try{
+			return letterOfCreditDao.isLcStatusTwo(lcNumber);
+		}catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	
+	public LCCanonicalDto getPreAdviceRepair(String msgRef) {
+		// TODO Auto-generated method stub
+		return letterOfCreditDao.getPreAdviceRepair(msgRef);
+	}
+
+	public Boolean getstatusForLCNumber(String msgRef) {
+		// TODO Auto-generated method stub
+		return letterOfCreditDao.getstatusForLCNumber(msgRef);
+	}
+
+	public String getDept(String userID) {
+		String[] localIfsc = letterOfCreditDao.getDept(userID).split("~");
+		String ifsc = null;
+		if(localIfsc!=null)
+			ifsc = localIfsc[0]; 
+		return ifsc;
+	}
+
+	public List getListOfIFSC(String code) {
+		// TODO Auto-generated method stub
+		return letterOfCreditDao.getListOfIFSC(code);
+	}
+
+	public void saveIFSC(PartyDTO dto) {
+		letterOfCreditDao.saveIFSC(dto);
+		
+	}
+	
+	public boolean checkPartyIFSC(String ifsc)
+	{
+		return letterOfCreditDao.checkPartyIFSC(ifsc);
+	}
+	
+	
+
+}

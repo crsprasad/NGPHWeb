@@ -1,0 +1,365 @@
+K 25
+svn:wc:ra_dav:version-url
+V 82
+/svn/NGPH/!svn/ver/4370/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity
+END
+ColumnDetailsEntity.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/ColumnDetailsEntity.java
+END
+PartyLiquidy.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/NGPH/!svn/ver/3863/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/PartyLiquidy.java
+END
+BankBinMap.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/BankBinMap.java
+END
+AuthorizationMaintenance.java
+K 25
+svn:wc:ra_dav:version-url
+V 112
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/AuthorizationMaintenance.java
+END
+Department.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/Department.java
+END
+UserToRole.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/UserToRole.java
+END
+ServiceOrchestartion.java
+K 25
+svn:wc:ra_dav:version-url
+V 108
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/ServiceOrchestartion.java
+END
+BusinessDayM.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/BusinessDayM.java
+END
+MsgsTxHistory.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/MsgsTxHistory.java
+END
+Functions.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/Functions.java
+END
+ReportEntity.java
+K 25
+svn:wc:ra_dav:version-url
+V 100
+/svn/NGPH/!svn/ver/4157/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/ReportEntity.java
+END
+ReportMessageHist.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/NGPH/!svn/ver/4157/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/ReportMessageHist.java
+END
+WEEKLYHOLIDAY.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/WEEKLYHOLIDAY.java
+END
+MessageHist.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/MessageHist.java
+END
+BgMast.java
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/NGPH/!svn/ver/3786/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/BgMast.java
+END
+Host.java
+K 25
+svn:wc:ra_dav:version-url
+V 92
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/Host.java
+END
+Liquidity.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/Liquidity.java
+END
+SODEODTASKM.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/SODEODTASKM.java
+END
+Initialisation.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/Initialisation.java
+END
+LcMast.java
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/NGPH/!svn/ver/4245/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/LcMast.java
+END
+LcCommodity.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/LcCommodity.java
+END
+MsgSupport.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/NGPH/!svn/ver/3707/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/MsgSupport.java
+END
+Branches.java
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/Branches.java
+END
+TA_SEC_USERS_TO_ROLES.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/TA_SEC_USERS_TO_ROLES.java
+END
+CompositeKeyForLcMast.java
+K 25
+svn:wc:ra_dav:version-url
+V 109
+/svn/NGPH/!svn/ver/4245/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/CompositeKeyForLcMast.java
+END
+EventAuditHistory.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/EventAuditHistory.java
+END
+MsgField.java
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/MsgField.java
+END
+TA_ROLE_TO_FUNCTION.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/TA_ROLE_TO_FUNCTION.java
+END
+EventMaster.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/EventMaster.java
+END
+RawMessage.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/NGPH/!svn/ver/4337/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/RawMessage.java
+END
+QuickStackEntity.java
+K 25
+svn:wc:ra_dav:version-url
+V 104
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/QuickStackEntity.java
+END
+Limits.java
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/Limits.java
+END
+NgphCanonical.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/NGPH/!svn/ver/4227/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/NgphCanonical.java
+END
+HOLIDAYM.java
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/HOLIDAYM.java
+END
+CurrencyMaster.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/CurrencyMaster.java
+END
+GenericManager.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/GenericManager.java
+END
+AuthUIStatusD.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/AuthUIStatusD.java
+END
+Parties.java
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/NGPH/!svn/ver/4370/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/Parties.java
+END
+IMPS_Consilet.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/IMPS_Consilet.java
+END
+EventAudit.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/EventAudit.java
+END
+DiscrepanciesReport.java
+K 25
+svn:wc:ra_dav:version-url
+V 107
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/DiscrepanciesReport.java
+END
+MsgsPolled.java
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/MsgsPolled.java
+END
+RoleToFunction.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/RoleToFunction.java
+END
+Action.java
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/Action.java
+END
+Addresses.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/Addresses.java
+END
+IMPSTransaction.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/IMPSTransaction.java
+END
+ErrorCode.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/NGPH/!svn/ver/3719/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/ErrorCode.java
+END
+Roles.java
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/Roles.java
+END
+SODEODTASKT.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/SODEODTASKT.java
+END
+Information.java
+K 25
+svn:wc:ra_dav:version-url
+V 99
+/svn/NGPH/!svn/ver/4474/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/Information.java
+END
+ModifiedMessage.java
+K 25
+svn:wc:ra_dav:version-url
+V 103
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/ModifiedMessage.java
+END
+AuthorizationGRPM.java
+K 25
+svn:wc:ra_dav:version-url
+V 105
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/AuthorizationGRPM.java
+END
+MsgPolled.java
+K 25
+svn:wc:ra_dav:version-url
+V 97
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/MsgPolled.java
+END
+RRNDiscrepancy.java
+K 25
+svn:wc:ra_dav:version-url
+V 102
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/RRNDiscrepancy.java
+END
+AuthUIStatusT.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/AuthUIStatusT.java
+END
+MulScreenData.java
+K 25
+svn:wc:ra_dav:version-url
+V 101
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/MulScreenData.java
+END
+Rules.java
+K 25
+svn:wc:ra_dav:version-url
+V 93
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/Rules.java
+END
+Account.java
+K 25
+svn:wc:ra_dav:version-url
+V 95
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/Account.java
+END
+SecUsers.java
+K 25
+svn:wc:ra_dav:version-url
+V 96
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/SecUsers.java
+END
+EI.java
+K 25
+svn:wc:ra_dav:version-url
+V 90
+/svn/NGPH/!svn/ver/3647/NGPH%20Rel%201.0/SOURCE/NgphWeb/src/com/logica/ngph/Entity/EI.java
+END

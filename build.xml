@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<?eclipse.ant.import?>
+<!--
+	File: NGPHWeb project's build file.
+	Author:ISMAIL SHARIFF
+	Version 1.0, 23/AUG/2011
+-->	
+<project name="NGPHWeb" basedir="." default="dist">
+	<property file="build.properties" description="NGPH Model files"/>	
+	<!-- ========================================================= -->
+	<!-- Target: init                                              -->
+	<!-- Initialization         								   -->
+	<!-- ========================================================= -->	
+	<property name="ear.project.name" value="NGPHWebEAR"/>
+   	<property name="ear-lib.dir" value="${dist.dir}/${ear.project.name}/lib"/>
+	
+	<target name="init">
+		<echo>Building project ${ant.project.name}</echo>
+		<property name="src.path" value="src"/>	
+		<property name="build.dir" value="${dist.dir}/${ant.project.name}/WEB-INF/classes"/>
+		<property name="validation.dir" value="${dist.dir}/${ant.project.name}/WEB-INF/classes/com/logica/ngph/web/action"/>
+		<property name="war.name" value="${ant.project.name}.war"/>
+		<property name="war.file" value="${dist.dir}/${war.name}"/>
+		
+			
+		<echo>Copying other projects jars to ${ear-lib.dir}</echo>		
+		<echo>dist.dir is  ${dist.dir}</echo>	
+		<fileset dir="./WebContent/WEB-INF/lib" id="ext-jar_libs" >
+				    <include name="**/*.jar"/>		    
+		</fileset>
+		<fileset dir="${dist.dir}/JBossServerLibraries" id="jboss-jar_libs" >
+		    <include name="**/*.jar"/>		    
+		</fileset>
+		<fileset dir="${dist.dir}" id="ear-jar_libs" >
+			    <include name="**/*.jar"/>		    
+		</fileset>
+		
+		<copy file="${dist.dir}/NGPHCommon.jar" todir="./WebContent/WEB-INF/lib"/>
+		
+				
+		<path id="build.classpath" description="NGPHWeb Project's build class-path">
+			<fileset refid="ext-jar_libs" />
+			<fileset refid="ear-jar_libs" />			
+		</path>
+	</target>
+	
+	<!-- ========================================================= -->
+	<!-- Target: compile                                           -->
+	<!-- Compiles the java files in the NGPHWeb project   -->
+	<!-- ========================================================= -->
+	<target name="compile" depends="init" >
+		<mkdir dir="${build.dir}" description="Creates the NGPHWeb project's build directory"/>
+		<copy todir="${build.dir}">
+	        <fileset dir="./src">	        	
+			    <include name="**/*.xml"/>
+			    <include name="**/*.properties"/>
+	        </fileset>
+		</copy>
+		
+		<echo>Validation.xml jars to ${validation.dir}</echo>	
+		<copy todir="${validation.dir}">
+	        <fileset dir="./src/com/logica/ngph/web/action">	        	
+			    <include name="**/*.xml"/>
+	        </fileset>
+		</copy>
+		
+		<!-- Compiles the Java classes -->
+		<javac srcdir="${src.path}" debug="on" destdir="${build.dir}" source="1.6" includeantruntime="false">
+			<compilerarg value="-Xlint: all" />
+			<compilerarg value="-Xlint:-serial, -unchecked" />
+			<classpath refid="build.classpath"/>
+		</javac>
+	</target>	 
+		
+	<!-- ========================================================= -->
+	<!-- Target: dist                                              -->
+	<!-- Builds the NGPHWeb.war                           -->
+	<!-- ========================================================= -->
+	<target name="dist" depends="compile" description="Builds the NGPHWeb.war file">
+			
+		<war destfile="${dist.dir}/${war.file}" webxml="WebContent/WEB-INF/web.xml"> 		          
+			<fileset dir="WebContent"/>             
+			<lib dir="WebContent/WEB-INF/lib"/> 			          
+			<classes dir="${dist.dir}/${ant.project.name}/WEB-INF/classes"/> 		      
+		</war> 
+		
+		<ear destfile="${dist.dir}/${ear.project.name}.ear" appxml="application.xml">			
+			<fileset dir="${dist.dir}" includes="*.jar,*.war"/> 
+		</ear> 
+		<copy file="${dist.dir}/NGPHWebEAR.ear" todir="C:/QNG/jboss-5.1.0.GA/server/default/deploy"/>
+	</target>   
+</project>

@@ -1,0 +1,397 @@
+<%@page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+<%@taglib uri="/struts-tags" prefix="s"%>
+<%@ taglib prefix="sx" uri="/struts-dojo-tags"%>
+<%@taglib uri="http://displaytag.sf.net" prefix="display"%>
+<link href="SpryAssets/SpryCollapsiblePanel.css" rel="stylesheet"
+	type="text/css" />
+<script src="SpryAssets/SpryCollapsiblePanel.js" type="text/javascript"></script>
+<script src="js/FormField.js" type="text/javascript"></script>
+<script type="text/javascript">
+
+function callTolerance() {
+
+	var positiveTolerence = document.getElementById("positiveTolerance").value;
+	var negativeTolerance = document.getElementById("negativeTolerance").value;
+	var maxCredit = document.getElementById("maximumCreditAmount").value;
+
+	if (positiveTolerence != "" ) {
+
+		document.getElementById("maximumCreditAmount").disabled = true;
+	}else if(negativeTolerance != "")
+	{
+		document.getElementById("maximumCreditAmount").disabled = true;
+		}
+	 else if (maxCredit != "") {
+
+		document.getElementById("positiveTolerance").disabled = true;
+		document.getElementById("negativeTolerance").disabled = true;
+	} else {
+		document.getElementById("maximumCreditAmount").disabled = false;
+		document.getElementById("positiveTolerance").disabled = false;
+		document.getElementById("negativeTolerance").disabled = false;
+	}
+}
+
+
+	function callFetchLCDetails()
+	
+	{
+		
+		
+		var lcNumber= document.getElementById("lcNumber").value;
+
+		if(lcNumber==""){
+			window.open(
+					"<s:url action='searchAdmendLCno' windowState='EXCLUSIVE' />",
+					'mywindow', 'top=50,left=250,width=750,height=410');
+		}
+		else
+			{
+			callShowGrid();
+			}
+			
+		}
+
+	function callShowGrid()
+	{
+		document.forms[0].action="displayAmendLCData";
+		document.forms[0].submit();
+	}
+
+	function callSubmit(saveAction)
+	{
+		var aa = document.getElementById('form');
+		for ( var i = 0; i < aa.length; i++) {
+			aa.elements[i].disabled = false;
+			}
+		document.getElementById("saveAction").value = saveAction;
+		document.forms[0].action="saveAmendLC";
+		document.forms[0].submit();
+	}
+
+function increseAmount(){
+	var increaseAmendAmount = document.getElementById("increaseAmendAmount").value;
+	var lcAmount = document.getElementById("lcAmount").value;	
+	var newLcAmount = document.getElementById("newLcAmount");
+	var chkNum = /^[0-9.]+$/;
+	if(increaseAmendAmount.search(chkNum)== -1){
+		alert("Please enter a valid increase Amend Amount");
+	}else{ 
+		if(increaseAmendAmount == ""){
+			document.getElementById("decreaseAmendAmount").disabled = false;
+			document.getElementById("newLcAmount").value = lcAmount;	
+		}else{
+			newLcAmount = parseFloat(increaseAmendAmount) + parseFloat(lcAmount);
+			document.getElementById("newLcAmount").value = newLcAmount;	
+			document.getElementById("decreaseAmendAmount").disabled = true;
+		}
+	}
+}
+
+
+function decreserAmount(){
+	var decreaseAmendAmount = document.getElementById("decreaseAmendAmount").value;
+	var lcAmount = document.getElementById("lcAmount").value;	
+	var newLcAmount = document.getElementById("newLcAmount");
+	var chkNum = /^[0-9.]+$/;
+	if(decreaseAmendAmount.search(chkNum)== -1){
+		alert("Please enter a valid Decrease Amend Amount");
+	}else{ 
+		if(decreaseAmendAmount == ""){
+			document.getElementById("increaseAmendAmount").disabled = false;
+			document.getElementById("newLcAmount").value = lcAmount;	
+		}else{
+			newLcAmount = parseFloat(lcAmount) - parseFloat(decreaseAmendAmount);
+			document.getElementById("newLcAmount").value = newLcAmount;	
+			document.getElementById("increaseAmendAmount").disabled = true;
+		}
+	}
+}
+	
+function callShipping() {
+	var shipmentPeriod = document.getElementById("shipmentPeriod").value;
+
+	var latestDateofShipment = document
+			.getElementById("latestDateofShipment").value;
+	if (shipmentPeriod != ""  ) { 
+		document.getElementById("latestDateofShipment").disabled = true;
+		document.getElementById("shipmentPeriod").disabled = false;
+	} else if (shipmentPeriod == "" ) {
+		document.getElementById("latestDateofShipment").disabled = false;
+		document.getElementById("shipmentPeriod").disabled = true;
+	}
+	else
+		{
+		document.getElementById("latestDateofShipment").disabled = false;
+		document.getElementById("shipmentPeriod").disabled = false;
+		}
+}	
+
+function callCommentPOPUp()
+{
+	
+	var repair = document.getElementById("repair").value;
+//alert("Repair :  - "+repair);
+	if(repair!="")
+	{
+	//	var comment  = document.getElementById("comment").value; 
+		//if(comment==""){
+		//window
+		//.open(
+		//		"<s:url action='showRepairLetterOFCreditPopup' windowState='EXCLUSIVE' />",
+		//		'mywindow', 'top=500,left=250,width=750,height=410');
+		//	}else{
+					callSubmitForScreen();
+		//		}
+		}
+	else{
+		callSubmitForScreen();	
+		}
+	
+}
+
+function callSubmitForScreen()
+{
+	//alert("callSubmitForScreen")
+		var aa = document.getElementById('form');
+	for ( var i = 0; i < aa.length; i++) {
+		aa.elements[i].disabled = false;
+		}
+	document.forms[0].action="getAmendLCSubmit";
+	document.forms[0].submit();
+}
+function callSearchIFSC(Action,flag) {
+
+	document.getElementById("searchAction").value = Action;
+	document.getElementById("IFSCFLAG").value = flag;
+		window.open(
+		"<s:url action='showIFSCScreen' windowState='EXCLUSIVE' />",
+		'mywindow', 'top=50,left=250,width=750,height=410');
+}
+
+</script>
+
+<sx:head parseContent="true" />
+
+<s:head />
+<div id="contentPane">
+<div id="contentPaneTop"></div>
+<div id="contentPaneFluid">
+<div id="contentPaneInternal"><span class="crumbs"><a
+	href="#">Outbound Payments</a>&nbsp;>&nbsp;Letter Of Credit&nbsp;>&nbsp;Amend </span></div>
+<div id="content">
+<h1>Amend LC</h1>
+<s:form method="post" id="form">
+<s:hidden id="searchAction" name="searchAction"></s:hidden>
+<s:hidden id="repairComments" name="repairComments"></s:hidden> 
+<s:hidden id="lcAmount" name="lcAmount"></s:hidden> 
+<s:hidden name="IFSCFLAG" id="IFSCFLAG" ></s:hidden>
+<s:hidden name="RepairData" id="RepairData"></s:hidden>
+<s:hidden name="repair" id="repair"></s:hidden>
+<s:hidden id="comment" name="comment"></s:hidden>
+<s:hidden id="senderBank" name="senderBank"></s:hidden>
+
+	<div><s:if test="hasFieldErrors()">
+				<div class="errorMsg"><span class="errorMsgInline"><s:actionerror /><s:fielderror /></span></div>
+			</s:if></div><!--Error Msg Div Ends -->
+				<div id="CollapsiblePanel1" class="CollapsiblePanel">
+	<div class="CollapsiblePanelTab"><!--  <img src="images/openPanel.png" width="9" height="7" alt="openPanel" />-->&nbsp;Basic Details</div>
+	<div class="CollapsiblePanelContent">
+	<div><!-- Group One Div Starts --> 
+	<s:div id="main"	cssClass="dataGrid" style="width:100%;">
+	<table width="100%" cellpadding="3" cellspacing="1" border="0"	bgcolor="#ffffff">
+		<s:if test="%{repair!=''}">
+		<tr>
+			<td width="20%" class="textRight"><s:label value="%{getText('label.lc_Number')}"></s:label>:<span class="mandatory">*</span></td>
+			<td width="30%" class="text"><s:textfield name="lcNumber" id="lcNumber" maxLength="16" onKeyPress='return notAllowCheck(this,event);'></s:textfield> </td>
+			<td width="20%" class="textRight"><s:label	value="%{getText('label.ReceiverBankCode')}"></s:label>:<span	class="mandatory">*</span></td>
+			<td width="30%" class="text"><s:textfield name="advisingBank" id="advisingBank" maxLength="11" onKeyPress='return notAllowCheck(this,event);'> </s:textfield><input type="button" value="Search IFSC..."
+					onclick="return callSearchIFSC('ADVISINGIFSC','PARTY')" id="btnSearch"
+					class="btn" /> </td>
+			
+			</tr>
+			</s:if>
+			<s:if test="%{repair==''}">
+			<tr>
+			<td width="20%" class="textRight"><s:label value="%{getText('label.lc_Number')}"></s:label>:<span class="mandatory">*</span></td>
+			<td width="30%" class="text"><s:textfield name="lcNumber" id="lcNumber" maxLength="16" onKeyPress='return notAllowCheck(this,event);'></s:textfield> <input type="button" value="Fetch" onclick="callFetchLCDetails();"> </td>
+			<td width="20%" class="textRight"><s:label	value="%{getText('label.ReceiverBankCode')}"></s:label>:<span	class="mandatory">*</span></td>
+			<td width="30%" class="text"><s:textfield name="advisingBank" id="advisingBank" readonly="true" > </s:textfield></td>
+			</s:if>
+			<tr>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.SenderBanksReference')}"></s:label>:<span class="mandatory">*</span></td>
+				<td width="30%" class="text"><s:textfield name="senderBankReference" id="senderBankReference" maxLength="16" onKeyPress='return notAllowCheck(this,event);'></s:textfield> </td>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.ReceiverBanksReference')}"></s:label>:<span class="mandatory">*</span></td>
+				<td width="30%" class="text"><s:textfield name="receiverBankReference" id="receiverBankReference" maxLength="16" onKeyPress='return notAllowCheck(this,event);' ></s:textfield> </td>
+		</tr>
+		<s:if test="%{repair!=''}">
+	
+		<tr>				
+				<td width="20%" class="textRight"><s:label value="%{getText('label.IssuingBankCode')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield name="applicantBankCode" id="applicantBankCode" maxLength="11" onKeyPress='return notAllowCheck(this,event);'></s:textfield><input type="button" value="Search IFSC..."
+						onclick="callSearchIFSC('APPLICANTIFSC','PARTY')" id ="applicantSearch" class="btn" /> </td>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.DateofIssue')}"></s:label>:</td>
+				<td width="30%" class="text"><sx:datetimepicker id="issueDate" name="issueDate" cssClass="txtField"  displayFormat="MM/dd/yyyy" type="date"  ></sx:datetimepicker> </td>
+			
+		</tr>
+		</s:if>
+		<s:if test="%{repair==''}">
+		<tr>				
+				<td width="20%" class="textRight"><s:label value="%{getText('label.IssuingBankCode')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield name="applicantBankCode" id="applicantBankCode" maxLength="11" readonly="true" ></s:textfield></td>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.DateofIssue')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield name="issueDate"  id="issueDate" readonly="true" /> </td>
+		</tr>
+		</s:if>
+		
+	</table>
+	</s:div>
+	</div>
+	</div>
+	</div>
+		<br />
+			<div id="CollapsiblePanel2" class="CollapsiblePanel">
+	<div class="CollapsiblePanelTab"><!--  <img src="images/openPanel.png" width="9" height="7" alt="openPanel" />-->&nbsp;Amend Details</div>
+	<div class="CollapsiblePanelContent">
+	<div><!-- Group Two Div Starts --> <s:div id="mandatory"
+		cssClass="dataGrid" style="width:100%;">
+		<table width="100%" cellpadding="5" cellspacing="1" border="0"
+			bgcolor="#ffffff">
+			<s:if test="%{repair!=''}">
+			<tr>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.DateofAmendment')}"></s:label>:</td>
+				<td width="30%" class="text"><sx:datetimepicker name="amendmentDate"	 cssClass="txtField" id="amendmentDate"  displayFormat="MM/dd/yyyy" type="date" /> </td>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.NumberofAmendment')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield  name="lcAmndmntNo" id="lcAmndmntNo"  maxLength="2" ></s:textfield></td>				
+			</tr>
+			<tr>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.beneficiaryAccount')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield name="beneficiaryAccount" id="beneficiaryAccount" maxLength="34" onKeyPress='return notAllowCheck(this,event);'></s:textfield> </td>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.beneficiaryNameAddress')}"></s:label>:<span class="mandatory">*</span></td>
+				<td width="30%" class="text"><s:textarea name="beneficiaryNameAddress" id="beneficiaryNameAddress" rows="4" cols="35" wrap="HARD" onKeyPress='return maxLength(this,"209","beneficiaryNameAddress","35",event);'  ></s:textarea> </td>
+			</tr>
+		</s:if>
+		<s:if test="%{repair==''}">
+			<tr>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.DateofAmendment')}"></s:label>:</td>
+				<td width="30%" class="text"><sx:datetimepicker name="amendmentDate"	 cssClass="txtField" id="amendmentDate"  displayFormat="MM/dd/yyyy" type="date" disabled="true" /> </td>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.NumberofAmendment')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield  name="lcAmndmntNo" id="lcAmndmntNo"  maxLength="2" readonly="true" ></s:textfield></td>				
+			</tr>
+			<tr>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.beneficiaryAccount')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield name="beneficiaryAccount" id="beneficiaryAccount" maxLength="34" readonly="true"></s:textfield> </td>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.beneficiaryNameAddress')}"></s:label>:<span class="mandatory">*</span></td>
+				<td width="30%" class="text"><s:textarea name="beneficiaryNameAddress" id="beneficiaryNameAddress" rows="4" cols="35" wrap="HARD" onKeyPress='return maxLength(this,"209","beneficiaryNameAddress","35",event);' ></s:textarea> </td>
+			</tr>
+		
+		</s:if>
+			<tr>		
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.IncreaseofLCAmount')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield name="increaseAmendAmount" id="increaseAmendAmount" maxLength="15" onchange='increseAmount();' onKeyPress='return notAllowCheck(this,event);'></s:textfield> </td>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.DecreaseofLCAmount')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield name="decreaseAmendAmount" id="decreaseAmendAmount" maxLength="15" onchange='decreserAmount();' onKeyPress='return notAllowCheck(this,event);'></s:textfield> </td>
+			</tr>
+			<tr>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.NewDateofExpiry')}"></s:label>:</td>
+				<td width="30%" class="text"><sx:datetimepicker name="newAmendExpiryDate"	 cssClass="txtField" id="newAmendExpiryDate"  displayFormat="MM/dd/yyyy" type="date" /> </td>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.NewLCAmount')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield name="newLcAmount" id="newLcAmount" maxLength="15" readonly="true"></s:textfield> </td>
+			</tr>
+			<tr>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.positiveTolerance')}"></s:label>:</td>
+				<td width="30%" class="text"><s:select list="#session.positiveToleranceList" name="positiveTolerance" id="positiveTolerance" headerKey="" headerValue="Select Positive Tolerance" onchange="callTolerance()"></s:select></td>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.negativeTolerance')}"></s:label>:</td>
+				<td width="30%" class="text"><s:select list="#session.negativeToleranceList" name="negativeTolerance" id="negativeTolerance"  headerKey="" headerValue="Select Negative Tolerance" onchange="callTolerance()" ></s:select></td>		
+			</tr>
+			<tr>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.maximumCreditAmount')}"></s:label>:</td>
+				<td width="30%" class="text"><s:select name="maximumCreditAmount" id="maximumCreditAmount" headerKey=""	headerValue="Select Maximum Credit Amount" list="{'NOT EXCEEDING'}"	onchange="callTolerance()"></s:select> </td>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.AdditionalAmountsCovered')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textarea name="additionalAmountsCovered" id="additionalAmountsCovered" rows="4" cols="35" wrap="HARD" onKeyPress='return maxLength(this,"139","additionalAmountsCovered","35",event);' ></s:textarea> </td>
+			</tr>
+			<tr>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.goodsLoadingDispatchPlace')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield name="goodsLoadingDispatchPlace" id="goodsLoadingDispatchPlace" maxLength="65" onKeyPress='return notAllowCheck(this,event);' ></s:textfield></td>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.goodsDestination')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textfield name="goodsDestination" id="goodsDestination" maxLength="65" onKeyPress='return notAllowCheck(this,event);'></s:textfield></td>
+			</tr>
+				<tr>
+			<td width="20%" class="textRight"><s:label	value="%{getText('label.initialDispatchPlace')}"></s:label>:</td>
+			<td width="30%" class="text"><s:textfield name="initialDispatchPlace" id="initialDispatchPlace" maxLength="65" onKeyPress='return notAllowCheck(this,event);'></s:textfield> </td>
+			
+			<td width="20%" class="textRight"><s:label	value="%{getText('label.finalDeliveryPlace')}"></s:label>:</td>
+			<td width="30%" class="text"><s:textfield name="finalDeliveryPlace" id="finalDeliveryPlace" maxLength="65" onKeyPress='return notAllowCheck(this,event);'></s:textfield> </td>
+			</tr>
+			<tr>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.latestDateofShipment')}"></s:label>:</td>
+				<td width="30%" class="text"><sx:datetimepicker name="latestDateofShipment" displayFormat="MM/dd/yy" cssClass="txtField" type="date" id="latestDateofShipment"  ></sx:datetimepicker>
+				<td width="20%" class="textRight"><s:label value="%{getText('label.ShipmentPeriod')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textarea name="shipmentPeriod" id="shipmentPeriod" wrap="HARD" rows="6" cols="65" onKeyPress='return maxLength(this,"389","shipmentPeriod","65",event);'></s:textarea> </td>
+			</tr>
+			<tr>			
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.Narrative')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textarea name="Narrative" id="Narrative" rows="6" cols="50" wrap="HARD" onKeyPress='return maxLength(this,"1749","Narrative","35",event);' ></s:textarea> </td>
+				<td width="20%" class="textRight"><s:label	value="%{getText('label.SendertoReceiverInformation')}"></s:label>:</td>
+				<td width="30%" class="text"><s:textarea name="sendertoReceiverInformation" id="sendertoReceiverInformation" rows="6" cols="35" wrap="HARD" onKeyPress='return maxLength(this,"209","sendertoReceiverInformation","35",event);' ></s:textarea> </td>
+		</tr>	
+					
+		</table>
+		</s:div> <!-- Group Two Div Ends --></div>
+		</div>
+		</div>
+		<!--  button panel starts -->
+		<div class="clearfix"></div>
+	<table width="100%" cellpadding="0" cellspacing="0" border="0">
+		<tr>
+			<td>
+		  	<s:if test="%{checkForSubmit!='Display_Approve_Reject'}">  
+				<input type ="button" value="Submit"  class="btn"  onclick="callCommentPOPUp()"/>
+					<input type="reset" value="Cancel" onclick="cancel()" class="btn"  />
+			</s:if> 
+			<s:if test="%{checkForSubmit=='Display_Approve_Reject'}">
+				<s:if test="%{validUserToApprove}">
+					<input type="button" value="Approve" onclick="callSubmit('Approve')">
+					<input type="button" value="Reject" onclick="callSubmit('Reject')">
+					<input type="button" value="Cancel" onclick="cancel()">
+				</s:if>
+				<s:if test="%{!validUserToApprove}">
+					<input type="button" value="Approve" onclick="callSubmit('Approve')" disabled="disabled">
+					<input type="button" value="Reject" onclick="callSubmit('Reject')" disabled="disabled">
+					<input type="button" value="Cancel" onclick="cancel()" disabled="disabled">
+				</s:if>
+			</s:if>  
+			</td>
+		</tr>
+	</table>	
+	<s:hidden id="saveAction" name="saveAction"></s:hidden>
+	<s:hidden id="hiddenTxnRef" name="hiddenTxnRef"></s:hidden>	
+	<s:hidden id="msgRef" name="msgRef"></s:hidden>
+</s:form></div>
+</div>
+</div>
+<div id="contentPaneBottom"></div>
+<script type="text/javascript">
+	var CollapsiblePanel1 = new Spry.Widget.CollapsiblePanel(
+			"CollapsiblePanel1");
+	var CollapsiblePanel2 = new Spry.Widget.CollapsiblePanel(
+			"CollapsiblePanel2");	
+</script>
+<script type="text/javascript">
+var check= document.getElementById("hiddenTxnRef").value;
+if(check!=''){
+	var aa = document.getElementById('form');
+	for ( var i = 0; i < aa.length-6; i++) {
+		//alert(aa.elements[i].value)
+		if(aa.elements[i].value!='Approve' || aa.elements[i].value!='Reject')
+		aa.elements[i].disabled = true;
+		document.getElementById("latestDateofShipment").disabled = true;
+		document.getElementById("newAmendExpiryDate").disabled = true;
+		document.getElementById("amendmentDate").disabled = true;
+		document.getElementById("issueDate").disabled = true;
+	}
+}
+
+</script>
+		

@@ -1,0 +1,956 @@
+package com.logica.ngph.web.action;
+
+import java.sql.Clob;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
+import org.apache.struts2.interceptor.SessionAware;
+import org.apache.struts2.interceptor.validation.SkipValidation;
+import org.springframework.context.ApplicationContextException;
+
+import com.logica.ngph.Entity.Functions;
+import com.logica.ngph.Entity.LcCommodity;
+import com.logica.ngph.Entity.Parties;
+import com.logica.ngph.common.ConstantUtil;
+import com.logica.ngph.dtos.LCCanonicalDto;
+import com.logica.ngph.service.EnquiryService;
+import com.logica.ngph.service.LcOpenService;
+import com.logica.ngph.service.LetterOfCreditService;
+import com.logica.ngph.service.PendingAuthorizationService;
+import com.logica.ngph.web.utils.ApplicationContextProvider;
+import com.logica.ngph.web.utils.EventLogging;
+import com.logica.ngph.web.utils.SerializeManager;
+import com.logica.ngph.web.utils.UserRolesAccess;
+import com.logica.ngph.web.utils.WebConstants;
+import com.opensymphony.xwork2.ActionSupport;
+import com.opensymphony.xwork2.ModelDriven;
+
+public class LetterOfCreditAction extends ActionSupport implements ModelDriven<LCCanonicalDto>,SessionAware{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private static Logger logger = Logger.getLogger(LetterOfCreditAction.class);
+	private Map<String, Object> session;
+	LCCanonicalDto connionicalDto =new LCCanonicalDto();
+	private List positiveToleranceList = new ArrayList();
+	private List negativeToleranceList  = new ArrayList();
+	private List lcCurrencyList = new ArrayList();
+	private String lcCommodity;
+	
+	private int rowTodelete;
+	private String hiddenTxnRef;
+	private String txnRef;
+	private String saveAction;
+	private String checkForSubmit;
+	private boolean validUserToApprove;
+	private String ifscCode;
+	private String action;
+	private String msgIndex;
+	private String paymentMessageType;
+	public String getMsgIndex() {
+		return msgIndex;
+	}
+
+	public void setMsgIndex(String msgIndex) {
+		this.msgIndex = msgIndex;
+	}
+
+	public String getPaymentMessageType() {
+		return paymentMessageType;
+	}
+
+	public void setPaymentMessageType(String paymentMessageType) {
+		this.paymentMessageType = paymentMessageType;
+	}
+
+	public String getAction() {
+		return action;
+	}
+
+	public void setAction(String action) {
+		this.action = action;
+		this.session.put("action", action);
+	}
+	private List<Parties> ifscList;
+	
+	
+	public List<Parties> getIfscList() {
+		return ifscList;
+	}
+
+	public void setIfscList(List<Parties> ifscList) {
+		this.ifscList = ifscList;
+	}
+
+	public String getIfscCode() {
+		return ifscCode;
+	}
+
+	public void setIfscCode(String ifscCode) {
+		this.ifscCode = ifscCode;
+	}
+
+	public boolean isValidUserToApprove() {
+		return validUserToApprove;
+	}
+
+	public void setValidUserToApprove(boolean validUserToApprove) {
+		this.validUserToApprove = validUserToApprove;
+	}
+
+	public String getHiddenTxnRef() {
+		return hiddenTxnRef;
+	}
+
+	public void setHiddenTxnRef(String hiddenTxnRef) {
+		this.hiddenTxnRef = hiddenTxnRef;
+	}
+
+	public String getTxnRef() {
+		return txnRef;
+	}
+
+	public void setTxnRef(String txnRef) {
+		this.txnRef = txnRef;
+	}
+
+	public String getSaveAction() {
+		return saveAction;
+	}
+
+	public void setSaveAction(String saveAction) {
+		this.saveAction = saveAction;
+	}
+
+	public String getCheckForSubmit() {
+		return checkForSubmit;
+	}
+
+	public void setCheckForSubmit(String checkForSubmit) {
+		this.checkForSubmit = checkForSubmit;
+	}
+
+	public int getRowTodelete() {
+		return rowTodelete;
+	}
+
+	public void setRowTodelete(int rowTodelete) {
+		this.rowTodelete = rowTodelete;
+	}
+	private List<LcCommodity> commoditiesList = new ArrayList<LcCommodity>();
+	
+	
+	
+	public List<LcCommodity> getCommoditiesList() {
+		return commoditiesList;
+	}
+
+	public void setCommoditiesList(List<LcCommodity> commoditiesList) {
+		this.commoditiesList = commoditiesList;
+		this.session.put("commoditiesList", commoditiesList);
+	}
+
+	public String getLcCommodity() {
+		return lcCommodity;
+	}
+
+	public void setLcCommodity(String lcCommodity) {
+		this.lcCommodity = lcCommodity;
+	}
+
+	
+	public Map<String, Object> getSession() {
+		return session;
+	}
+
+	public void setSession(Map<String, Object> session) {
+		this.session = session;
+	}
+	private String IFSCFLAG;
+	public String getIFSCFLAG() {
+		return IFSCFLAG;
+	}
+
+	public void setIFSCFLAG(String iFSCFLAG) {
+		IFSCFLAG = iFSCFLAG;
+	}
+
+	@SkipValidation
+	public String getIFSCCodeList()
+	{
+		try{
+			logger.info("Inside getIFSCCodeList() in LetterOfCreditAction");
+			String userId = (String)session.get(WebConstants.CONSTANT_USER_NAME);
+			//System.out.println("Search IFSC CODE");
+			LetterOfCreditService letterOfCreditService =  (LetterOfCreditService)  ApplicationContextProvider.getBean("letterOfCreditService");
+			setIfscList(letterOfCreditService.getIFSCCodeList(getIfscCode(),getIFSCFLAG(),""));
+			logger.info("End Of getIFSCCodeList() in LetterOfCreditAction");
+			//System.out.println("ACTION :-  "+getAction()+"IFSC FLAG"+getIFSCFLAG());
+			return "success";
+		}	
+		catch (NullPointerException  nullPointerException) {
+			AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+		}
+		catch (ApplicationContextException applicationContextException) {
+			AuditServiceUtil.logApplicationException(applicationContextException, logger);
+		}
+		catch (ClassCastException classCastException) {
+			AuditServiceUtil.logClassCastException(classCastException, logger)	;
+		}
+		catch (Exception exception) {
+			AuditServiceUtil.logException(exception,logger);
+		}
+
+		addActionError("Unable to perform the operation. Please try again");
+		return "input";
+	}
+	
+	@SkipValidation
+	public String getIFSCsearch()
+	{
+		try{
+			logger.info("Inside getIFSCCodeList() in LetterOfCreditAction");
+			String userId = (String)session.get(WebConstants.CONSTANT_USER_NAME);
+		//	System.out.println("Search IFSC CODE");
+			LetterOfCreditService letterOfCreditService =  (LetterOfCreditService)  ApplicationContextProvider.getBean("letterOfCreditService");
+			setIfscList(letterOfCreditService.getIFSCCodeList(getIfscCode(),userId));
+		//	System.out.println("ACTION :-  "+getAction());
+			logger.info("End getIFSCCodeList()");
+			return "success";
+		}	
+		catch (NullPointerException  nullPointerException) {
+			AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+		}
+		catch (ApplicationContextException applicationContextException) {
+			AuditServiceUtil.logApplicationException(applicationContextException, logger);
+		}
+		catch (ClassCastException classCastException) {
+			AuditServiceUtil.logClassCastException(classCastException, logger)	;
+		}
+		catch (Exception exception) {
+			AuditServiceUtil.logException(exception,logger);
+		}
+
+		addActionError("Unable to perform the operation. Please try again");
+		return "input";
+	}
+	
+	
+	
+	static List<LcCommodity> gridList = new ArrayList<LcCommodity>();
+	@SkipValidation
+	public String getCreditDetails()
+	{
+		try{
+			logger.info("Inside getCreditDetails() in  LetterOfCreditAction");
+			
+			UserRolesAccess access = (UserRolesAccess) ApplicationContextProvider.getBean("notValidUser");
+			boolean roleAccess=	access.checkForRole(((List<Functions>)session.get("restrictedFunctionsList")),"function.access.preadvice");
+				if(roleAccess){
+					return "notValidUser";
+				}
+			gridList=new ArrayList<LcCommodity>();
+			session.remove("commoditiesList");
+			count=0;
+			EnquiryService enquiryService = (EnquiryService)ApplicationContextProvider.getBean("enquiryService");
+			List temp= new ArrayList();
+			for(int i=0;i<100;i++){
+				temp.add(i+"");
+			}
+			
+			session.put("positiveToleranceList", temp);
+			session.put("negativeToleranceList", temp);
+			session.put("lcCurrencyList", enquiryService.getEnquiryList(ConstantUtil.ENQUIRY_CURRENCY));
+			logger.info("End getCreditDetails() return Success");
+			return "success";
+		
+		}catch (NullPointerException  nullPointerException) {
+			AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+		}
+		catch (ApplicationContextException applicationContextException) {
+			AuditServiceUtil.logApplicationException(applicationContextException, logger);
+		}
+		catch (ClassCastException classCastException) {
+			AuditServiceUtil.logClassCastException(classCastException, logger)	;
+		}
+		catch (Exception exception) {
+			AuditServiceUtil.logException(exception,logger);
+		}
+		logger.info("Inside Exception Occured");
+		return "input";
+	}
+	
+	public List getPositiveToleranceList() {
+		return positiveToleranceList;
+	}
+
+	public void setPositiveToleranceList(List positiveToleranceList) {
+		this.positiveToleranceList = positiveToleranceList;
+	}
+
+	public List getNegativeToleranceList() {
+		return negativeToleranceList;
+	}
+
+	public void setNegativeToleranceList(List negativeToleranceList) {
+		this.negativeToleranceList = negativeToleranceList;
+	}
+
+	public List getLcCurrencyList() {
+		return lcCurrencyList;
+	}
+
+	public void setLcCurrencyList(List lcCurrencyList) {
+		this.lcCurrencyList = lcCurrencyList;
+	}
+	private String RepairData;
+
+	public String getRepairData() {
+		return RepairData;
+	}
+
+	public void setRepairData(String repairData) {
+		RepairData = repairData;
+	}
+	public String getObjectForLC()
+	{
+		try{	
+			logger.info("Inside getObjectForLC() In LetterOfCreditAction");
+	
+			LetterOfCreditService letterOfCreditService =  (LetterOfCreditService)  ApplicationContextProvider.getBean("letterOfCreditService");
+			PendingAuthorizationService pendingAuthorizationService = (PendingAuthorizationService)ApplicationContextProvider.getBean("pendingAuthorizationService");
+			EventLogging eventLogging = (EventLogging)ApplicationContextProvider.getBean("eventLogging");
+			String returnString = null;
+			String userId = (String)session.get(WebConstants.CONSTANT_USER_NAME);
+			if(getSaveAction().equals("Approve")){
+			 returnString =letterOfCreditService.saveLC(connionicalDto,(List<LcCommodity>)session.get("commoditiesList"),"PreAdvice",userId,getRepairData());
+	
+			
+			if(returnString!=null){
+				pendingAuthorizationService.changeStatus(getSaveAction(), getHiddenTxnRef());
+				if(StringUtils.isBlank(connionicalDto.getRepair()) && StringUtils.isEmpty(connionicalDto.getRepair())){
+					eventLogging.doEventLogging(userId," Pre Advice ",ConstantUtil.EVENTID_PRE_ADVISE+ConstantUtil.EVENTID_APPROVE,ConstantUtil.EVENTLOGGINGCOMMENTAPPROVAL,connionicalDto.getLcNumber(),connionicalDto.getMsgRef());
+				}else
+				{
+					eventLogging.doEventLogging(userId," Pre Advice ",ConstantUtil.EVENTID_PRE_ADVISE + ConstantUtil.EVENTID_REPAIR_APPROVE,ConstantUtil.EVENTLOGGINGCOMMENTAPPROVAL+" "+ConstantUtil.EVENTLOGGINGCOMMENTREAPIR,connionicalDto.getLcNumber(),connionicalDto.getMsgRef());
+				}
+				pendingAuthorizationService =null;
+				logger.info("End getObjectForLC() In LetterOfCreditAction At Line 345");
+			return "success";
+			}else{
+				logger.info("End getObjectForLC() In LetterOfCreditAction At Line 348");
+				return "input";
+			}
+			}
+			else if(getSaveAction().equals("Reject"))
+			{
+				pendingAuthorizationService.changeStatus(getSaveAction(), getHiddenTxnRef());
+				if(StringUtils.isBlank(connionicalDto.getRepair()) && StringUtils.isEmpty(connionicalDto.getRepair())){
+					eventLogging.doEventLogging(userId," Pre Advice ",ConstantUtil.EVENTID_PRE_ADVISE+ConstantUtil.EVENTID_REJECT,ConstantUtil.EVENTLOGGINGCOMMENTREJECT,connionicalDto.getLcNumber(),connionicalDto.getMsgRef());
+				}else
+				{
+					eventLogging.doEventLogging(userId," Pre Advice ",ConstantUtil.EVENTID_PRE_ADVISE + ConstantUtil.EVENTID_REPAIR_REJECT,ConstantUtil.EVENTLOGGINGCOMMENTREJECT+" "+ConstantUtil.EVENTLOGGINGCOMMENTREAPIR,connionicalDto.getLcNumber(),connionicalDto.getMsgRef());
+				}
+				pendingAuthorizationService =null;
+				logger.info("End getObjectForLC() In LetterOfCreditAction At Line 356 In Rejected condition");
+				return "success";
+			}
+		
+		}catch (NullPointerException  nullPointerException) {
+			AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+		}
+		catch (ApplicationContextException applicationContextException) {
+			AuditServiceUtil.logApplicationException(applicationContextException, logger);
+		}
+		catch (ClassCastException classCastException) {
+			AuditServiceUtil.logClassCastException(classCastException, logger)	;
+		}
+		catch (Exception exception) {
+			AuditServiceUtil.logException(exception,logger);
+		}
+	
+		addActionError("Unable to perform the operation. Please try again");
+		return "input";
+	}
+	static int count=0;
+	@SkipValidation
+	public String addRowToLcGrid()
+	{
+		try{		
+			logger.info("Inside addRowToLcGrid() In LetterOfCreditAction At Line 381");
+				LcCommodity commodity = new LcCommodity();
+				commodity.setLcCommodity(getLcCommodity());
+				commodity.setLcId(count+"");
+				gridList.add(commodity);
+				count++;
+				setCommoditiesList(gridList);
+				setLcCommodity("");
+				logger.info("End addRowToLcGrid() In LetterOfCreditAction At Line 389");
+			return "success";
+		
+		}catch (NullPointerException  nullPointerException) {
+			AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+		}
+		catch (ApplicationContextException applicationContextException) {
+			AuditServiceUtil.logApplicationException(applicationContextException, logger);
+		}
+		catch (ClassCastException classCastException) {
+			AuditServiceUtil.logClassCastException(classCastException, logger)	;
+		}
+		catch (Exception exception) {
+			AuditServiceUtil.logException(exception,logger);
+		}
+	
+		addActionError("Unable to perform the operation. Please try again");
+		return "input";
+	}
+	
+	@SkipValidation
+	public String rowToDelete()
+	{
+		try{
+			logger.info("Inside rowToDelete() In LetterOfCreditAction At Line 413");
+			List<LcCommodity> list= ((List<LcCommodity>)session.get("commoditiesList"));
+			list.remove(getRowTodelete());
+			setCommoditiesList(list);
+			logger.info("End rowToDelete() In LetterOfCreditAction At Line 417");
+		return "success";
+		
+	}catch (NullPointerException  nullPointerException) {
+		AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+	}
+	catch (ApplicationContextException applicationContextException) {
+		AuditServiceUtil.logApplicationException(applicationContextException, logger);
+	}
+	catch (ClassCastException classCastException) {
+		AuditServiceUtil.logClassCastException(classCastException, logger)	;
+	}
+	catch (Exception exception) {
+		AuditServiceUtil.logException(exception,logger);
+	}
+
+	addActionError("Unable to perform the operation. Please try again");
+	return "input";
+	}
+	
+	private boolean checkNoOfLines(String data)
+	{
+		boolean result = false;
+		
+		if(StringUtils.isNotBlank(data) && StringUtils.isNotEmpty(data))
+		{
+			if(data.contains("\r") || data.contains("\n"))
+			{
+				String dataArr [] = data.split("\r\n");
+				if(dataArr.length<=4)
+				{
+					result=true;
+				}
+				for(int i=0;i<dataArr.length;i++)
+				{
+					if(dataArr[i].length()<=35)
+					{
+						result=true;
+					}
+					else
+					{
+						break;
+					}
+				}
+			}
+		}
+		return result;
+	}
+	public void validate()
+	{
+		logger.info("inside validate() In LetterOfCreditAction At Line 467");
+		LetterOfCreditService letterOfCreditService =  (LetterOfCreditService)  ApplicationContextProvider.getBean("letterOfCreditService");
+		
+		String senderBank = letterOfCreditService.getDept((String)session.get(WebConstants.CONSTANT_USER_NAME));
+		if(StringUtils.isBlank(connionicalDto.getRepair()) && StringUtils.isEmpty(connionicalDto.getRepair())){
+		if(senderBank!=null && connionicalDto.getAdvisingBank()!=null)
+		{
+			if(senderBank.equalsIgnoreCase(connionicalDto.getAdvisingBank()))
+					{
+						addFieldError("advisingBank", "Advising Bank Should Not Be Sender Bank");
+					}
+		}
+		}else
+		{
+			if(StringUtils.isNotBlank(connionicalDto.getSenderBank())&&StringUtils.isNotEmpty(connionicalDto.getSenderBank()) &&  connionicalDto.getAdvisingBank()!=null)
+			{
+				if(connionicalDto.getSenderBank().trim().equalsIgnoreCase(connionicalDto.getAdvisingBank().trim()))
+						{
+							addFieldError("advisingBank", "Advising Bank Should Not Be Sender Bank");
+						}
+			}	
+		}
+		if(StringUtils.isBlank(connionicalDto.getRepair()) && StringUtils.isEmpty(connionicalDto.getRepair())){
+		if(letterOfCreditService.isLcNumberExist(connionicalDto.getLcNumber())==true)
+		{
+			addFieldError("LcNumber","Lc Number AllReady Available In DataBase");
+		}
+		}else
+		{
+			if(!letterOfCreditService.getstatusForLCNumber(connionicalDto.getMsgRef()))
+			{
+				addFieldError("LcNumber", "Message Is Not In Valid State");
+			}
+		}
+		
+		networkValdation();
+		if(StringUtils.isBlank(connionicalDto.getRepair()) && StringUtils.isEmpty(connionicalDto.getRepair())){
+		if(connionicalDto.getLcExpiryDate()!=null){
+			if (connionicalDto.getLcExpiryDate().before(getCurrentTime())){
+			      addFieldError("lcExpiryDate", "Lc Expiry Date Should Always Be Greater Than Today's date.");
+			   }	
+		}
+		if(connionicalDto.getLatestDateofShipment()!=null)
+		{
+			if(connionicalDto.getLatestDateofShipment().before(getCurrentTime()) || connionicalDto.getLatestDateofShipment().after(connionicalDto.getLcExpiryDate())){
+				
+				 addFieldError("latestDateofShipment", "latest Date of Shipment Should Always Be Greater Than Today's date and Smaller that LC Expiry date.");
+			}
+		}
+		}else
+		{
+			if(connionicalDto.getLatestDateofShipment()!=null)
+			{
+				if(connionicalDto.getLatestDateofShipment().after(connionicalDto.getLcExpiryDate())){
+					
+					 addFieldError("latestDateofShipment", "latest Date of Shipment Should Always Be Smaller that LC Expiry date.");
+				}
+			}
+		}
+		if(connionicalDto.getLcNumber().startsWith("/")){
+			 addFieldError("lcNumber", "Lc Number Must Not start with /");
+		}else if(connionicalDto.getLcNumber().endsWith("/")){
+			addFieldError("lcNumber", "Lc Number must not End with /");;
+		}else if(connionicalDto.getLcNumber().contains("//")){
+			addFieldError("lcNumber", "Lc Number must not contain two consecutive slashes '//'");
+		}
+		
+		if(StringUtils.isNotBlank(connionicalDto.getAdviseThroughBankCode()) && StringUtils.isNotEmpty(connionicalDto.getAdviseThroughBankCode()) && connionicalDto.getAdviseThroughBankCode()!=null){
+			if(letterOfCreditService.checkIFSC(connionicalDto.getAdviseThroughBankCode())==false){
+				addFieldError("adviseThroughBankCode", "advise Through BankCode Is Not Available In System");
+			}
+		}
+		
+		if(StringUtils.isNotBlank(connionicalDto.getAuthorisedBankCode()) && StringUtils.isNotEmpty(connionicalDto.getAuthorisedBankCode()) && connionicalDto.getAuthorisedBankCode()!=null){
+			if(letterOfCreditService.checkIFSC(connionicalDto.getAuthorisedBankCode())==false){
+				addFieldError("adviseThroughBankCode", "advise Through BankCode Is Not Available In System");
+			}
+		}
+		
+		
+		if((connionicalDto.getPositiveTolerance()!=null && !connionicalDto.getPositiveTolerance().equals("") && StringUtils.isNotBlank(connionicalDto.getPositiveTolerance())&& StringUtils.isNotEmpty(connionicalDto.getPositiveTolerance()))){
+			if( connionicalDto.getNegativeTolerance()==null || connionicalDto.getNegativeTolerance().equals("") || StringUtils.isEmpty(connionicalDto.getNegativeTolerance()) || StringUtils.isBlank(connionicalDto.getNegativeTolerance())){
+				addFieldError("negativeTolerance", "Negative Tolerance Is Required");
+			}
+		}
+		if((connionicalDto.getNegativeTolerance()!=null && !connionicalDto.getNegativeTolerance().equals("") && StringUtils.isNotBlank(connionicalDto.getNegativeTolerance())&& StringUtils.isNotEmpty(connionicalDto.getNegativeTolerance()))){
+			if(connionicalDto.getPositiveTolerance()==null || connionicalDto.getPositiveTolerance().equals("") || StringUtils.isEmpty(connionicalDto.getPositiveTolerance()) || StringUtils.isBlank(connionicalDto.getPositiveTolerance())){
+				addFieldError("positiveTolerance", "Positive Tolerance Is Required");
+			}
+		}
+		logger.info("End validate() In LetterOfCreditAction At Line 519");
+		
+	}
+	
+	public void validateTolerance()
+	{
+		String tolerance = null;
+		String mxdCrdAmt = null;
+		tolerance = connionicalDto.getPositiveTolerance()+connionicalDto.getNegativeTolerance();
+		mxdCrdAmt  = connionicalDto.getMaximumCreditAmount();
+		if(StringUtils.isNotBlank(tolerance) && StringUtils.isNotEmpty(tolerance) && tolerance!=null)
+		{
+			if(StringUtils.isNotBlank(mxdCrdAmt) && StringUtils.isNotEmpty(mxdCrdAmt) && mxdCrdAmt!=null)
+			{
+				addFieldError("maximumCreditAmount", "maximumCreditAmount must not present");
+			}
+		}
+		if(StringUtils.isNotBlank(mxdCrdAmt) && StringUtils.isNotEmpty(mxdCrdAmt) && mxdCrdAmt!=null)
+		{
+			if(StringUtils.isNotBlank(tolerance) && StringUtils.isNotEmpty(tolerance) && tolerance!=null)
+			{
+				addFieldError("positiveTolerance", "positiveTolerance/negative Tolerance must not present");
+			}
+		}
+		
+		
+	}
+	public void networkValdation()
+	{
+				
+		if(StringUtils.isNotBlank(connionicalDto.getShipmentPeriod()) && StringUtils.isNotEmpty(connionicalDto.getShipmentPeriod()) && connionicalDto.getShipmentPeriod()!=null)
+		{
+			if(connionicalDto.getLatestDateofShipment()!=null)
+			{
+				addFieldError("shipmentPeriod", "Either Of the fields Last Shipment Date Or Shipment Period should only be present");
+			}
+		}
+		else if(connionicalDto.getLatestDateofShipment()!=null)
+		{
+			if(StringUtils.isNotBlank(connionicalDto.getShipmentPeriod()) && StringUtils.isNotEmpty(connionicalDto.getShipmentPeriod()) && connionicalDto.getShipmentPeriod()!=null)
+			{
+				addFieldError("shipmentPeriod", "Either Of the fields Last Shipment Date Or Shipment Period should only be present");
+			}
+		}
+		
+	}
+	
+	private Timestamp getCurrentTime(){
+		java.util.Date 	str_date = Calendar.getInstance().getTime();
+		java.sql.Timestamp timeStampDate = new Timestamp(str_date.getTime());
+		return timeStampDate;
+	}
+	
+	
+	public String getLetterOFCreditApproval()
+	{
+		
+		try{
+			logger.info("inside getLetterOFCreditApproval() In LetterOfCreditAction At Line 577");
+			String txnKey="";
+			LetterOfCreditService letterOfCreditService =  (LetterOfCreditService)  ApplicationContextProvider.getBean("letterOfCreditService");
+			EventLogging eventLogging = (EventLogging)ApplicationContextProvider.getBean("eventLogging");
+			if(letterOfCreditService.checkIFSC(connionicalDto.getAdvisingBank())==false){
+				addFieldError("advisingBank", "Advising Bank Is Not Available In System");
+				logger.info("End getLetterOFCreditApproval() In LetterOfCreditAction At Line 582");
+				return "input";
+			}
+			PendingAuthorizationService pendingAuthorizationService = (PendingAuthorizationService)ApplicationContextProvider.getBean("pendingAuthorizationService");
+			String userId = (String)session.get(WebConstants.CONSTANT_USER_NAME);
+			
+		txnKey = pendingAuthorizationService.getTranRef(new SerializeManager<LCCanonicalDto>().serializeObject((String)session.get(WebConstants.CONSTANT_USER_NAME), connionicalDto),"Pre Advise",userId);
+		
+		List<LcCommodity> list= ((List<LcCommodity>)session.get("commoditiesList"));
+		if(list!=null){
+		for(int i = 0 ;i<list.size();i++){
+			LcCommodity dataString = list.get(i);
+			String stringToObject=dataString.getLcId()+"~"+dataString.getLcCommodity()+"~"+dataString.getMsgRef();
+			pendingAuthorizationService.delimitedStringValue(txnKey, i+"", stringToObject);
+			
+			}
+		}
+		if(StringUtils.isBlank(connionicalDto.getRepair()) && StringUtils.isEmpty(connionicalDto.getRepair())){
+			eventLogging.doEventLogging(userId," Pre Advice ",ConstantUtil.EVENTID_PRE_ADVISE+ConstantUtil.EVENTID_SUBMIT,ConstantUtil.EVENTLOGGINGCOMMENTSUBMIT,connionicalDto.getLcNumber(),connionicalDto.getMsgRef());
+		}else
+		{
+			eventLogging.doEventLogging(userId," Pre Advice ",ConstantUtil.EVENTID_PRE_ADVISE + ConstantUtil.EVENTID_REPAIR_SUBMIT,ConstantUtil.EVENTLOGGINGCOMMENTSUBMIT+" "+ConstantUtil.EVENTLOGGINGCOMMENTREAPIR,connionicalDto.getLcNumber(),connionicalDto.getMsgRef());
+		}
+		pendingAuthorizationService =null;
+		logger.info("End getLetterOFCreditApproval() In LetterOfCreditAction At Line 599");
+		session.put("screenRef", txnKey);
+		return "success";
+		
+       
+		}catch (NullPointerException  nullPointerException) {
+			AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+		}
+		catch (ApplicationContextException applicationContextException) {
+			AuditServiceUtil.logApplicationException(applicationContextException, logger);
+		}
+		catch (ClassCastException classCastException) {
+			AuditServiceUtil.logClassCastException(classCastException, logger)	;
+		}
+		catch (Exception exception) {
+			AuditServiceUtil.logException(exception,logger);
+		}
+
+		addActionError("Unable to perform the operation. Please try again");
+		return "input";
+	}
+	@SkipValidation
+	public String getLetterOFCreditAuthorization()
+	{
+	try{
+		logger.info("inside getLetterOFCreditAuthorization() In LetterOfCreditAction At Line 623");
+		getCreditDetails();
+		
+		PendingAuthorizationService pendingAuthorizationService = (PendingAuthorizationService)ApplicationContextProvider.getBean("pendingAuthorizationService");
+		
+		setCheckForSubmit("Display_Approve_Reject");
+		String userId = pendingAuthorizationService.getCreatedUser(getTxnRef());
+		String userRole = pendingAuthorizationService.getUserType((String)session.get(WebConstants.CONSTANT_USER_NAME));
+		if((((String)session.get(WebConstants.CONSTANT_USER_NAME)).equals(userId) || userRole.equals("T"))){
+			setValidUserToApprove(false);
+		} else {
+			setValidUserToApprove(true);
+		}
+		String tempScreenString =pendingAuthorizationService.getScreenReturn(getTxnRef());
+		//LCCanonicalDto temp= getSerializedObject(tempScreenString);
+		LCCanonicalDto temp= (LCCanonicalDto) new SerializeManager<LCCanonicalDto>().getSerializedObject(tempScreenString);
+		List mulDataList = pendingAuthorizationService.getMulScreenData(getTxnRef());
+		List<LcCommodity> temportList = new ArrayList<LcCommodity>();
+		connionicalDto.setMsgRef(temp.getMsgRef());  
+		connionicalDto.setLcNumber(temp.getLcNumber());
+		connionicalDto.setLcType(temp.getLcType());
+		connionicalDto.setAdditionalAmounts(temp.getAdditionalAmounts());
+		connionicalDto.setAdviseThroughBankCode(temp.getAdviseThroughBankCode());
+		connionicalDto.setAdviseThroughBankAcc(temp.getAdviseThroughBankAcc());
+		connionicalDto.setAdviseThroughBankLocation(temp.getAdviseThroughBankLocation());
+		connionicalDto.setLcCurrency(temp.getLcCurrency());
+		connionicalDto.setLatestDateofShipment(temp.getLatestDateofShipment());
+		connionicalDto.setLcAmount(temp.getLcAmount());
+		connionicalDto.setLcExpirePlace(temp.getLcExpirePlace());
+		connionicalDto.setLcExpiryDate(temp.getLcExpiryDate());
+		connionicalDto.setAdviseThroughBankName(temp.getAdviseThroughBankName());
+		connionicalDto.setAdviseThroughBankpartyidentifier(temp.getAdviseThroughBankpartyidentifier());
+		connionicalDto.setApplicantNameAddress(temp.getApplicantNameAddress());
+		connionicalDto.setAuthorisationMode(temp.getAuthorisationMode());
+		connionicalDto.setAuthorisedAndAddress(temp.getAuthorisedAndAddress());
+		connionicalDto.setAuthorisedBankCode(temp.getAuthorisedBankCode());
+		connionicalDto.setBeneficiaryAccount(temp.getBeneficiaryAccount());
+		connionicalDto.setBeneficiaryNameAddress(temp.getBeneficiaryNameAddress());
+		connionicalDto.setMaximumCreditAmount(temp.getMaximumCreditAmount());
+		connionicalDto.setNarrative(temp.getNarrative());
+		connionicalDto.setNegativeTolerance(temp.getNegativeTolerance());
+		connionicalDto.setPositiveTolerance(temp.getPositiveTolerance());
+		connionicalDto.setSendertoReceiverInformation(temp.getSendertoReceiverInformation());
+		connionicalDto.setShipmentPeriod(temp.getShipmentPeriod());
+		connionicalDto.setShipmentTerms(temp.getShipmentTerms());
+		connionicalDto.setGoodsDestination(temp.getGoodsDestination());
+		connionicalDto.setGoodsLoadingDispatchPlace(temp.getGoodsLoadingDispatchPlace());
+		connionicalDto.setAdvisingBank(temp.getAdvisingBank());
+		connionicalDto.setInitialDispatchPlace(temp.getInitialDispatchPlace());
+		connionicalDto.setFinalDeliveryPlace(temp.getFinalDeliveryPlace());
+		connionicalDto.setRepairMsgref(temp.getRepairMsgref());
+		connionicalDto.setMsgHost(temp.getMsgHost());
+		connionicalDto.setSeqNo(temp.getSeqNo());
+		connionicalDto.setIssueDate(temp.getIssueDate());
+		connionicalDto.setRepair(temp.getRepair());
+		connionicalDto.setComment(temp.getComment());
+		connionicalDto.setSenderBank(temp.getSenderBank());
+		setHiddenTxnRef(getTxnRef());
+		for(int i=0;i<mulDataList.size();i++)
+		{
+			Clob list=(Clob) mulDataList.get(i);
+			String[] tempString;
+			tempString = list.getSubString(1, (int) list.length()).split("~");
+			LcCommodity lcCommodity = new LcCommodity();
+			lcCommodity.setLcCommodity(tempString[1]);
+		//	lcCommodity.setLcCommodityQty(Integer.parseInt(tempString[2]));
+			//lcCommodity.setLcCommodityRate(Double.parseDouble(tempString[3]));
+			
+				
+			
+			temportList.add(lcCommodity);
+		}
+		setCommoditiesList(temportList);
+		
+		pendingAuthorizationService =null;
+		logger.info("End getLetterOFCreditAuthorization() In LetterOfCreditAction At Line 693");
+		return "success";
+	}	
+	catch (NullPointerException  nullPointerException) {
+		AuditServiceUtil.logNullPointerException(nullPointerException, logger);
+	}
+	catch (ApplicationContextException applicationContextException) {
+		AuditServiceUtil.logApplicationException(applicationContextException, logger);
+	}
+	catch (ClassCastException classCastException) {
+		AuditServiceUtil.logClassCastException(classCastException, logger)	;
+	}
+	catch (Exception exception) {
+		AuditServiceUtil.logException(exception,logger);
+	}
+
+	addActionError("Unable to perform the operation. Please try again");
+	return "input";
+	}
+	@SkipValidation
+	public String viewLcPayment()
+	{
+		try{
+			logger.info("inside viewLcPayment() In LetterOfCreditAction At Line 716");
+		getCreditDetails();
+		String msgRef = (String) session.get("messageIndex");
+		LetterOfCreditService letterOfCreditService =  (LetterOfCreditService)  ApplicationContextProvider.getBean("letterOfCreditService");
+		LCCanonicalDto canonicalDto = letterOfCreditService.getPreAdviceRepair(msgRef);
+		if(canonicalDto.getLcNumber()!=null && StringUtils.isNotBlank(canonicalDto.getLcNumber()) && StringUtils.isNotEmpty(canonicalDto.getLcNumber())){	
+			canonicalDto.setRepairMsgref(msgRef);
+			canonicalDto.setRepair(ConstantUtil.REPAIR);
+			setALLValueTODTO(canonicalDto);
+		
+		}else
+		{
+			addFieldError("paymentMessageType",ConstantUtil.ERRORMESSAGE);
+			logger.info("End viewLcPayment() In LetterOfCreditAction At Line 728 Error Message : - "+ConstantUtil.ERRORMESSAGE);
+			return "failure";
+		}
+		logger.info("End viewLcPayment() In LetterOfCreditAction At Line 731");
+		return INPUT;
+		}catch(Exception exception)
+		{
+			addFieldError("paymentMessageType",ConstantUtil.ERRORMESSAGE);
+			logger.error("Exception in  viewLcPayment()"+ exception);
+			
+			return "failure";
+		}
+	}
+	
+	private  final static String getDateTime()  
+    {  
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd_hhmmss");  
+        df.setTimeZone(TimeZone.getTimeZone("GMT"));  
+        return df.format(new Date());  
+    }  
+	/*public String serializeObject()
+	{
+		LCCanonicalDto lcCanonicalDto = new LCCanonicalDto();
+		try{
+			String userId = (String)session.get(WebConstants.CONSTANT_USER_NAME);
+			
+			lcCanonicalDto = connionicalDto;
+			System.out.print("LC NUMBER :"+lcCanonicalDto.getLcNumber());
+			String fileName ="serial_"+userId+".ser";
+		FileOutputStream fos = new FileOutputStream(fileName);
+        OutputStream buffer = new BufferedOutputStream( fos );
+        ObjectOutputStream oos = new ObjectOutputStream(buffer);
+        oos.writeObject(lcCanonicalDto);
+        oos.flush();
+        oos.close();
+        File file = new File(fileName);
+        byte[] byteArray = new byte[(int) file.length()];
+        FileInputStream fis = new FileInputStream(file); 
+        fis.read(byteArray);
+        String objectString = Base64.encodeBytes(byteArray);
+        System.out.print("Object String :"+objectString);
+        
+		return objectString;
+		
+       
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+	public LCCanonicalDto getSerializedObject(String objectString)
+	{
+		try{
+			
+			byte[] decoded = Base64.decode(objectString);
+            
+            FileOutputStream foss = new FileOutputStream("targetUserObject.ser");
+            foss.write(decoded);
+            foss.close();
+            LCCanonicalDto testDTO = null;
+            
+            FileInputStream fiss = new FileInputStream("targetUserObject.ser");
+            BufferedInputStream bufferee = new BufferedInputStream( fiss );
+            ObjectInputStream oiss = new ObjectInputStream(bufferee);
+            testDTO = (LCCanonicalDto)oiss.readObject();
+            oiss.close();
+            System.out.println("object2: " + testDTO); 
+            System.out.print("User(testDTO) :"+testDTO.getLcNumber());
+          
+            return testDTO;
+
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	*/
+	public void setMobel(LCCanonicalDto connionicalDto)
+	{
+		 this.connionicalDto=connionicalDto;
+	}
+	public LCCanonicalDto getModel() {
+		
+		return connionicalDto;
+	}
+	
+	private void setALLValueTODTO(LCCanonicalDto obj)
+	{
+		logger.info("Inside setALLValueTODTO() in letterOfCreditAction");
+		LcOpenService lcOpenService = (LcOpenService) ApplicationContextProvider.getBean("lcOpenService");
+		LCCanonicalDto canonicalDto = obj;
+		
+		connionicalDto.setLcType(canonicalDto.getLcType());
+		connionicalDto.setLcNumber(canonicalDto.getLcNumber());
+		connionicalDto.setLcExpiryDate(canonicalDto.getLcExpiryDate());
+		connionicalDto.setLcExpirePlace(canonicalDto.getLcExpirePlace());
+	             	
+		connionicalDto.setPositiveTolerance(canonicalDto.getPositiveTolerance());
+		connionicalDto.setNegativeTolerance(canonicalDto.getNegativeTolerance());
+	            
+	       
+		connionicalDto.setMaximumCreditAmount(canonicalDto.getMaximumCreditAmount());
+		connionicalDto.setAdditionalAmounts(canonicalDto.getAdditionalAmounts());
+		connionicalDto.setAuthorisedBankCode(canonicalDto.getAuthorisedBankCode());
+		connionicalDto.setAuthorisedAndAddress(canonicalDto.getAuthorisedAndAddress());
+		connionicalDto.setAuthorisationMode(canonicalDto.getAuthorisationMode());
+		connionicalDto.setGoodsLoadingDispatchPlace(canonicalDto.getGoodsLoadingDispatchPlace());
+		connionicalDto.setGoodsDestination(canonicalDto.getGoodsDestination());
+		connionicalDto.setLatestDateofShipment(canonicalDto.getLatestDateofShipment());
+		connionicalDto.setShipmentPeriod(canonicalDto.getShipmentPeriod());
+		connionicalDto.setShipmentTerms(canonicalDto.getShipmentTerms());
+		connionicalDto.setDraftsAt(canonicalDto.getDraftsAt());
+		connionicalDto.setDraweeBankpartyidentifier(canonicalDto.getDraweeBankpartyidentifier());
+		connionicalDto.setDraweeBankCode(canonicalDto.getDraweeBankCode());
+		connionicalDto.setDraweeBankNameAddress(canonicalDto.getDraweeBankNameAddress());
+		connionicalDto.setMixedPaymentDetails(canonicalDto.getMixedPaymentDetails());
+		connionicalDto.setDeferredPaymentDetails(canonicalDto.getDeferredPaymentDetails());
+		connionicalDto.setPartialShipments(canonicalDto.getPartialShipments());
+		connionicalDto.setTranshipment(canonicalDto.getTranshipment());
+		connionicalDto.setDocumentsRequired(canonicalDto.getDocumentsRequired());
+		connionicalDto.setAdditionalConditions(canonicalDto.getAdditionalConditions());
+		connionicalDto.setChargeDetails(canonicalDto.getChargeDetails());
+		connionicalDto.setPeriodforPresentation(canonicalDto.getPeriodforPresentation());
+		connionicalDto.setConfirmationCode(canonicalDto.getConfirmationCode());
+		connionicalDto.setInstructionstoPayingBank(canonicalDto.getInstructionstoPayingBank());
+		connionicalDto.setNarrative(canonicalDto.getNarrative());
+		connionicalDto.setMsgRef(canonicalDto.getMsgRef());       
+	        
+		connionicalDto.setAdviseThroughBankpartyidentifier(canonicalDto.getAdviseThroughBankpartyidentifier());
+		connionicalDto.setAdvisingBank(canonicalDto.getAdvisingBank());
+		connionicalDto.setAdviseThroughBankCode(canonicalDto.getAdviseThroughBankCode());
+		connionicalDto.setAdviseThroughBankLocation(canonicalDto.getAdviseThroughBankLocation());
+		connionicalDto.setAdviseThroughBankName(canonicalDto.getAdviseThroughBankName());
+		connionicalDto.setSendertoReceiverInformation(canonicalDto.getSendertoReceiverInformation());
+		connionicalDto.setReimbursingBank(canonicalDto.getReimbursingBank());
+		connionicalDto.setApplicantNameAddress(canonicalDto.getApplicantNameAddress());
+		connionicalDto.setApplicantBankNameAddress(canonicalDto.getApplicantBankNameAddress());
+		connionicalDto.setApplicantBankCode(canonicalDto.getApplicantBankCode());
+		connionicalDto.setApplicantBankpartyidentifier(canonicalDto.getApplicantBankpartyidentifier());
+		connionicalDto.setApplicantAccount(canonicalDto.getApplicantAccount());
+		connionicalDto.setAdvisingBank(canonicalDto.getAdvisingBank());
+		connionicalDto.setBeneficiaryAccount(canonicalDto.getBeneficiaryAccount());
+		connionicalDto.setBeneficiaryNameAddress(canonicalDto.getBeneficiaryNameAddress());
+		connionicalDto.setLcAmount(canonicalDto.getLcAmount());
+		connionicalDto.setLcCurrency(canonicalDto.getLcCurrency());
+		connionicalDto.setAdviseThroughBankAcc(canonicalDto.getAdviseThroughBankAcc());
+		connionicalDto.setAdditionalAmountsCovered(canonicalDto.getAdditionalAmountsCovered());
+		connionicalDto.setRepairMsgref(canonicalDto.getRepairMsgref());
+		connionicalDto.setRepair(canonicalDto.getRepair());
+		connionicalDto.setInitialDispatchPlace(canonicalDto.getInitialDispatchPlace());
+		connionicalDto.setFinalDeliveryPlace(canonicalDto.getFinalDeliveryPlace());	
+		connionicalDto.setIssueDate(canonicalDto.getIssueDate());
+		connionicalDto.setMsgHost(canonicalDto.getMsgHost());
+		connionicalDto.setSeqNo(canonicalDto.getSeqNo());
+		connionicalDto.setSenderBank(canonicalDto.getSenderBank());
+		setCommoditiesList(lcOpenService.getCommodityDetails(canonicalDto.getLcNumber()));
+		logger.info("Inside setALLValueTODTO() in letterOfCreditAction");
+		
+	}
+	
+	
+
+}

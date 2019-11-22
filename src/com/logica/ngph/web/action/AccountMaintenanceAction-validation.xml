@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE validators PUBLIC 
+                "-//OpenSymphony Group//XWork Validator 1.0.2//EN" 
+                "http://www.opensymphony.com/xwork/xwork-validator-1.0.2.dtd">
+<validators>
+	
+	<field name="accountNo">
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="fieldName">accountNo</param>
+	<param name="expression"><![CDATA[[0-9.,]+$]]></param>
+	<message> Account No is Not Valid </message>
+	</field-validator>
+	</field>
+	
+	<field name="MMDI">
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="fieldName">MMDI</param>
+	<param name="expression"><![CDATA[[0-9]+$]]></param>
+	<message> MMID is Not Valid</message>
+	</field-validator>
+	<field-validator type="stringlength">
+	 <param name="fieldName">msgChnlType</param>
+	 <param name="minLength">1</param>
+	 <param name="maxLength">7</param>
+	  <param name="trim">true</param>
+	 <message>MMID length should be between ${minLength} and ${maxLength} Chars</message>
+	</field-validator>
+	</field>
+	
+	<field name="mobileNo">
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="fieldName">mobileNo</param>
+	<param name="expression"><![CDATA[[0-9.,]+$]]></param>
+	<message> Mobile No is Not Valid </message>
+	</field-validator>
+	</field>
+
+	<field name="branch">
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator>
+	
+	</field>
+	
+	<field name="debitLimit">
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="fieldName">debitLimit</param>
+	<param name="expression"><![CDATA[[0-9.,]+$]]></param>
+	<message> Debit Limit is Not Valid </message>
+	</field-validator>
+	</field>
+	
+	<field name="creditLimit">
+	<field-validator type="requiredstring">
+	<message> ${fieldName} is required.</message>
+	</field-validator>
+	<field-validator type="regex">
+	<param name="fieldName">creditLimit</param>
+	<param name="expression"><![CDATA[[0-9.,]+$]]></param>
+	<message> Credit Limit is Not Valid </message>
+	</field-validator>
+	</field>
+
+	
+</validators>

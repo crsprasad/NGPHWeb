@@ -1,0 +1,87 @@
+package com.logica.ngph.web.action;
+
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+import org.apache.struts2.interceptor.SessionAware;
+
+import com.logica.ngph.common.dtos.UserMaintenanceDTO;
+import com.logica.ngph.dtos.InformationDto;
+import com.logica.ngph.service.InformationService;
+import com.logica.ngph.service.UserLoginService;
+import com.logica.ngph.web.utils.ApplicationContextProvider;
+import com.opensymphony.xwork2.ActionSupport;
+
+public class InformationAction extends ActionSupport implements SessionAware{
+	private Logger logger = Logger.getLogger(InformationAction.class);
+	private static final long serialVersionUID = 1L;
+	private Map<String, Object> session;
+	private String direction;
+	private String infoMsg;
+	private String msgDirection;
+	
+	public String getMsgDirection() {
+		return msgDirection;
+	}
+	public void setMsgDirection(String msgDirection) {
+		this.msgDirection = msgDirection;
+	}
+	public String getInfoMsg() {
+		return infoMsg;
+	}
+	public void setInfoMsg(String infoMsg) {
+		this.infoMsg = infoMsg;
+	}
+	private List<InformationDto> informationList;
+	
+	
+	
+	
+	public String getDirection() {
+		return direction;
+	}
+	public void setDirection(String direction) {
+		this.direction = direction;
+	}
+	public List<InformationDto> getInformationList() {
+		return informationList;
+	}
+	public void setInformationList(List<InformationDto> informationList) {
+		this.informationList = informationList;
+	}
+	
+	public String displayoutboundInfoScreen(){
+		InformationService informationService = (InformationService)ApplicationContextProvider.getBean("informationService");
+		setDirection("O");
+		setMsgDirection("Outbound Payment");
+		informationList  = informationService.getReportDate(getDirection());
+		session.put("informationList", informationList);
+		
+		return "success";
+	}
+	
+	public String displayInboundInfoScreen(){
+		InformationService informationService = (InformationService)ApplicationContextProvider.getBean("informationService");
+		setDirection("I");
+		setMsgDirection("Inbound Payment");
+		informationList  = informationService.getReportDate(getDirection());
+		session.put("informationList", informationList);
+		
+		return "INBOUND";
+	}
+	
+	public String displayInformation(){
+		
+		return "success";
+	}
+	
+	
+	
+	public Map<String, Object> getSession() {
+		return session;
+	}
+	public void setSession(Map<String, Object> session) {
+		this.session = session;
+	}
+}
